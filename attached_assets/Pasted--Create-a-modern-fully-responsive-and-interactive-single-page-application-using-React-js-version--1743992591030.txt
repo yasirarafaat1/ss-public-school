@@ -1,0 +1,127 @@
+"Create a modern, fully responsive, and interactive single-page application using React.js (version 18+) with the following requirements:
+
+Technical Stack:
+
+React functional components with Hooks (useState, useEffect, etc.)
+
+React Router v6 for client-side navigation
+
+CSS-in-JS (Styled Components/Emotion) or Sass for styling
+
+Local storage for persistent client-side data
+
+Responsive design framework (Material-UI/Chakra UI) or custom media queries
+
+PropTypes for type checking
+
+Core Features:
+
+Responsive navigation bar with mobile menu
+
+Multiple routes/pages (Home, About, Services, Contact)
+
+Interactive contact form with:
+
+Client-side validation
+
+Success/error messages
+
+Local storage persistence
+
+Dynamic content rendering
+
+Image optimization with lazy loading
+
+Social media integration (share buttons)
+
+404 error page
+
+UI/UX Requirements:
+
+Mobile-first approach
+
+Cross-browser compatibility
+
+Smooth animations/transitions
+
+Accessible components (ARIA labels, semantic HTML)
+
+Dark/light theme toggle
+
+Loading states for dynamic content
+
+Performance:
+
+Code splitting with React.lazy()
+
+Optimized assets (images/icons)
+
+Proper use of memoization
+
+Efficient state management
+
+Lighthouse score >90 for performance
+
+Project Structure:
+
+Organized components directory
+
+Separate styles directory
+
+Reusable utility functions
+
+Custom hooks for business logic
+
+Assets optimized for web
+
+Comprehensive README.md with setup instructions
+
+Additional Requirements:
+
+No backend implementation (use mock data)
+
+Form submissions stored in local storage
+
+Search-engine friendly meta tags (React Helmet)
+
+Unit tests for critical components (Jest/React Testing Library)
+
+Production-ready build configuration
+
+Deployment instructions for static hosting (Netlify/Vercel)
+
+Include a modern visual design with:
+
+Hero section with CTA
+
+Features/Service cards grid
+
+Testimonials section
+
+Team member profiles
+
+Interactive map placeholder
+
+Footer with social links
+
+The final output should include:
+
+Complete source code
+
+Responsive design proof (multiple screen sizes)
+
+Working contact form demo
+
+Theme switching demonstration
+
+Test coverage report
+
+Performance audit results"
+
+This prompt ensures creation of a professional-grade React frontend with:
+✅ Full responsiveness
+✅ Client-side functionality
+✅ Modern UI/UX standards
+✅ Performance optimization
+✅ Proper testing implementation
+✅ Deployment readiness
