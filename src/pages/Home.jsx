@@ -5,21 +5,35 @@ const Home = () => {
   return (
     <>
       {/* <!-- Hero Section --> */}
-      <section className="hero-section mt-5">
-        <div className="container">
-          <h1 className="display-4 animate__animated animate__fadeInDown">
-            Welcome to Our School
-          </h1>
-          <p className="lead animate__animated animate__fadeInUp">
-            Providing Quality Education for a Brighter Future
-          </p>
-          <a
-            href="/about"
-            className="btn btn-primary btn-lg animate__animated animate__zoomIn"
-          >
-            Learn More
-          </a>
-        </div>
+      <section
+        className="hero-section d-flex align-items-center text-white mt-5"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1728404059704-d4232080b338?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c2Nob29sJTIwc3RhZmZ8ZW58MHx8MHx8fDA%3D')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          // height: "100vh",
+        }}
+      >
+        <Container>
+          <Row className="justify-content-center text-center">
+            <Col md={8}>
+              <h1 className="display-3 fw-bold animate__animated animate__fadeInDown">
+                Welcome to Our School
+              </h1>
+              <p className="lead mt-3 animate__animated animate__fadeInUp">
+                Empowering students with knowledge, creativity, and values for a
+                brighter future.
+              </p>
+              <a
+                href="/about"
+                className="btn btn-primary btn-lg mt-4 animate__animated animate__zoomIn"
+              >
+                Learn More
+              </a>
+            </Col>
+          </Row>
+        </Container>
       </section>
 
       {/* <!-- Programs Section --> */}

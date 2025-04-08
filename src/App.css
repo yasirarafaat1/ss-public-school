@@ -45,9 +45,19 @@
   padding: 1rem;
 }
 
+.hero-section {
+  height: 100vh; /* Default height for larger screens */
+  background-size: cover;
+  background-position: center;
+}
+
 @media (max-width: 768px) {
   .hero {
     padding: 2rem 1rem;
+  }
+
+  .hero-section {
+    height: 20vh; /* Reduce height for phone view */
   }
 
   .features {

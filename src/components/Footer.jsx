@@ -16,7 +16,7 @@ const Footer = () => {
           </div>
           <div className="col-md-4">
             <h5>Follow Us</h5>
-            <a href="#" className="text-white me-2">Facebook</a>
+            <a href="/about" className="text-white me-2">Facebook</a>
             <a href="#" className="text-white me-2">Twitter</a>
             <a href="#" className="text-white">Instagram</a>
           </div>
