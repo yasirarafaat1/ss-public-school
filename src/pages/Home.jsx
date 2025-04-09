@@ -12,18 +12,20 @@ const Home = () => {
             "url('https://images.unsplash.com/photo-1728404059704-d4232080b338?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c2Nob29sJTIwc3RhZmZ8ZW58MHx8MHx8fDA%3D')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          // height: "100vh",
+          position: "relative",
         }}
       >
-        <Container>
+        <div className="overlay"></div>
+        <Container className="py-10">
           <Row className="justify-content-center text-center">
             <Col md={8}>
-              <h1 className="display-3 fw-bold animate__animated animate__fadeInDown">
-                Welcome to Our School
+              <h1 className="display-3 fw-bold hero-title animate__animated animate__fadeInDown">
+                Welcome to <span className="highlight">Our School</span>
               </h1>
-              <p className="lead mt-3 animate__animated animate__fadeInUp">
-                Empowering students with knowledge, creativity, and values for a
-                brighter future.
+              <p className="lead mt-3 hero-subtitle animate__animated animate__fadeInUp">
+                Empowering students with{" "}
+                <span className="highlight">knowledge</span>, creativity, and
+                values for a brighter future.
               </p>
               <a
                 href="/about"

@@ -25,27 +25,27 @@ const Infrastructure = () => {
       image:
         "https://images.unsplash.com/photo-1518707332890-e05af3c6bfff?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHNjaG9vbCUyMHN0YWZmfGVufDB8fDB8fHww",
       alt: "Values Image",
-    }
+    },
   ];
 
   return (
     <>
       {/* <!-- Infrastructure Section --> */}
-      <section className="py-5 mt-5">
+      <section className="py-5 mt-5 mx-2">
         <div className="container">
           <h2 className="text-center mb-5">Our Infrastructure</h2>
           <div className="row">
             {facility.map((facility, index) => (
               <div className="col-md-12 mb-4" key={index}>
                 <div
-                  className={`d-flex align-items-center ${
+                  className={`d-flex align-items-center flex-wrap ${
                     index % 2 === 0 ? "" : "flex-row-reverse"
                   }`}
                 >
                   <img
                     src={facility.image}
                     alt={facility.alt}
-                    className="img-fluid me-4"
+                    className="img-fluid mb-3 mb-md-0"
                     style={{
                       width: "400px",
                       height: "300px",
