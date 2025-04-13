@@ -86,6 +86,67 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      <div className="container my-5">
+        <div className="row justify-content-center">
+          <div className="col-lg-10">
+            {/* <!-- Section Heading --> */}
+            <h2 className="text-center mb-5 display-5 fw-bold text-primary">
+              Message from the Principal
+            </h2>
+
+            {/* <!-- Card Style --> */}
+            <div className="card border-0 shadow-lg overflow-hidden">
+              <div className="row g-0">
+                {/* <!-- Principal's Photo --> */}
+                <div className="col-md-4 d-flex align-items-center">
+                  <img
+                    src="https://media.istockphoto.com/id/1300434912/photo/young-business-woman-got-overjoyed-by-good-news-and-started-celebrating-while-working-on.webp?a=1&b=1&s=612x612&w=0&k=20&c=qE_KkcG9arxtuMq1rwNNGpVIUp2fd02nJIs7lkWLZhg="
+                    className="img-fluid rounded-start"
+                    alt="Principal [Name]"
+                    style={{ objectFit: "cover", height: "100%" }}
+                  />
+                </div>
+
+                {/* <!-- Message Content --> */}
+                <div className="col-md-8">
+                  <div className="card-body p-4 p-lg-5">
+                    <div className="d-flex align-items-center mb-4">
+                      <div>
+                        <h3 className="card-title mb-1">Dr. Jane Smith</h3>
+                        <p className="text-muted mb-0">Principal</p>
+                      </div>
+                    </div>
+
+                    <blockquote className="blockquote mb-4">
+                      <p className="lead fst-italic">
+                        "At [School Name], we believe in nurturing each
+                        student's unique potential through innovative teaching
+                        methods and a values-based education system."
+                      </p>
+                    </blockquote>
+
+                    <div className="card-text">
+                      <p>
+                        Detailed message text goes here... Our commitment to
+                        academic excellence combined with character development
+                        ensures our students become responsible global citizens.
+                      </p>
+
+                      <div className="mt-4">
+                        <a href="/principal-message" className="btn btn-outline-primary">
+                          Read Full Message{" "}
+                          <i className="fas fa-arrow-right ms-2"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

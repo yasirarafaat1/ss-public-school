@@ -1,0 +1,65 @@
+.footer {
+  background-color: #343a40;
+  color: white;
+  padding: 3rem 0;
+}
+
+.footer-link {
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footer-link:hover {
+  transform: translateY(-2px);
+  color: #0d6efd !important;
+}
+
+.social-icon {
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.social-icon:hover {
+  transform: translateY(-2px);
+  color: #0d6efd !important;
+}
+
+.contact-link {
+  transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #0d6efd !important;
+}
+
+.contact-link:hover i {
+  color: #0d6efd;
+}
+
+.newsletter-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white !important;
+}
+
+.newsletter-input:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+  color: white !important;
+}
+
+.newsletter-input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.newsletter-btn {
+  background-color: #0d6efd;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.newsletter-btn:hover {
+  background-color: #0b5ed7;
+  transform: translateX(2px);
+} 

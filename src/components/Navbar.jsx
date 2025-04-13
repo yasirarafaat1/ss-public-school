@@ -7,10 +7,11 @@ const Navbar = () => {
   // Define an array of navigation items
   const navItems = [
     { path: "/", label: "Home", icon: "bi bi-house-door" },
-    { path: "/staff", label: "Staff", icon: "bi bi-people" },
-    { path: "/infrastructure", label: "Infrastructure", icon: "bi bi-building" },
-    { path: "/services", label: "Service", icon: "bi bi-envelope" },
     { path: "/about", label: "About Us", icon: "bi bi-info-circle" },
+    { path: "/admission", label: "Admission", icon: "bi bi-pencil-square" },
+    { path: "/gallery", label: "Gallery", icon: "bi bi-card-image" },
+    { path: "/staff", label: "Staff", icon: "bi bi-people" },
+    { path: "/services", label: "Service", icon: "bi bi-envelope" },
     { path: "/contact", label: "Contact", icon: "bi bi-envelope" },
   ];
 
@@ -20,12 +21,12 @@ const Navbar = () => {
         <div className="container-fluid">
           <a className="navbar-brand d-flex align-items-center" href="/">
             <img
-              src="./generated-icon.png"
+              src="./logo.png"
               alt="Logo"
-              className="me-2"
-              style={{ height: "30px" }}
-            />
-            <i className="bi bi-mortarboard-fill me-2"></i> MySchool
+              // className="me-2"
+              style={{ height: "40px" }}
+            /> 
+            <h2>S.S. Public School</h2>
           </a>
           <button
             className="navbar-toggler"

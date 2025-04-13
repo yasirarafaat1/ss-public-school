@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./App.css";
@@ -9,8 +10,15 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
+import Gallery from "./pages/Gallery";
 import Staff from "./pages/Staff";
 import Infrastructure from "./pages/Infrastructure";
+import PageNotFound from "./pages/PageNotFound";
+import PrincipalMessage from "./pages/PrincipalMessage";
+import Admission from "./pages/Admission";
+import AdmissionEnquiry from "./pages/AdmissionEnquiry";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import DeveloperInfo from "./pages/DeveloperInfo";
 
 export default function App() {
   useEffect(() => {
@@ -30,6 +38,13 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/staff" element={<Staff />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/principal-message" element={<PrincipalMessage />} />
+          <Route path="/admission" element={<Admission />} />
+          <Route path="/admission-enquiry" element={<AdmissionEnquiry />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/developer-info" element={<DeveloperInfo />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
         <Footer />
       </div>

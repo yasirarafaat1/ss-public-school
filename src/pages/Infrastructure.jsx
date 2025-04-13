@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const Infrastructure = () => {
-  // Define an array of sections
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration
+      once: false,    // Allow animations to trigger on reverse scroll
+    });
+  }, []);
+
   const facility = [
     {
       title: "Our Mission",
@@ -33,10 +41,16 @@ const Infrastructure = () => {
       {/* <!-- Infrastructure Section --> */}
       <section className="py-5 mt-5 mx-2">
         <div className="container">
-          <h2 className="text-center mb-5">Our Infrastructure</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Our Infrastructure
+          </h2>
           <div className="row">
             {facility.map((facility, index) => (
-              <div className="col-md-12 mb-4" key={index}>
+              <div
+                className="col-md-12 mb-4"
+                key={index}
+                data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
+              >
                 <div
                   className={`d-flex align-items-center flex-wrap ${
                     index % 2 === 0 ? "" : "flex-row-reverse"
