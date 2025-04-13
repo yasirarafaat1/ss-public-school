@@ -28,10 +28,10 @@ const Home = () => {
                 values for a brighter future.
               </p>
               <a
-                href="/about"
+                href="/admission"
                 className="btn btn-primary btn-lg mt-4 animate__animated animate__zoomIn"
               >
-                Learn More
+                Enroll Now
               </a>
             </Col>
           </Row>
