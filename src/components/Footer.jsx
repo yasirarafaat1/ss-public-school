@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Toast } from 'react-bootstrap';
 import './Footer.css'; // Import the CSS file
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [showToast, setShowToast] = useState(false);
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send the email to your backend
+    console.log('Newsletter subscription:', email);
+    setShowToast(true);
+    setEmail(''); // Clear the input field
+  };
+
   return (
     <footer className="footer bg-dark text-white py-5">
       <div className="container">
@@ -124,16 +136,21 @@ const Footer = () => {
             </ul>
             <div className="newsletter mt-4">
               <h5 className="text-uppercase mb-3">Newsletter</h5>
-              <div className="input-group">
-                <input 
-                  type="email" 
-                  className="form-control newsletter-input text-white" 
-                  placeholder="Your Email" 
-                />
-                <button className="btn btn-primary newsletter-btn" type="button">
-                  <i className="bi bi-arrow-right-square"></i>
-                </button>
-              </div>
+              <form onSubmit={handleNewsletterSubmit}>
+                <div className="input-group">
+                  <input 
+                    type="email" 
+                    className="form-control newsletter-input text-white" 
+                    placeholder="Your Email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <button className="btn btn-primary newsletter-btn" type="submit">
+                    <i className="bi bi-arrow-right-square"></i>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -157,6 +174,32 @@ const Footer = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Toast Notification */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          zIndex: 9999
+        }}
+      >
+        <Toast 
+          onClose={() => setShowToast(false)} 
+          show={showToast} 
+          delay={3000} 
+          autohide
+          bg="success"
+          className="text-white"
+        >
+          <Toast.Header>
+            <strong className="me-auto">Success</strong>
+          </Toast.Header>
+          <Toast.Body>
+            Thank you for subscribing to our newsletter!
+          </Toast.Body>
+        </Toast>
       </div>
     </footer>
   );

@@ -1,168 +1,267 @@
-import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import React, { useEffect } from 'react';
+import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+// import './Home.css';
 
 const Home = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 100
+    });
+  }, []);
+
   return (
     <>
       {/* <!-- Hero Section --> */}
-      <section
-        className="hero-section d-flex align-items-center text-white mt-5"
+      <section 
+        className="hero-section d-flex align-items-center text-white"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1728404059704-d4232080b338?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c2Nob29sJTIwc3RhZmZ8ZW58MHx8MHx8fDA%3D')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sfGVufDB8fDB8fHww')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          position: "relative",
+          minHeight: "80vh",
+          position: "relative"
         }}
       >
-        <div className="overlay"></div>
-        <Container className="py-10">
+        <div 
+          className="overlay"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)"
+          }}
+        ></div>
+        <Container className="position-relative z-1 py-10">
           <Row className="justify-content-center text-center">
-            <Col md={8}>
-              <h1 className="display-3 fw-bold hero-title animate__animated animate__fadeInDown">
-                Welcome to <span className="highlight">Our School</span>
+            <Col md={8} data-aos="fade-up">
+              <h1 className="display-3 fw-bold hero-title">
+                Welcome to <span className="highlight">SS Public School</span>
               </h1>
-              <p className="lead mt-3 hero-subtitle animate__animated animate__fadeInUp">
-                Empowering students with{" "}
-                <span className="highlight">knowledge</span>, creativity, and
-                values for a brighter future.
+              <p className="lead hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                Empowering Minds, Building Futures
               </p>
-              <a
-                href="/admission"
-                className="btn btn-primary btn-lg mt-4 animate__animated animate__zoomIn"
-              >
-                Enroll Now
-              </a>
+              <div className="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+                <Button variant="primary" size="lg" as={Link} to="/about" className="me-3">
+                  Learn More
+                </Button>
+                <Button variant="outline-light" size="lg" as={Link} to="/admission">
+                  Apply Now
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+      {/* <!-- Features Section --> */}
+      <section className="features-section py-5">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">Why Choose Us</h2>
+          <Row className="g-4">
+            <Col md={4} data-aos="fade-up" data-aos-delay="100">
+              <div className="feature-card text-center p-4">
+                <i className="bi bi-book text-primary display-4 mb-3"></i>
+                <h3>Quality Education</h3>
+                <p>Our experienced faculty provides top-notch education with modern teaching methods.</p>
+              </div>
+            </Col>
+            <Col md={4} data-aos="fade-up" data-aos-delay="200">
+              <div className="feature-card text-center p-4">
+                <i className="bi bi-people text-primary display-4 mb-3"></i>
+                <h3>Experienced Faculty</h3>
+                <p>Learn from the best educators who are passionate about teaching and mentoring.</p>
+              </div>
+            </Col>
+            <Col md={4} data-aos="fade-up" data-aos-delay="300">
+              <div className="feature-card text-center p-4">
+                <i className="bi bi-building text-primary display-4 mb-3"></i>
+                <h3>Modern Infrastructure</h3>
+                <p>State-of-the-art facilities to support comprehensive learning and development.</p>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+      {/* <!-- About Section --> */}
+      <section className="about-section py-5 bg-light">
+        <Container>
+          <Row className="align-items-center">
+            <Col lg={6} data-aos="fade-right">
+              <img 
+                src="https://subhashacademy.vercel.app/assets/front3.jpeg" 
+                alt="School Building" 
+                className="img-fluid rounded shadow"
+              />
+            </Col>
+            <Col lg={6} data-aos="fade-left">
+              <h2 className="mb-4">About Our School</h2>
+              <p className="lead mb-4">
+                SS Public School is committed to providing quality education and fostering a love for learning.
+              </p>
+              <p>
+                Our mission is to nurture young minds and prepare them for a bright future through innovative
+                teaching methods and a supportive learning environment.
+              </p>
+              <Button variant="primary" as={Link} to="/about" className="mt-3">
+                Learn More About Us
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+      {/* <!-- Programs Section --> */}
+      <section className="programs-section py-5">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">Our Programs</h2>
+          <Row className="g-4">
+            <Col md={6} lg={3} data-aos="zoom-in" data-aos-delay="100">
+              <div className="program-card text-center p-4">
+                <i className="bi bi-mortarboard text-primary display-4 mb-3"></i>
+                <h3>Primary Education</h3>
+                <p>Building strong foundations for young learners.</p>
+              </div>
+            </Col>
+            <Col md={6} lg={3} data-aos="zoom-in" data-aos-delay="200">
+              <div className="program-card text-center p-4">
+                <i className="bi bi-book text-primary display-4 mb-3"></i>
+                <h3>Secondary Education</h3>
+                <p>Comprehensive learning for middle school students.</p>
+              </div>
+            </Col>
+            <Col md={6} lg={3} data-aos="zoom-in" data-aos-delay="300">
+              <div className="program-card text-center p-4">
+                <i className="bi bi-graph-up text-primary display-4 mb-3"></i>
+                <h3>Higher Secondary</h3>
+                <p>Preparing students for higher education and careers.</p>
+              </div>
+            </Col>
+            <Col md={6} lg={3} data-aos="zoom-in" data-aos-delay="400">
+              <div className="program-card text-center p-4">
+                <i className="bi bi-trophy text-primary display-4 mb-3"></i>
+                <h3>Extracurricular</h3>
+                <p>Sports, arts, and other activities for holistic development.</p>
+              </div>
             </Col>
           </Row>
         </Container>
       </section>
 
-      {/* <!-- Programs Section --> */}
-      <section id="programs" className="py-5">
-        <div className="container">
-          <h2 className="text-center mb-4 animate__animated animate__fadeIn">
-            Our Programs
-          </h2>
-          <div className="row text-center">
-            <div className="col-md-4">
-              <i className="bi bi-book program-icon animate__animated animate__bounceIn"></i>
-              <h3>Academic Excellence</h3>
-              <p>Comprehensive curriculum designed to empower every learner.</p>
-            </div>
-            <div className="col-md-4">
-              <i
-                className="bi bi-music-note program-icon animate__animated animate__bounceIn"
-                data-wow-delay="0.2s"
-              ></i>
-              <h3>Music & Arts</h3>
-              <p>
-                Encouraging creativity through various music and art programs.
-              </p>
-            </div>
-            <div className="col-md-4">
-              <i
-                className="bi bi-dribbble program-icon animate__animated animate__bounceIn"
-                data-wow-delay="0.4s"
-              ></i>
-              <h3>Sports</h3>
-              <p>
-                Promoting physical health and teamwork through diverse sports
-                activities.
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* <!-- Admission Section --> */}
+      <section className="admission-section py-5 bg-light">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">Admission Process</h2>
+          <Row className="g-4">
+            <Col lg={6} data-aos="fade-right">
+              <div className="admission-info p-4">
+                <h3 className="mb-4">How to Apply</h3>
+                <div className="mb-4">
+                  <i className="bi bi-1-circle-fill text-primary me-3"></i>
+                  <span>Fill out the admission form</span>
+                </div>
+                <div className="mb-4">
+                  <i className="bi bi-2-circle-fill text-primary me-3"></i>
+                  <span>Submit required documents</span>
+                </div>
+                <div className="mb-4">
+                  <i className="bi bi-3-circle-fill text-primary me-3"></i>
+                  <span>Attend the entrance assessment</span>
+                </div>
+                <div className="mb-4">
+                  <i className="bi bi-4-circle-fill text-primary me-3"></i>
+                  <span>Complete the admission process</span>
+                </div>
+                <Button variant="primary" as={Link} to="/admission" className="mt-3">
+                  Learn More About Admission
+                </Button>
+              </div>
+            </Col>
+            <Col lg={6} data-aos="fade-left">
+              <div className="admission-form p-4">
+                <h3 className="mb-4">Start Your Admission Process</h3>
+                <Form>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Student's Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter student's name" required />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Parent's Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter parent's name" required />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" required />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Phone</Form.Label>
+                    <Form.Control type="tel" placeholder="Enter phone number" required />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Class Applying For</Form.Label>
+                    <Form.Select required>
+                      <option value="">Select class</option>
+                      <option value="nursery">Nursery</option>
+                      <option value="lkg">LKG</option>
+                      <option value="ukg">UKG</option>
+                      <option value="1">Class 1</option>
+                      <option value="2">Class 2</option>
+                      <option value="3">Class 3</option>
+                      <option value="4">Class 4</option>
+                      <option value="5">Class 5</option>
+                      <option value="6">Class 6</option>
+                      <option value="7">Class 7</option>
+                      <option value="8">Class 8</option>
+                      <option value="9">Class 9</option>
+                      <option value="10">Class 10</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Button variant="primary" type="submit">
+                    Submit Application
+                  </Button>
+                </Form>
+              </div>
+            </Col>
+          </Row>
+        </Container>
       </section>
 
-      {/* <!-- Mission and Vision Section --> */}
-      <section id="mission-vision" className="py-5 bg-light">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6 animate__animated animate__fadeInLeft">
-              <h2>Our Mission</h2>
-              <p>
-                To provide a nurturing environment where students can grow
-                academically, socially, and emotionally.
+      {/* <!-- Contact Us Section --> */}
+      <section className="contact-section py-5 bg-light">
+        <Container>
+          <Row className="justify-content-center text-center">
+            <Col lg={8} data-aos="fade-up">
+              <h2 className="mb-4">Have Questions?</h2>
+              <p className="lead mb-4">
+                We're here to help! Get in touch with us for any queries or concerns.
               </p>
-            </div>
-            <div className="col-md-6 animate__animated animate__fadeInRight">
-              <h2>Our Vision</h2>
-              <p>
-                To be a leading institution recognized for excellence in
-                education and character development.
-              </p>
-            </div>
-          </div>
-        </div>
+              <Button variant="primary" size="lg" as={Link} to="/contact">
+                Contact Us
+              </Button>
+            </Col>
+          </Row>
+        </Container>
       </section>
 
-      {/* <!-- Services Section --> */}
-      <section className="py-5">
-        <div className="container">
-          <h2 className="text-center mb-4">
-            <i className="bi bi-stars me-2"></i>Our Programs
-          </h2>
-          <div className="row g-4">
-            <div className="col-md-4">
-              <div className="card h-100 text-center">
-                <div className="card-body">
-                  <i className="bi bi-book-half display-4 text-primary mb-3"></i>
-                  <h5 className="card-title">Academics</h5>
-                  <p className="card-text">
-                    Offering world-class education across all grades and
-                    disciplines.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card h-100 text-center">
-                <div className="card-body">
-                  <i className="bi bi-person-lines-fill display-4 text-primary mb-3"></i>
-                  <h5 className="card-title">Faculty</h5>
-                  <p className="card-text">
-                    Learn from experienced and passionate educators.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card h-100 text-center">
-                <div className="card-body">
-                  <i className="bi bi-emoji-smile display-4 text-primary mb-3"></i>
-                  <h5 className="card-title">Student Life</h5>
-                  <p className="card-text">
-                    Clubs, sports, and events to enrich every student's
-                    experience.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* <!-- Call to Action Section --> */}
-      <section
-        id="cta"
-        className="py-5 text-center text-white"
-        style={{ backgroundColor: "#007bff" }}
-      >
-        <div className="container">
-          <h2 className="animate__animated animate__fadeIn">
-            Join Our Community
-          </h2>
-          <p className="lead animate__animated animate__fadeIn">
-            Enroll now and be a part of our growing family.
-          </p>
-          <a
-            href="/contact"
-            className="btn btn-light btn-lg animate__animated animate__zoomIn"
-          >
-            Contact Us
-          </a>
-        </div>
+      {/* <!-- CTA Section --> */}
+      <section className="cta-section py-5 bg-primary text-white">
+        <Container>
+          <Row className="justify-content-center text-center">
+            <Col lg={8} data-aos="fade-up">
+              <h2 className="mb-4">Ready to Join Our Community?</h2>
+              <p className="lead mb-4">
+                Take the first step towards a brighter future for your child.
+              </p>
+              <Button variant="light" size="lg" as={Link} to="/admission">
+                Apply Now
+              </Button>
+            </Col>
+          </Row>
+        </Container>
       </section>
     </>
   );

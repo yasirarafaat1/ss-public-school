@@ -240,6 +240,32 @@ const AdmissionEnquiry = () => {
             </Card>
           </Col>
         </Row>
+
+        {/* Toast Notification */}
+        <div
+          style={{
+            position: 'fixed',
+            top: 20,
+            right: 20,
+            zIndex: 9999
+          }}
+        >
+          <Toast 
+            onClose={() => setShowToast(false)} 
+            show={showToast} 
+            delay={3000} 
+            autohide
+            bg="success"
+            className="text-white"
+          >
+            <Toast.Header>
+              <strong className="me-auto">Success</strong>
+            </Toast.Header>
+            <Toast.Body>
+              Your admission enquiry has been submitted successfully. We will contact you shortly.
+            </Toast.Body>
+          </Toast>
+        </div>
       </Container>
     </div>
   );

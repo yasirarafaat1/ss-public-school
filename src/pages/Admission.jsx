@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const Admission = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 100
+    });
+  }, []);
+
   // Admission Process Steps
   const admissionSteps = [
     {
@@ -68,156 +78,242 @@ const Admission = () => {
   ];
 
   return (
-    <div className="py-5 mt-5">
-      <Container>
+    <div className="admission-page mt-5">
 
-        {/* Page Header */}
-        <div className="text-center mb-5">
-          <h1 className="display-4 fw-bold text-primary">Admission Process</h1>
-          <p className="lead text-muted">Join our community of learners</p>
-        </div>
+      {/* Header Section */}
+      <section className="py-5 bg-primary text-white">
+        <Container>
+          <Row className="justify-content-center text-center">
+            <Col md={8} data-aos="fade-up">
+              <h1 className="display-4 fw-bold mb-4">Admission Process</h1>
+              <p className="lead">
+                Join our community of learners and discover a world of opportunities
+              </p>
+            </Col>
+          </Row>
+        </Container>
+      </section>
 
-        {/* Admission Process Steps */}
-        <section className="mb-5">
-          <h2 className="text-center mb-4">Admission Process</h2>
+      {/* Admission Process Steps */}
+      <section className="py-5">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">How to Apply</h2>
           <Row className="g-4">
-            {admissionSteps.map((step, index) => (
-              <Col md={6} lg={3} key={index}>
-                <Card className="h-100 border-0 shadow-sm">
-                  <Card.Body className="text-center">
-                    <i className={`${step.icon} display-4 text-primary mb-3`}></i>
-                    <h5 className="card-title">{step.title}</h5>
-                    <p className="card-text">{step.description}</p>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </section>
-
-        {/* Required Documents */}
-        <section className="mb-5">
-          <Row>
-            <Col lg={6}>
-              <Card className="border-0 shadow-sm h-100">
-                <Card.Header className="bg-primary text-white">
-                  <h3 className="mb-0">Required Documents</h3>
-                </Card.Header>
-                <Card.Body>
-                  <ListGroup variant="flush">
-                    {requiredDocuments.map((doc, index) => (
-                      <ListGroup.Item key={index} className="d-flex align-items-center">
-                        <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                        {doc}
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </Card.Body>
-              </Card>
+            <Col md={3} data-aos="fade-up" data-aos-delay="100">
+              <div className="text-center p-4">
+                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
+                  <i className="bi bi-search display-6"></i>
+                </div>
+                <h4>Step 1: Inquiry</h4>
+                <p>Visit our school or contact us to learn more about our programs and admission requirements.</p>
+              </div>
             </Col>
-            <Col lg={6}>
-              <Card className="border-0 shadow-sm h-100">
-                <Card.Header className="bg-primary text-white">
-                  <h3 className="mb-0">Fee Structure</h3>
-                </Card.Header>
-                <Card.Body>
-                  <div className="table-responsive">
-                    <table className="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>Class</th>
-                          <th>Admission Fee</th>
-                          <th>Annual Fee</th>
-                          <th>Monthly Fee</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {feeStructure.map((fee, index) => (
-                          <tr key={index}>
-                            <td>{fee.class}</td>
-                            <td>{fee.admissionFee}</td>
-                            <td>{fee.annualFee}</td>
-                            <td>{fee.monthlyFee}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </Card.Body>
-              </Card>
+            <Col md={3} data-aos="fade-up" data-aos-delay="200">
+              <div className="text-center p-4">
+                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
+                  <i className="bi bi-pencil-square display-6"></i>
+                </div>
+                <h4>Step 2: Registration</h4>
+                <p>Complete the registration form and submit required documents for initial screening.</p>
+              </div>
+            </Col>
+            <Col md={3} data-aos="fade-up" data-aos-delay="300">
+              <div className="text-center p-4">
+                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
+                  <i className="bi bi-clipboard-check display-6"></i>
+                </div>
+                <h4>Step 3: Assessment</h4>
+                <p>Participate in the entrance assessment and interview process.</p>
+              </div>
+            </Col>
+            <Col md={3} data-aos="fade-up" data-aos-delay="400">
+              <div className="text-center p-4">
+                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
+                  <i className="bi bi-check-circle display-6"></i>
+                </div>
+                <h4>Step 4: Admission</h4>
+                <p>Receive admission confirmation and complete the enrollment process.</p>
+              </div>
             </Col>
           </Row>
-        </section>
+        </Container>
+      </section>
 
-        {/* Additional Information */}
-        <section className="mb-5">
-          <Row>
-            <Col lg={6}>
-              <Card className="border-0 shadow-sm mb-4">
-                <Card.Header className="bg-primary text-white">
-                  <h3 className="mb-0">Important Dates</h3>
-                </Card.Header>
+      {/* Required Documents */}
+      <section className="py-5 bg-light">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">Required Documents</h2>
+          <Row className="g-4">
+            <Col md={6} data-aos="fade-right">
+              <Card className="h-100 border-0 shadow-sm">
                 <Card.Body>
-                  <ListGroup variant="flush">
-                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                      <span>Registration Start Date</span>
-                      <span className="badge bg-primary">1st March</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                      <span>Last Date for Registration</span>
-                      <span className="badge bg-primary">31st March</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                      <span>Assessment Dates</span>
-                      <span className="badge bg-primary">1st - 5th April</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                      <span>Result Declaration</span>
-                      <span className="badge bg-primary">10th April</span>
-                    </ListGroup.Item>
-                  </ListGroup>
+                  <h4 className="mb-4">Original Documents</h4>
+                  <ul className="list-unstyled">
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Birth Certificate
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Aadhar Cards (Student & Parents)
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Transfer Certificate (if applicable)
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Previous Year's Report Card
+                    </li>
+                  </ul>
                 </Card.Body>
               </Card>
             </Col>
-            <Col lg={6}>
-              <Card className="border-0 shadow-sm">
-                <Card.Header className="bg-primary text-white">
-                  <h3 className="mb-0">Contact for Admission</h3>
-                </Card.Header>
+            <Col md={6} data-aos="fade-left">
+              <Card className="h-100 border-0 shadow-sm">
                 <Card.Body>
-                  <div className="mb-3">
-                    <i className="bi bi-telephone-fill me-2"></i>
-                    <a href="tel:+919415808804" className="text-decoration-none">+91 94158 08804</a>
+                  <h4 className="mb-4">Photocopies Required</h4>
+                  <ul className="list-unstyled">
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      All original documents (2 sets)
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Passport size photographs (4 copies)
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Address proof
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                      Medical certificate
+                    </li>
+                  </ul>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* Fee Structure */}
+      <section className="py-5">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">Fee Structure</h2>
+          <Row className="justify-content-center">
+            <Col md={10} data-aos="zoom-in">
+              <div className="table-responsive">
+                <table className="table table-bordered table-hover">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Class</th>
+                      <th>Admission Fee</th>
+                      <th>Annual Fee</th>
+                      <th>Monthly Fee</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Nursery - KG</td>
+                      <td>₹5,000</td>
+                      <td>₹10,000</td>
+                      <td>₹2,500</td>
+                    </tr>
+                    <tr>
+                      <td>Class I - V</td>
+                      <td>₹7,000</td>
+                      <td>₹12,000</td>
+                      <td>₹3,000</td>
+                    </tr>
+                    <tr>
+                      <td>Class VI - VIII</td>
+                      <td>₹8,000</td>
+                      <td>₹15,000</td>
+                      <td>₹3,500</td>
+                    </tr>
+                    <tr>
+                      <td>Class IX - X</td>
+                      <td>₹10,000</td>
+                      <td>₹18,000</td>
+                      <td>₹4,000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* Important Dates */}
+      <section className="py-5 bg-light">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">Important Dates</h2>
+          <Row className="g-4">
+            <Col md={4} data-aos="fade-up" data-aos-delay="100">
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '60px', height: '60px' }}>
+                    <i className="bi bi-calendar-check"></i>
                   </div>
-                  <div className="mb-3">
-                    <i className="bi bi-envelope-fill me-2"></i>
-                    <a href="mailto:sspublicschool@gmail.com" className="text-decoration-none">sspublicschool@gmail.com</a>
+                  <h4>Registration Period</h4>
+                  <p className="mb-0">January 1 - March 31, 2024</p>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={4} data-aos="fade-up" data-aos-delay="200">
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '60px', height: '60px' }}>
+                    <i className="bi bi-pencil-square"></i>
                   </div>
-                  <div className="mb-3">
-                    <i className="bi bi-clock-fill me-2"></i>
-                    Office Hours: 9:00 AM - 4:00 PM (Monday to Saturday)
+                  <h4>Assessment Dates</h4>
+                  <p className="mb-0">April 15 - 30, 2024</p>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={4} data-aos="fade-up" data-aos-delay="300">
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '60px', height: '60px' }}>
+                    <i className="bi bi-check-circle"></i>
                   </div>
-                  <Button 
-                    variant="primary" 
-                    className="mt-3" 
-                    as={Link} 
-                    to="/admission-enquiry"
-                  >
-                    Admission Enquiry
+                  <h4>Result Declaration</h4>
+                  <p className="mb-0">May 15, 2024</p>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* Contact Information */}
+      <section className="py-5">
+        <Container>
+          <Row className="justify-content-center">
+            <Col md={8} data-aos="fade-up">
+              <div className="text-center">
+                <h2 className="mb-4">Need Help?</h2>
+                <p className="lead mb-4">
+                  Our admission team is here to assist you with any questions about the admission process.
+                </p>
+                <div className="d-flex justify-content-center gap-3">
+                  <Button variant="primary" size="lg">
+                    <i className="bi bi-telephone me-2"></i>
+                    +91 94158 08804
                   </Button>
-                </Card.Body>
-              </Card>
+                  <Button variant="outline-primary" size="lg">
+                    <i className="bi bi-envelope me-2"></i>
+                    sspublicschool@gmail.com
+                  </Button>
+                </div>
+              </div>
             </Col>
           </Row>
-        </section>
-
-        {/* Note */}
-        <div className="alert alert-info">
-          <i className="bi bi-info-circle-fill me-2"></i>
-          <strong>Note:</strong> All fees are subject to revision as per school management's decision. 
-          For detailed information, please visit the school office.
-        </div>
-      </Container>
+        </Container>
+      </section>
     </div>
   );
 };
