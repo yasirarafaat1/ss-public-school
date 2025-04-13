@@ -143,7 +143,7 @@ const Footer = () => {
           <div className="col-12">
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center border-top pt-4">
               <p className="mb-2 mb-md-0 text-start">
-                &copy; {new Date().getFullYear()} SS Public School. All rights reserved.
+                2017 - {new Date().getFullYear()}  &copy;  SS Public School. All rights reserved.
               </p>
               <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">
                 <Link to="/privacy-policy" className="text-white text-decoration-none footer-link">
