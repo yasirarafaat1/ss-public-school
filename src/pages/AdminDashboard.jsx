@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Table, Button, Nav, Alert } from "react-bootstrap";
+import { Container, Row, Col, Card, Table, Button, Nav, Alert, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import AOS from "aos";
@@ -13,6 +13,8 @@ const AdminDashboard = () => {
   const [contacts, setContacts] = useState([]);
   const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
   const [error, setError] = useState("");
+  const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -114,6 +116,11 @@ const AdminDashboard = () => {
     navigate("/admin/login");
   };
 
+  const handleViewDetails = (enquiry) => {
+    setSelectedEnquiry(enquiry);
+    setShowDetailsModal(true);
+  };
+
   if (isLoading) {
     return (
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
@@ -198,7 +205,6 @@ const AdminDashboard = () => {
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Class</th>
-                        <th>Subject</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -213,7 +219,6 @@ const AdminDashboard = () => {
                           <td>{enquiry.email}</td>
                           <td>{enquiry.phone}</td>
                           <td>{enquiry.classInterested}</td>
-                          <td>{enquiry.subject}</td>
                           <td>{new Date(enquiry.createdAt).toLocaleDateString()}</td>
                           <td>
                             <span className={`badge bg-${enquiry.status === 'pending' ? 'warning' : 
@@ -223,7 +228,12 @@ const AdminDashboard = () => {
                             </span>
                           </td>
                           <td>
-                            <Button variant="outline-primary" size="sm" className="me-2">
+                            <Button 
+                              variant="outline-primary" 
+                              size="sm" 
+                              className="me-2"
+                              onClick={() => handleViewDetails(enquiry)}
+                            >
                               View Details
                             </Button>
                             <Button
@@ -243,6 +253,72 @@ const AdminDashboard = () => {
             </Card>
           </div>
         )}
+
+        {/* Enquiry Details Modal */}
+        <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Enquiry Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedEnquiry && (
+              <div>
+                <Row className="mb-3">
+                  <Col md={6}>
+                    <h6>Student Name</h6>
+                    <p>{selectedEnquiry.studentName}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Parent Name</h6>
+                    <p>{selectedEnquiry.parentName}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md={6}>
+                    <h6>Email</h6>
+                    <p>{selectedEnquiry.email}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Phone</h6>
+                    <p>{selectedEnquiry.phone}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md={6}>
+                    <h6>Class Interested</h6>
+                    <p>{selectedEnquiry.classInterested}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Status</h6>
+                    <p>
+                      <span className={`badge bg-${selectedEnquiry.status === 'pending' ? 'warning' : 
+                        selectedEnquiry.status === 'reviewed' ? 'info' : 
+                        selectedEnquiry.status === 'accepted' ? 'success' : 'danger'}`}>
+                        {selectedEnquiry.status}
+                      </span>
+                    </p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                    <h6>Message</h6>
+                    <p>{selectedEnquiry.message || 'No message provided'}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <h6>Submitted On</h6>
+                    <p>{new Date(selectedEnquiry.createdAt).toLocaleString()}</p>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         {/* Contact Messages Section */}
         {activeTab === "contacts" && (

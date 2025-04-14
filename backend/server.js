@@ -20,8 +20,30 @@ console.log('Attempting to connect to MongoDB at:', MONGODB_URI);
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  // Force a fresh connection
+  autoIndex: true,
+  retryWrites: true
 })
-.then(() => console.log('Successfully connected to MongoDB'))
+.then(() => {
+  console.log('Successfully connected to MongoDB');
+  
+  // Clear the Admission collection on startup to reset the schema
+  try {
+    const Admission = require('./models/Admission');
+    // Drop the collection and recreate it
+    Admission.collection.drop()
+      .then(() => console.log('Admission collection dropped and will be recreated with the new schema'))
+      .catch(err => {
+        if (err.code === 26) {
+          console.log('Collection does not exist yet, will be created with new schema');
+        } else {
+          console.error('Error dropping collection:', err);
+        }
+      });
+  } catch (err) {
+    console.error('Error resetting admission collection:', err);
+  }
+})
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
@@ -40,7 +62,7 @@ app.get('/api/test', (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Test the server at: http://localhost:${PORT}/api/test`);

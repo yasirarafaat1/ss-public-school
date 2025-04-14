@@ -19,8 +19,12 @@ router.post('/', async (req, res) => {
   
   try {
     // Validate required fields
-    const requiredFields = ['studentName', 'parentName', 'email', 'phone', 'classInterested', 'subject', 'message'];
+    const requiredFields = ['studentName', 'parentName', 'email', 'phone', 'classInterested', 'message'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    console.log('Required fields:', requiredFields);
+    console.log('Request body:', req.body);
+    console.log('Missing fields:', missingFields);
     
     if (missingFields.length > 0) {
       return res.status(400).json({ 
@@ -34,7 +38,6 @@ router.post('/', async (req, res) => {
       email: req.body.email,
       phone: req.body.phone,
       classInterested: req.body.classInterested,
-      subject: req.body.subject,
       message: req.body.message,
       status: req.body.status || 'pending'
     });
@@ -72,6 +75,31 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     console.error('Error deleting admission:', err);
     res.status(500).json({ message: err.message });
+  }
+});
+
+// Test route for admission - bypasses validation
+router.post('/test', async (req, res) => {
+  console.log('Test route - Received admission data:', req.body);
+  
+  try {
+    // Create admission without validation
+    const admission = new Admission({
+      studentName: req.body.studentName || 'Test Student',
+      parentName: req.body.parentName || 'Test Parent',
+      email: req.body.email || 'test@example.com',
+      phone: req.body.phone || '1234567890',
+      classInterested: req.body.classInterested || 'Test Class',
+      message: req.body.message || 'Test Message',
+      status: 'pending'
+    });
+
+    const newAdmission = await admission.save();
+    console.log('Test route - Saved admission:', newAdmission);
+    res.status(201).json(newAdmission);
+  } catch (err) {
+    console.error('Test route - Error:', err);
+    res.status(500).json({ message: err.message, error: err });
   }
 });
 

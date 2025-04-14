@@ -22,7 +22,6 @@ const AdmissionEnquiry = () => {
     email: "",
     phone: "",
     classInterested: "",
-    subject: "",
     message: "",
   });
   const [showToast, setShowToast] = useState(false);
@@ -66,13 +65,12 @@ const AdmissionEnquiry = () => {
 
     try {
       console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/api/admission', {
+      const response = await axios.post('http://localhost:5000/api/admission/test', {
         studentName: formData.studentName,
         parentName: formData.parentName,
         email: formData.email,
         phone: formData.phone,
         classInterested: formData.classInterested,
-        subject: formData.subject,
         message: formData.message,
         status: 'pending'
       }, {
@@ -91,7 +89,6 @@ const AdmissionEnquiry = () => {
         email: "",
         phone: "",
         classInterested: "",
-        subject: "",
         message: "",
       });
     } catch (err) {
@@ -251,13 +248,13 @@ const AdmissionEnquiry = () => {
                       </Col>
                       <Col md={6} data-aos="fade-up" data-aos-delay="500">
                         <Form.Group controlId="email">
-                          <Form.Label>Email Address</Form.Label>
+                          <Form.Label>Email</Form.Label>
                           <Form.Control
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            placeholder="Enter your email"
+                            placeholder="Enter email address"
                             required
                           />
                         </Form.Group>
@@ -270,12 +267,12 @@ const AdmissionEnquiry = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            placeholder="Enter your phone number"
+                            placeholder="Enter phone number"
                             required
                           />
                         </Form.Group>
                       </Col>
-                      <Col md={6} data-aos="fade-up" data-aos-delay="700">
+                      <Col md={12} data-aos="fade-up" data-aos-delay="700">
                         <Form.Group controlId="classInterested">
                           <Form.Label>Class Interested In</Form.Label>
                           <Form.Select
@@ -284,36 +281,26 @@ const AdmissionEnquiry = () => {
                             onChange={handleChange}
                             required
                           >
-                            <option value="">Select class</option>
-                            <option value="nursery">Nursery</option>
-                            <option value="kg">KG</option>
-                            <option value="1">Class 1</option>
-                            <option value="2">Class 2</option>
-                            <option value="3">Class 3</option>
-                            <option value="4">Class 4</option>
-                            <option value="5">Class 5</option>
-                            <option value="6">Class 6</option>
-                            <option value="7">Class 7</option>
-                            <option value="8">Class 8</option>
-                            <option value="9">Class 9</option>
-                            <option value="10">Class 10</option>
+                            <option value="">Select a class</option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
                           </Form.Select>
                         </Form.Group>
                       </Col>
-                      <Col md={6} data-aos="fade-up" data-aos-delay="800">
-                        <Form.Group controlId="subject">
-                          <Form.Label>Subject Interested In</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="subject"
-                            value={formData.subject}
-                            onChange={handleChange}
-                            placeholder="Enter subject interested in"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={12} data-aos="fade-up" data-aos-delay="900">
+                      <Col md={12} data-aos="fade-up" data-aos-delay="800">
                         <Form.Group controlId="message">
                           <Form.Label>Message</Form.Label>
                           <Form.Control
@@ -321,33 +308,20 @@ const AdmissionEnquiry = () => {
                             name="message"
                             value={formData.message}
                             onChange={handleChange}
+                            placeholder="Enter your message"
                             rows={4}
-                            placeholder="Enter your message or any specific requirements"
-                            required
                           />
                         </Form.Group>
                       </Col>
                     </Row>
-
-                    <div
-                      className="text-center mt-4"
-                      data-aos="zoom-in"
-                      data-aos-delay="1000"
-                    >
+                    <div className="text-center mt-4" data-aos="fade-up" data-aos-delay="900">
                       <Button
-                        variant="primary"
                         type="submit"
+                        variant="primary"
                         size="lg"
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            Submitting...
-                          </>
-                        ) : (
-                          "Submit Enquiry"
-                        )}
+                        {isSubmitting ? "Submitting..." : "Submit Enquiry"}
                       </Button>
                     </div>
                   </Form>

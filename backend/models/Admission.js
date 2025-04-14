@@ -28,11 +28,6 @@ const admissionSchema = new mongoose.Schema({
     required: [true, 'Class interested in is required'],
     trim: true
   },
-  subject: {
-    type: String,
-    required: [true, 'Subject is required'],
-    trim: true
-  },
   message: {
     type: String,
     required: [true, 'Message is required'],
