@@ -1,17 +1,42 @@
 import React, { useState } from 'react';
 import { Toast } from 'react-bootstrap';
+import axios from 'axios';
 import './Footer.css'; // Import the CSS file
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('Thank you for subscribing to our newsletter!');
+  const [toastType, setToastType] = useState('success');
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the email to your backend
-    console.log('Newsletter subscription:', email);
-    setShowToast(true);
-    setEmail(''); // Clear the input field
+    try {
+      // Send the email to your backend
+      console.log('Submitting newsletter subscription:', email);
+      const response = await axios.post('http://localhost:5000/api/newsletter', {
+        email: email
+      });
+      console.log('Newsletter subscription response:', response.data);
+      
+      // Show success message
+      setToastType('success');
+      setToastMessage('Thank you for subscribing to our newsletter!');
+      setShowToast(true);
+      setEmail(''); // Clear the input field
+    } catch (err) {
+      console.error('Error submitting newsletter subscription:', err);
+      
+      // Handle error message
+      let errorMessage = "Failed to subscribe. Please try again.";
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = err.response.data.message;
+      }
+      
+      setToastType('danger');
+      setToastMessage(errorMessage);
+      setShowToast(true);
+    }
   };
 
   return (
@@ -189,14 +214,16 @@ const Footer = () => {
           show={showToast} 
           delay={3000} 
           autohide
-          bg="success"
+          bg={toastType}
           className="text-white"
         >
           <Toast.Header>
-            <strong className="me-auto">Success</strong>
+            <strong className="me-auto">
+              {toastType === "success" ? "Success" : "Error"}
+            </strong>
           </Toast.Header>
           <Toast.Body>
-            Thank you for subscribing to our newsletter!
+            {toastMessage}
           </Toast.Body>
         </Toast>
       </div>

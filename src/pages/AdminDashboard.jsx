@@ -15,6 +15,8 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [showContactModal, setShowContactModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,6 +123,11 @@ const AdminDashboard = () => {
     setShowDetailsModal(true);
   };
 
+  const handleViewMessage = (contact) => {
+    setSelectedContact(contact);
+    setShowContactModal(true);
+  };
+
   if (isLoading) {
     return (
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
@@ -163,19 +170,19 @@ const AdminDashboard = () => {
           <div className="d-flex align-items-center">
             <Nav className="me-4">
               <Nav.Link
-                className={`text-white ${activeTab === "enquiries" ? "active" : ""}`}
+                className={`text-white ${activeTab === "enquiries" ? "active fw-bold border-bottom border-white pb-1" : ""}`}
                 onClick={() => setActiveTab("enquiries")}
               >
                 Admission Enquiries
               </Nav.Link>
               <Nav.Link
-                className={`text-white ${activeTab === "contacts" ? "active" : ""}`}
+                className={`text-white ${activeTab === "contacts" ? "active fw-bold border-bottom border-white pb-1" : ""}`}
                 onClick={() => setActiveTab("contacts")}
               >
                 Contact Messages
               </Nav.Link>
               <Nav.Link
-                className={`text-white ${activeTab === "newsletter" ? "active" : ""}`}
+                className={`text-white ${activeTab === "newsletter" ? "active fw-bold border-bottom border-white pb-1" : ""}`}
                 onClick={() => setActiveTab("newsletter")}
               >
                 Newsletter Subscribers
@@ -356,7 +363,12 @@ const AdminDashboard = () => {
                             </span>
                           </td>
                           <td>
-                            <Button variant="outline-primary" size="sm" className="me-2">
+                            <Button 
+                              variant="outline-primary" 
+                              size="sm" 
+                              className="me-2"
+                              onClick={() => handleViewMessage(contact)}
+                            >
                               View Message
                             </Button>
                             <Button
@@ -376,6 +388,69 @@ const AdminDashboard = () => {
             </Card>
           </div>
         )}
+
+        {/* Contact Details Modal */}
+        <Modal show={showContactModal} onHide={() => setShowContactModal(false)} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Contact Message</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedContact && (
+              <div>
+                <Row className="mb-3">
+                  <Col md={6}>
+                    <h6>Name</h6>
+                    <p>{selectedContact.name}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Email</h6>
+                    <p>{selectedContact.email}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md={6}>
+                    <h6>Phone</h6>
+                    <p>{selectedContact.phone}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Subject</h6>
+                    <p>{selectedContact.subject}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md={6}>
+                    <h6>Status</h6>
+                    <p>
+                      <span className={`badge bg-${
+                        selectedContact.status === 'unread' ? 'warning' : 
+                        selectedContact.status === 'read' ? 'info' : 'success'
+                      }`}>
+                        {selectedContact.status}
+                      </span>
+                    </p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Date Received</h6>
+                    <p>{new Date(selectedContact.createdAt).toLocaleString()}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                    <h6>Message</h6>
+                    <div className="p-3 bg-light rounded">
+                      <p className="mb-0">{selectedContact.message}</p>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowContactModal(false)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         {/* Newsletter Subscribers Section */}
         {activeTab === "newsletter" && (
@@ -406,9 +481,6 @@ const AdminDashboard = () => {
                             </span>
                           </td>
                           <td>
-                            <Button variant="outline-primary" size="sm" className="me-2">
-                              Edit
-                            </Button>
                             <Button
                               variant="outline-danger"
                               size="sm"

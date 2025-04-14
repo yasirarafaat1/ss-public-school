@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Alert, Toast } from "react-bootstrap";
 import axios from 'axios';
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -13,7 +13,10 @@ const Contact = () => {
     message: "",
   });
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastVariant, setToastVariant] = useState("success");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     AOS.init({
@@ -25,9 +28,18 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+    
     try {
+      console.log('Submitting contact form data:', formData);
       const response = await axios.post('http://localhost:5000/api/contact', formData);
+      console.log('Contact form submission response:', response.data);
+      
+      setToastMessage("Message sent successfully! We'll get back to you soon.");
+      setToastVariant("success");
       setShowToast(true);
+      
       setFormData({
         name: "",
         email: "",
@@ -36,7 +48,26 @@ const Contact = () => {
         message: "",
       });
     } catch (err) {
-      setError("Failed to send message. Please try again.");
+      console.error('Error submitting contact form:', err);
+      let errorMessage = "Failed to send message. Please try again.";
+      
+      if (err.response) {
+        console.error('Error response:', err.response.data);
+        errorMessage = err.response.data.message || `Server error: ${err.response.status}`;
+      } else if (err.request) {
+        console.error('Error request:', err.request);
+        errorMessage = "No response from server. Please check if the backend is running.";
+      } else {
+        console.error('Error message:', err.message);
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+      setToastMessage(errorMessage);
+      setToastVariant("danger");
+      setShowToast(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -49,7 +80,6 @@ const Contact = () => {
 
   return (
     <div className="contact-page mt-5">
-
       {/* Header Section */}
       <section className="py-5 bg-primary text-white">
         <Container>
@@ -71,6 +101,11 @@ const Contact = () => {
             <Col md={8} data-aos="fade-up">
               <Card className="border-0 shadow-sm">
                 <Card.Body className="p-4">
+                  {error && (
+                    <Alert variant="danger" className="mb-4">
+                      {error}
+                    </Alert>
+                  )}
                   <Form onSubmit={handleSubmit}>
                     <Row className="g-3">
                       <Col md={6} data-aos="fade-up" data-aos-delay="300">
@@ -151,9 +186,19 @@ const Contact = () => {
                         type="submit"
                         size="lg"
                         className="px-5"
+                        disabled={isSubmitting}
                       >
-                        <i className="bi bi-send me-2"></i>
-                        Send Message
+                        {isSubmitting ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <i className="bi bi-send me-2"></i>
+                            Send Message
+                          </>
+                        )}
                       </Button>
                     </div>
                   </Form>
@@ -163,6 +208,34 @@ const Contact = () => {
           </Row>
         </Container>
       </section>
+
+      {/* Toast Notification */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          zIndex: 9999
+        }}
+      >
+        <Toast 
+          onClose={() => setShowToast(false)} 
+          show={showToast} 
+          delay={3000} 
+          autohide
+          bg={toastVariant}
+          className="text-white"
+        >
+          <Toast.Header>
+            <strong className="me-auto">
+              {toastVariant === "success" ? "Success" : "Error"}
+            </strong>
+          </Toast.Header>
+          <Toast.Body>
+            {toastMessage}
+          </Toast.Body>
+        </Toast>
+      </div>
 
       {/* Contact Information */}
       <section className="py-5 bg-light">
@@ -193,36 +266,6 @@ const Contact = () => {
           </Row>
         </Container>
       </section>
-
-      {/* Success Toast */}
-      {showToast && (
-        <div
-          className="position-fixed bottom-0 end-0 p-3"
-          style={{ zIndex: 11 }}
-          data-aos="fade-up"
-          data-aos-delay="900"
-        >
-          <div
-            className="toast show"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-          >
-            <div className="toast-header bg-success text-white">
-              <strong className="me-auto">Success</strong>
-              <button
-                type="button"
-                className="btn-close btn-close-white"
-                onClick={() => setShowToast(false)}
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="toast-body">
-              Your message has been sent successfully. We will contact you soon.
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
