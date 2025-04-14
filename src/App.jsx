@@ -8,7 +8,6 @@ import Nav from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import Gallery from "./pages/Gallery";
 import Staff from "./pages/Staff";
@@ -19,6 +18,8 @@ import Admission from "./pages/Admission";
 import AdmissionEnquiry from "./pages/AdmissionEnquiry";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DeveloperInfo from "./pages/DeveloperInfo";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   useEffect(() => {
@@ -34,7 +35,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/staff" element={<Staff />} />
@@ -44,6 +44,8 @@ export default function App() {
           <Route path="/admission-enquiry" element={<AdmissionEnquiry />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/developer-info" element={<DeveloperInfo />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
         <Footer />

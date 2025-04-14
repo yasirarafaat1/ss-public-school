@@ -1,77 +1,112 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { staffMembers } from "../data/data"; // Import staff members from the data file
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Staff = () => {
-  // Define an array of staff members
-  const staffMembers = [
-    {
-      name: "Jane Doe",
-      role: "Principal",
-      image: "https://media.istockphoto.com/id/1300434912/photo/young-business-woman-got-overjoyed-by-good-news-and-started-celebrating-while-working-on.webp?a=1&b=1&s=612x612&w=0&k=20&c=qE_KkcG9arxtuMq1rwNNGpVIUp2fd02nJIs7lkWLZhg=",
-      social: {
-        twitter: "#",
-        facebook: "#",
-        linkedin: "#",
-      },
-    },
-    {
-      name: "John Smith",
-      role: "Vice Principal",
-      image: "https://media.istockphoto.com/id/1992829731/photo/portrait-of-a-happy-teacher-smiling-at-the-university.webp?a=1&b=1&s=612x612&w=0&k=20&c=nbrwmYzoJfC-v-cG0aigS5cmmEImp8EQ5N7pyTU1tEU=",
-      social: {
-        twitter: "#",
-        facebook: "#",
-        linkedin: "#",
-      },
-    },
-    {
-      name: "Emily Johnson",
-      role: "Head of Admissions",
-      image: "https://media.istockphoto.com/id/1312139041/photo/learning-on-the-job.webp?a=1&b=1&s=612x612&w=0&k=20&c=QedI4W1AwyUDcNzuHAjT_rBNE6c69a1F6_4W3t6OtE0=",
-      social: {
-        twitter: "#",
-        facebook: "#",
-        linkedin: "#",
-      },
-    },
-  ];
+  const staffRef = useRef(null);
+
+  useEffect(() => {
+    // Animate staff cards
+    gsap.fromTo(
+      staffRef.current.querySelectorAll(".staff-member"),
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: staffRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
+  }, []);
 
   return (
     <div>
-      <>
-        {/* <!-- Staff Section --> */}
-        <section className="py-5 mt-5">
-          <div className="container">
-            <h2 className="text-center mb-5">Meet Our Staff</h2>
-            <div className="row">
-              {staffMembers.map((staff, index) => (
-                <div className="col-md-4" key={index}>
-                  <div className="staff-member text-center">
+      <section className="py-5 mt-5">
+        <div className="container">
+          <h2 className="text-center mb-5">Meet Our Staff</h2>
+          <div className="row" ref={staffRef}>
+            {staffMembers.map((staff, index) => (
+              <div className="col-md-4 mb-4" key={index}>
+                <div className="staff-member text-center">
+                  <div
+                    className="profile-pic-container mb-3"
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      margin: "0 auto",
+                      overflow: "hidden",
+                      position: "relative",
+                      borderRadius: "8px", // Square shape with rounded corners
+                    }}
+                  >
                     <img
                       src={staff.image}
                       alt={staff.name}
-                      className="img-fluid rounded-circle mb-3"
-                      style={{ width: "150px", height: "150px", objectFit: "cover" }}
+                      className="img-fluid profile-pic"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        transition: "transform 0.3s ease",
+                      }}
                     />
-                    <h5>{staff.name}</h5>
-                    <p>{staff.role}</p>
-                    <div className="social-icons">
-                      <a href={staff.social.twitter} className="me-2">
+                  </div>
+                  <h5>{staff.name}</h5>
+                  <p>{staff.role}</p>
+                  <div className="social-icons">
+                    {staff.social.twitter && (
+                      <a
+                        href={staff.social.twitter}
+                        className="me-2"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <i className="bi bi-twitter"></i>
                       </a>
-                      <a href={staff.social.facebook} className="me-2">
+                    )}
+                    {staff.social.facebook && (
+                      <a
+                        href={staff.social.facebook}
+                        className="me-2"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <i className="bi bi-facebook"></i>
                       </a>
-                      <a href={staff.social.linkedin}>
+                    )}
+                    {staff.social.linkedin && (
+                      <a
+                        href={staff.social.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <i className="bi bi-linkedin"></i>
                       </a>
-                    </div>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
-      </>
+        </div>
+      </section>
+
+      {/* Add hover animation using inline styles */}
+      <style>
+        {`
+          .profile-pic-container:hover .profile-pic {
+            transform: scale(1.1); /* Zoom effect on hover */
+          }
+        `}
+      </style>
     </div>
   );
 };

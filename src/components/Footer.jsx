@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Toast } from 'react-bootstrap';
 import './Footer.css'; // Import the CSS file
 
@@ -58,44 +57,44 @@ const Footer = () => {
             <h5 className="text-uppercase mb-4">Quick Links</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <Link to="/" className="text-white text-decoration-none footer-link">
+                <a href="/" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-house-door me-2"></i>Home
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/about" className="text-white text-decoration-none footer-link">
+                <a href="/about" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-info-circle me-2"></i>About Us
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/principal-message" className="text-white text-decoration-none footer-link">
+                <a href="/principal-message" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-person-badge me-2"></i>Principal's Message
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/admission" className="text-white text-decoration-none footer-link">
+                <a href="/admission" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-pencil-square me-2"></i>Admission
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/Infrastructure" className="text-white text-decoration-none footer-link">
+                <a href="/Infrastructure" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-building me-2"></i>Infrastructure
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/staff" className="text-white text-decoration-none footer-link">
+                <a href="/staff" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-people me-2"></i>Our Staff
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/gallery" className="text-white text-decoration-none footer-link">
+                <a href="/gallery" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-images me-2"></i>Gallery
-                </Link>
+                </a>
               </li>
               <li className="mb-2">
-                <Link to="/contact" className="text-white text-decoration-none footer-link">
+                <a href="/contact" className="text-white text-decoration-none footer-link">
                   <i className="bi bi-telephone me-2"></i>Contact Us
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -163,13 +162,13 @@ const Footer = () => {
                 2017 - {new Date().getFullYear()}  &copy;  SS Public School. All rights reserved.
               </p>
               <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">
-                <Link to="/privacy-policy" className="text-white text-decoration-none footer-link">
+                <a href="/privacy-policy" className="text-white text-decoration-none footer-link">
                   Privacy Policy
-                </Link>
+                </a>
                 <span className="d-none d-md-inline">|</span>
-                <Link to="/developer-info" className="text-white text-decoration-none footer-link">
+                <a href="/developer-info" className="text-white text-decoration-none footer-link">
                   Developer Info
-                </Link>
+                </a>
               </div>
             </div>
           </div>

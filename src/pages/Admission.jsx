@@ -1,81 +1,23 @@
 import React, { useEffect } from "react";
-import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import {
+  admissionSteps,
+  requiredDocuments,
+  feeStructure,
+  importantDates,
+} from "../data/data"; // Import all arrays
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const Admission = () => {
   useEffect(() => {
     AOS.init({
       duration: 1000,
       once: true,
-      offset: 100
+      offset: 100,
     });
   }, []);
-
-  // Admission Process Steps
-  const admissionSteps = [
-    {
-      title: "Step 1: Inquiry",
-      description: "Visit the school office or website to collect information about admission procedures and requirements.",
-      icon: "bi bi-info-circle"
-    },
-    {
-      title: "Step 2: Registration",
-      description: "Fill out the registration form and submit required documents along with the registration fee.",
-      icon: "bi bi-pencil-square"
-    },
-    {
-      title: "Step 3: Assessment",
-      description: "Student will undergo an assessment test/interview as per the school's admission criteria.",
-      icon: "bi bi-clipboard-check"
-    },
-    {
-      title: "Step 4: Admission",
-      description: "On successful assessment, complete the admission formalities and pay the required fees.",
-      icon: "bi bi-check-circle"
-    }
-  ];
-
-  // Required Documents
-  const requiredDocuments = [
-    "Birth Certificate (Original + 2 Photocopies)",
-    "Aadhar Card of Student (Original + 2 Photocopies)",
-    "Aadhar Card of Parents (Original + 2 Photocopies)",
-    "Transfer Certificate (For Class II onwards)",
-    "Last Year's Report Card (For Class II onwards)",
-    "Passport Size Photographs (4 Nos.)",
-    "Address Proof",
-    "Caste Certificate (if applicable)"
-  ];
-
-  // Fee Structure
-  const feeStructure = [
-    {
-      class: "Nursery to UKG",
-      admissionFee: "₹10,000",
-      annualFee: "₹5,000",
-      monthlyFee: "₹2,500"
-    },
-    {
-      class: "Class I to V",
-      admissionFee: "₹12,000",
-      annualFee: "₹6,000",
-      monthlyFee: "₹3,000"
-    },
-    {
-      class: "Class VI to VIII",
-      admissionFee: "₹15,000",
-      annualFee: "₹7,000",
-      monthlyFee: "₹3,500"
-    },
-    {
-      class: "Class IX to X",
-      admissionFee: "₹18,000",
-      annualFee: "₹8,000",
-      monthlyFee: "₹4,000"
-    }
-  ];
 
   return (
     <div className="admission-page mt-5">
@@ -87,8 +29,21 @@ const Admission = () => {
             <Col md={8} data-aos="fade-up">
               <h1 className="display-4 fw-bold mb-4">Admission Process</h1>
               <p className="lead">
-                Join our community of learners and discover a world of opportunities
+                Join our community of learners and discover a world of
+                opportunities
               </p>
+              <Button
+                as={Link}
+                to="/admission-enquiry"
+                variant="light"
+                size="lg"
+                className="mt-4"
+                data-aos="fade-up"
+                data-aos-delay="200"
+              >
+                <i className="bi bi-pencil-square me-2"></i>
+                Start Your Admission Enquiry
+              </Button>
             </Col>
           </Row>
         </Container>
@@ -97,44 +52,29 @@ const Admission = () => {
       {/* Admission Process Steps */}
       <section className="py-5">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">How to Apply</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            How to Apply
+          </h2>
           <Row className="g-4">
-            <Col md={3} data-aos="fade-up" data-aos-delay="100">
-              <div className="text-center p-4">
-                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
-                  <i className="bi bi-search display-6"></i>
+            {admissionSteps.map((step, index) => (
+              <Col
+                md={3}
+                data-aos="fade-up"
+                data-aos-delay={step.delay}
+                key={index}
+              >
+                <div className="text-center p-4">
+                  <div
+                    className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                    style={{ width: "80px", height: "80px" }}
+                  >
+                    <i className={`${step.icon} display-6`}></i>
+                  </div>
+                  <h4>{step.step}</h4>
+                  <p>{step.description}</p>
                 </div>
-                <h4>Step 1: Inquiry</h4>
-                <p>Visit our school or contact us to learn more about our programs and admission requirements.</p>
-              </div>
-            </Col>
-            <Col md={3} data-aos="fade-up" data-aos-delay="200">
-              <div className="text-center p-4">
-                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
-                  <i className="bi bi-pencil-square display-6"></i>
-                </div>
-                <h4>Step 2: Registration</h4>
-                <p>Complete the registration form and submit required documents for initial screening.</p>
-              </div>
-            </Col>
-            <Col md={3} data-aos="fade-up" data-aos-delay="300">
-              <div className="text-center p-4">
-                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
-                  <i className="bi bi-clipboard-check display-6"></i>
-                </div>
-                <h4>Step 3: Assessment</h4>
-                <p>Participate in the entrance assessment and interview process.</p>
-              </div>
-            </Col>
-            <Col md={3} data-aos="fade-up" data-aos-delay="400">
-              <div className="text-center p-4">
-                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '80px', height: '80px' }}>
-                  <i className="bi bi-check-circle display-6"></i>
-                </div>
-                <h4>Step 4: Admission</h4>
-                <p>Receive admission confirmation and complete the enrollment process.</p>
-              </div>
-            </Col>
+              </Col>
+            ))}
           </Row>
         </Container>
       </section>
@@ -142,29 +82,21 @@ const Admission = () => {
       {/* Required Documents */}
       <section className="py-5 bg-light">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">Required Documents</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Required Documents
+          </h2>
           <Row className="g-4">
             <Col md={6} data-aos="fade-right">
               <Card className="h-100 border-0 shadow-sm">
                 <Card.Body>
                   <h4 className="mb-4">Original Documents</h4>
                   <ul className="list-unstyled">
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Birth Certificate
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Aadhar Cards (Student & Parents)
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Transfer Certificate (if applicable)
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Previous Year's Report Card
-                    </li>
+                    {requiredDocuments.original.map((doc, index) => (
+                      <li className="mb-3" key={index}>
+                        <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                        {doc}
+                      </li>
+                    ))}
                   </ul>
                 </Card.Body>
               </Card>
@@ -174,22 +106,12 @@ const Admission = () => {
                 <Card.Body>
                   <h4 className="mb-4">Photocopies Required</h4>
                   <ul className="list-unstyled">
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      All original documents (2 sets)
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Passport size photographs (4 copies)
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Address proof
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      Medical certificate
-                    </li>
+                    {requiredDocuments.photocopies.map((doc, index) => (
+                      <li className="mb-3" key={index}>
+                        <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                        {doc}
+                      </li>
+                    ))}
                   </ul>
                 </Card.Body>
               </Card>
@@ -201,7 +123,9 @@ const Admission = () => {
       {/* Fee Structure */}
       <section className="py-5">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">Fee Structure</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Fee Structure
+          </h2>
           <Row className="justify-content-center">
             <Col md={10} data-aos="zoom-in">
               <div className="table-responsive">
@@ -215,30 +139,14 @@ const Admission = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Nursery - KG</td>
-                      <td>₹5,000</td>
-                      <td>₹10,000</td>
-                      <td>₹2,500</td>
-                    </tr>
-                    <tr>
-                      <td>Class I - V</td>
-                      <td>₹7,000</td>
-                      <td>₹12,000</td>
-                      <td>₹3,000</td>
-                    </tr>
-                    <tr>
-                      <td>Class VI - VIII</td>
-                      <td>₹8,000</td>
-                      <td>₹15,000</td>
-                      <td>₹3,500</td>
-                    </tr>
-                    <tr>
-                      <td>Class IX - X</td>
-                      <td>₹10,000</td>
-                      <td>₹18,000</td>
-                      <td>₹4,000</td>
-                    </tr>
+                    {feeStructure.map((fee, index) => (
+                      <tr key={index}>
+                        <td>{fee.class}</td>
+                        <td>{fee.admissionFee}</td>
+                        <td>{fee.annualFee}</td>
+                        <td>{fee.monthlyFee}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -250,38 +158,67 @@ const Admission = () => {
       {/* Important Dates */}
       <section className="py-5 bg-light">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">Important Dates</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Important Dates
+          </h2>
           <Row className="g-4">
-            <Col md={4} data-aos="fade-up" data-aos-delay="100">
-              <Card className="h-100 border-0 shadow-sm">
-                <Card.Body className="text-center">
-                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '60px', height: '60px' }}>
-                    <i className="bi bi-calendar-check"></i>
-                  </div>
-                  <h4>Registration Period</h4>
-                  <p className="mb-0">January 1 - March 31, 2024</p>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={4} data-aos="fade-up" data-aos-delay="200">
-              <Card className="h-100 border-0 shadow-sm">
-                <Card.Body className="text-center">
-                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '60px', height: '60px' }}>
-                    <i className="bi bi-pencil-square"></i>
-                  </div>
-                  <h4>Assessment Dates</h4>
-                  <p className="mb-0">April 15 - 30, 2024</p>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={4} data-aos="fade-up" data-aos-delay="300">
-              <Card className="h-100 border-0 shadow-sm">
-                <Card.Body className="text-center">
-                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{ width: '60px', height: '60px' }}>
-                    <i className="bi bi-check-circle"></i>
-                  </div>
-                  <h4>Result Declaration</h4>
-                  <p className="mb-0">May 15, 2024</p>
+            {importantDates.map((date, index) => (
+              <Col
+                md={4}
+                data-aos="fade-up"
+                data-aos-delay={date.delay}
+                key={index}
+              >
+                <Card className="h-100 border-0 shadow-sm">
+                  <Card.Body className="text-center">
+                    <div
+                      className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                      style={{ width: "60px", height: "60px" }}
+                    >
+                      <i className={`${date.icon}`}></i>
+                    </div>
+                    <h4>{date.title}</h4>
+                    <p className="mb-0">{date.description}</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
+      {/* Quick Enquiry Section */}
+      <section className="py-5">
+        <Container>
+          <Row className="justify-content-center">
+            <Col md={10} data-aos="fade-up">
+              <Card className="border-0 shadow-sm">
+                <Card.Body className="p-5">
+                  <Row className="align-items-center">
+                    <Col md={8}>
+                      <h3 className="mb-3" data-aos="fade-right" data-aos-delay="100">
+                        Ready to Begin Your Journey?
+                      </h3>
+                      <p className="lead mb-0" data-aos="fade-right" data-aos-delay="200">
+                        Start your admission process today by filling out our
+                        quick enquiry form. Our team will get back to you within
+                        24 hours.
+                      </p>
+                    </Col>
+                    <Col md={4} className="text-md-end mt-3 mt-md-0">
+                      <Button
+                        as={Link}
+                        to="/admission-enquiry"
+                        variant="primary"
+                        size="lg"
+                        data-aos="zoom-in"
+                        data-aos-delay="300"
+                      >
+                        <i className="bi bi-arrow-right-circle me-2"></i>
+                        Enquire Now
+                      </Button>
+                    </Col>
+                  </Row>
                 </Card.Body>
               </Card>
             </Col>
@@ -297,7 +234,8 @@ const Admission = () => {
               <div className="text-center">
                 <h2 className="mb-4">Need Help?</h2>
                 <p className="lead mb-4">
-                  Our admission team is here to assist you with any questions about the admission process.
+                  Our admission team is here to assist you with any questions
+                  about the admission process.
                 </p>
                 <div className="d-flex justify-content-center gap-3">
                   <Button variant="primary" size="lg">
@@ -318,4 +256,4 @@ const Admission = () => {
   );
 };
 
-export default Admission; 
+export default Admission;

@@ -11,7 +11,6 @@ const Navbar = () => {
     { path: "/admission", label: "Admission", icon: "bi bi-pencil-square" },
     { path: "/gallery", label: "Gallery", icon: "bi bi-card-image" },
     { path: "/staff", label: "Staff", icon: "bi bi-people" },
-    { path: "/services", label: "Service", icon: "bi bi-envelope" },
     { path: "/contact", label: "Contact", icon: "bi bi-envelope" },
   ];
 
