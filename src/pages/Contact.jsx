@@ -244,13 +244,13 @@ const Contact = () => {
             <Col md={8} data-aos="fade-up">
               <div className="text-center">
                 <h2 className="mb-4">Other Ways to Reach Us</h2>
-                <div className="d-flex justify-content-center gap-4">
-                  <div data-aos="fade-up" data-aos-delay="100">
+                <div className="d-flex flex-column flex-md-row justify-content-center gap-4">
+                  <div data-aos="fade-up" data-aos-delay="100" className="mb-4 mb-md-0">
                     <i className="bi bi-telephone display-4 text-primary mb-3"></i>
                     <h5>Phone</h5>
                     <p className="mb-0">+91 94158 08804</p>
                   </div>
-                  <div data-aos="fade-up" data-aos-delay="200">
+                  <div data-aos="fade-up" data-aos-delay="200" className="mb-4 mb-md-0">
                     <i className="bi bi-envelope display-4 text-primary mb-3"></i>
                     <h5>Email</h5>
                     <p className="mb-0">sspublicschool@gmail.com</p>

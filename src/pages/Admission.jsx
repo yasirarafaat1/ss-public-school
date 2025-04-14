@@ -237,8 +237,8 @@ const Admission = () => {
                   Our admission team is here to assist you with any questions
                   about the admission process.
                 </p>
-                <div className="d-flex justify-content-center gap-3">
-                  <Button variant="primary" size="lg">
+                <div className="d-flex flex-column flex-md-row justify-content-center gap-3">
+                  <Button variant="primary" size="lg" className="mb-3 mb-md-0">
                     <i className="bi bi-telephone me-2"></i>
                     +91 94158 08804
                   </Button>
