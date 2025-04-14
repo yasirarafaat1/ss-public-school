@@ -156,46 +156,52 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="admin-dashboard pt-5 mt-4">
+    <div className="admin-dashboard min-vh-100 pt-4">
       {error && (
         <Alert variant="danger" className="mb-3">
           {error}
         </Alert>
       )}
 
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-        <Container>
-          <span className="navbar-brand">Admin Dashboard</span>
-          <div className="d-flex align-items-center">
-            <Nav className="me-4">
-              <Nav.Link
-                className={`text-white ${activeTab === "enquiries" ? "active fw-bold border-bottom border-white pb-1" : ""}`}
-                onClick={() => setActiveTab("enquiries")}
-              >
-                Admission Enquiries
-              </Nav.Link>
-              <Nav.Link
-                className={`text-white ${activeTab === "contacts" ? "active fw-bold border-bottom border-white pb-1" : ""}`}
-                onClick={() => setActiveTab("contacts")}
-              >
-                Contact Messages
-              </Nav.Link>
-              <Nav.Link
-                className={`text-white ${activeTab === "newsletter" ? "active fw-bold border-bottom border-white pb-1" : ""}`}
-                onClick={() => setActiveTab("newsletter")}
-              >
-                Newsletter Subscribers
-              </Nav.Link>
-            </Nav>
-            <Button variant="outline-light" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
+      {/* Admin Header */}
+      <div className="bg-primary text-white p-4 mb-4">
+        <Container className="d-flex justify-content-between align-items-center">
+          <h2 className="mb-0">Admin Dashboard</h2>
+          <Button variant="outline-light" onClick={handleLogout}>
+            Logout
+          </Button>
         </Container>
-      </nav>
+      </div>
 
-      <Container className="py-5">
+      <Container className="py-3">
+        {/* Admin navigation tabs */}
+        <Nav className="nav-tabs mb-4">
+          <Nav.Item>
+            <Nav.Link 
+              className={activeTab === "enquiries" ? "active" : ""}
+              onClick={() => setActiveTab("enquiries")}
+            >
+              Admission Enquiries
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link 
+              className={activeTab === "contacts" ? "active" : ""}
+              onClick={() => setActiveTab("contacts")}
+            >
+              Contact Messages
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link 
+              className={activeTab === "newsletter" ? "active" : ""}
+              onClick={() => setActiveTab("newsletter")}
+            >
+              Newsletter Subscribers
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+
         {/* Admission Enquiries Section */}
         {activeTab === "enquiries" && (
           <div data-aos="fade-up">
