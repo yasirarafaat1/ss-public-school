@@ -2,19 +2,19 @@
   "version": 2,
   "builds": [
     {
-      "src": "simple-api-server.cjs",
-      "use": "@vercel/node"
-    },
-    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "simple-api-server.cjs"
+      "dest": "/api/$1"
     },
     {
       "src": "^/assets/(.*)",
@@ -30,13 +30,9 @@
     }
   ],
   "functions": {
-    "simple-api-server.cjs": {
-      "memory": 1024,
-      "maxDuration": 30
-    },
     "api/**/*.js": {
       "memory": 1024,
-      "maxDuration": 30
+      "maxDuration": 10
     }
   }
 }
