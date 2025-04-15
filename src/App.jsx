@@ -20,6 +20,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DeveloperInfo from "./pages/DeveloperInfo";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import ApiTest from "./components/ApiTest";
 
 // Layout component to conditionally render Nav and Footer
 const AppLayout = () => {
@@ -43,6 +44,7 @@ const AppLayout = () => {
         <Route path="/developer-info" element={<DeveloperInfo />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/api-test" element={<ApiTest />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       {!isAdminPage && <Footer />}

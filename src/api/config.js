@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Get the base API URL from environment variables
+// If it's a relative URL (doesn't start with http), it will be relative to the current domain
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
+// Create axios instance with the appropriate base URL
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -23,6 +26,8 @@ apiClient.interceptors.response.use(
     // Handle other errors based on status codes
     if (error.response.status === 404) {
       return Promise.reject(new Error('API endpoint not found'));
+    } else if (error.response.status === 405) {
+      return Promise.reject(new Error('Method not allowed. This endpoint doesn\'t support this HTTP method.'));
     }
     
     return Promise.reject(error);
