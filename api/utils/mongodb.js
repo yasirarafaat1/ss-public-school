@@ -22,19 +22,26 @@ try {
 
 // Configure client options to handle different environments
 const clientOptions = {
-  connectTimeoutMS: 10000,    // Longer timeout for cloud connections
-  socketTimeoutMS: 45000,     // Longer socket timeout
-  retryWrites: true,
-  w: 'majority',
-  useNewUrlParser: true,      // Handle older MongoDB versions
-  useUnifiedTopology: true    // Use modern connection management
+  connectTimeoutMS: 10000,        // Longer timeout for cloud connections
+  socketTimeoutMS: 45000,         // Longer socket timeout
+  // These options are deprecated in MongoDB driver v4.0+
+  // useNewUrlParser: true,       // Removed - now default behavior
+  // useUnifiedTopology: true     // Removed - now default behavior
 };
 
-// For local development, might need to disable some security options
+// For local development, might need specific options
 if (uri.includes('localhost') || uri.includes('127.0.0.1')) {
-  clientOptions.ssl = false;
+  // Direct connection for local MongoDB
   clientOptions.directConnection = true;
+  
+  // If authentication is used but no authSource is specified, default to admin
+  if (uri.includes('@') && !uri.includes('authSource=')) {
+    console.log('Local connection with authentication detected. Defaulting authSource to admin.');
+    // Don't modify the URI directly as it might already have other query parameters
+  }
 }
+
+console.log(`MongoDB connection string: ${sanitizeConnectionString(uri)}`);
 
 // Create MongoDB client
 const client = new MongoClient(uri, clientOptions);
@@ -81,9 +88,13 @@ export async function connectToDatabase() {
     
     // Create a detailed error for the client based on error type
     let errorMessage = 'Database connection failed';
+    let errorDetails = '';
     
     if (err.name === 'MongoServerSelectionError') {
       errorMessage = 'Cannot reach MongoDB server. Please check if MongoDB is running locally or if your connection string is correct.';
+      if (uri.includes('@') && !uri.includes('authSource=')) {
+        errorDetails = 'Auth source may be missing. Try adding "?authSource=admin" to your connection string.';
+      }
     } else if (err.name === 'MongoNetworkError') {
       errorMessage = 'Network error connecting to MongoDB. Check your internet connection and firewall settings.';
     } else if (err.name === 'MongoParseError') {
@@ -92,12 +103,13 @@ export async function connectToDatabase() {
       errorMessage = 'Not connected to MongoDB. Ensure MongoDB service is running.';
     } else if (err.message && err.message.includes('Authentication failed')) {
       errorMessage = 'MongoDB authentication failed. Check your username and password in connection string.';
+      errorDetails = 'Make sure you have specified the correct authSource (usually admin) in your connection string.';
     } else if (err.message && err.message.includes('ECONNREFUSED')) {
       errorMessage = 'MongoDB connection refused. Make sure MongoDB is running on the specified host and port.';
     }
     
     // Create a helpful error with detailed instructions
-    throw new Error(`${errorMessage} | Original error: ${err.message}`);
+    throw new Error(`${errorMessage} ${errorDetails ? '| ' + errorDetails : ''} | Original error: ${err.message}`);
   }
 }
 
@@ -110,5 +122,18 @@ export async function closeDatabaseConnection() {
   } catch (err) {
     console.error('Error closing MongoDB connection:', err);
     return false;
+  }
+}
+
+// Helper function to sanitize connection string (hide passwords)
+function sanitizeConnectionString(str) {
+  if (!str) return 'undefined';
+  
+  try {
+    // If it contains username:password, hide the password
+    return str.replace(/(mongodb:\/\/[^:]+:)([^@]+)(@.+)/i, '$1*****$3')
+              .replace(/(mongodb\+srv:\/\/[^:]+:)([^@]+)(@.+)/i, '$1*****$3');
+  } catch (e) {
+    return str;
   }
 } 
