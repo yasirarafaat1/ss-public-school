@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert, Toast } from "react-bootstrap";
-import axios from 'axios';
+import { submitContactForm } from '../api/contactService';
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -33,8 +33,8 @@ const Contact = () => {
     
     try {
       console.log('Submitting contact form data:', formData);
-      const response = await axios.post('http://localhost:5000/api/contact', formData);
-      console.log('Contact form submission response:', response.data);
+      const response = await submitContactForm(formData);
+      console.log('Contact form submission response:', response);
       
       setToastMessage("Message sent successfully! We'll get back to you soon.");
       setToastVariant("success");
@@ -49,18 +49,7 @@ const Contact = () => {
       });
     } catch (err) {
       console.error('Error submitting contact form:', err);
-      let errorMessage = "Failed to send message. Please try again.";
-      
-      if (err.response) {
-        console.error('Error response:', err.response.data);
-        errorMessage = err.response.data.message || `Server error: ${err.response.status}`;
-      } else if (err.request) {
-        console.error('Error request:', err.request);
-        errorMessage = "No response from server. Please check if the backend is running.";
-      } else {
-        console.error('Error message:', err.message);
-        errorMessage = err.message;
-      }
+      let errorMessage = err.message || "Failed to send message. Please try again.";
       
       setError(errorMessage);
       setToastMessage(errorMessage);

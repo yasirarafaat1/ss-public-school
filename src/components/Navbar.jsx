@@ -25,7 +25,7 @@ const Navbar = () => {
               // className="me-2"
               style={{ height: "40px" }}
             /> 
-            <h2>S.S. Public School</h2>
+            <h2>SS Public School</h2>
           </a>
           <button
             className="navbar-toggler"

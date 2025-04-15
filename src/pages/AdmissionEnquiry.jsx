@@ -11,7 +11,7 @@ import {
   ToastContainer,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import { submitAdmissionInquiry } from '../api/admissionService';
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -65,21 +65,9 @@ const AdmissionEnquiry = () => {
 
     try {
       console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/api/admission/test', {
-        studentName: formData.studentName,
-        parentName: formData.parentName,
-        email: formData.email,
-        phone: formData.phone,
-        classInterested: formData.classInterested,
-        message: formData.message,
-        status: 'pending'
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await submitAdmissionInquiry(formData);
+      console.log('Response from server:', response);
       
-      console.log('Response from server:', response.data);
       setToastMessage("Admission enquiry submitted successfully!");
       setToastVariant("success");
       setShowToast(true);
@@ -93,22 +81,7 @@ const AdmissionEnquiry = () => {
       });
     } catch (err) {
       console.error('Error submitting form:', err);
-      let errorMessage = "Failed to submit form. Please try again.";
-      
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error('Error response:', err.response.data);
-        errorMessage = err.response.data.message || `Server error: ${err.response.status}`;
-      } else if (err.request) {
-        // The request was made but no response was received
-        console.error('Error request:', err.request);
-        errorMessage = "No response from server. Please check if the backend is running.";
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error('Error message:', err.message);
-        errorMessage = err.message;
-      }
+      let errorMessage = err.message || "Failed to submit form. Please try again.";
       
       setError(errorMessage);
       setToastMessage(errorMessage);
