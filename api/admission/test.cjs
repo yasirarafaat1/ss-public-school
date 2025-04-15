@@ -1,6 +1,7 @@
-import { connectToDatabase } from '../utils/mongodb';
+// CommonJS version of the admission test API endpoint
+const { connectToDatabase } = require('../utils/mongodb.cjs');
 
-export default async function handler(req, res) {
+function handler(req, res) {
   // Set CORS headers directly on the response
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,6 +18,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  // Handle the request asynchronously
+  handleAdmission(req, res).catch(error => {
+    console.error('Unhandled error in admission API:', error);
+    res.status(200).json({
+      success: false,
+      message: 'An unexpected error occurred',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  });
+}
+
+// Separate async function to handle the request
+async function handleAdmission(req, res) {
   let dbClient = null;
 
   try {
@@ -151,4 +165,7 @@ export default async function handler(req, res) {
       }
     }
   }
-} 
+}
+
+// Export for CommonJS
+module.exports = handler; 
