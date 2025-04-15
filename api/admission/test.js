@@ -1,4 +1,6 @@
-export default function handler(req, res) {
+import { connectToDatabase } from '../utils/mongodb';
+
+export default async function handler(req, res) {
   // Set CORS headers directly on the response
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -15,6 +17,8 @@ export default function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  let dbClient = null;
+
   try {
     const { 
       studentName, 
@@ -30,19 +34,47 @@ export default function handler(req, res) {
       return res.status(400).json({ message: 'Required fields are missing' });
     }
     
-    // Here you would typically save to a database
-    // For now, we'll just return success
-    console.log('Admission inquiry:', req.body);
+    // Connect to the database
+    const { collections, client } = await connectToDatabase();
+    dbClient = client;
+    
+    // Format the document to save
+    const admissionDocument = {
+      studentName,
+      parentName,
+      email,
+      phone,
+      classInterested,
+      message: message || '',
+      createdAt: new Date(),
+      status: 'pending'
+    };
+    
+    // Save to MongoDB
+    const result = await collections.admissions.insertOne(admissionDocument);
+    console.log('Admission inquiry saved to database:', result);
     
     return res.status(200).json({ 
       success: true, 
-      message: 'Admission inquiry submitted successfully' 
+      message: 'Admission inquiry submitted successfully',
+      id: result.insertedId
     });
   } catch (error) {
     console.error('Error in admission API:', error);
     return res.status(500).json({ 
       success: false,
-      message: 'Failed to process your request' 
+      message: 'Failed to save your admission inquiry to the database',
+      error: error.message
     });
+  } finally {
+    // Close the database connection
+    if (dbClient) {
+      try {
+        await dbClient.close();
+        console.log('Database connection closed');
+      } catch (err) {
+        console.error('Error closing database connection:', err);
+      }
+    }
   }
 } 

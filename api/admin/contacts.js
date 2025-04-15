@@ -1,4 +1,4 @@
-import { connectToDatabase } from './utils/mongodb';
+import { connectToDatabase } from '../utils/mongodb';
 
 export default async function handler(req, res) {
   // Set CORS headers directly on the response
@@ -12,50 +12,34 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Only allow POST method for actual requests
-  if (req.method !== 'POST') {
+  // Only allow GET method for this endpoint
+  if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   let dbClient = null;
 
   try {
-    const { name, email, phone, subject, message } = req.body;
-    
-    // Validate input
-    if (!name || !email || !phone || !subject || !message) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-    
     // Connect to the database
     const { collections, client } = await connectToDatabase();
     dbClient = client;
     
-    // Format the document to save
-    const contactDocument = {
-      name,
-      email,
-      phone,
-      subject,
-      message,
-      createdAt: new Date(),
-      status: 'new'
-    };
-    
-    // Save to MongoDB
-    const result = await collections.contacts.insertOne(contactDocument);
-    console.log('Contact form saved to database:', result);
+    // Get all contacts, sorted by createdAt in descending order (newest first)
+    const contacts = await collections.contacts
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
     
     return res.status(200).json({ 
       success: true, 
-      message: 'Message sent successfully',
-      id: result.insertedId
+      count: contacts.length,
+      data: contacts
     });
   } catch (error) {
-    console.error('Error in contact API:', error);
+    console.error('Error in admin/contacts API:', error);
     return res.status(500).json({ 
       success: false,
-      message: 'Failed to save your message to the database',
+      message: 'Failed to retrieve contacts from the database',
       error: error.message
     });
   } finally {
