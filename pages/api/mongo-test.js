@@ -102,60 +102,90 @@ async function testCustomConnection(req, res) {
 }
 
 async function testDefaultConnection(req, res) {
-  // Get the connection string from environment variable
-  const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/schooldb';
-  let client;
-  
   try {
-    // Attempt connection
-    client = new MongoClient(connectionString, {
-      connectTimeoutMS: 5000,
-      serverSelectionTimeoutMS: 5000,
-    });
+    // Get the connection string from environment variable with better error handling
+    let connectionString;
+    try {
+      connectionString = process.env.MONGODB_URI;
+      if (!connectionString) {
+        // Provide a fallback but log a warning
+        console.warn('MONGODB_URI environment variable is not set, using default local connection');
+        connectionString = 'mongodb://localhost:27017/schooldb';
+      }
+    } catch (envError) {
+      console.error('Error accessing environment variables:', envError);
+      connectionString = 'mongodb://localhost:27017/schooldb';
+    }
     
-    await client.connect();
+    console.log('Using connection string:', sanitizeConnectionString(connectionString));
     
-    // Get server info
-    const admin = client.db().admin();
-    const serverInfo = await admin.serverInfo();
+    let client;
     
-    // Get available databases
-    const dbs = await admin.listDatabases();
-    const databases = dbs.databases.map(db => db.name);
-    
-    return res.status(200).json({
-      success: true,
-      message: 'Successfully connected to MongoDB',
-      connectionString: sanitizeConnectionString(connectionString),
-      serverInfo,
-      databases
-    });
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    
-    // Generate helpful tips based on error
-    const tips = generateTipsFromError(error, connectionString);
-    
-    return res.status(200).json({
-      success: false,
-      message: 'Failed to connect to MongoDB',
-      connectionString: sanitizeConnectionString(connectionString),
-      error: {
-        name: error.name,
-        message: error.message,
-        code: error.code,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-      },
-      tips
-    });
-  } finally {
-    if (client) {
-      try {
-        await client.close();
-      } catch (err) {
-        console.error('Error closing MongoDB client:', err);
+    try {
+      // Attempt connection
+      client = new MongoClient(connectionString, {
+        connectTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 5000,
+      });
+      
+      await client.connect();
+      
+      // Get server info
+      const admin = client.db().admin();
+      const serverInfo = await admin.serverInfo();
+      
+      // Get available databases
+      const dbs = await admin.listDatabases();
+      const databases = dbs.databases.map(db => db.name);
+      
+      return res.status(200).json({
+        success: true,
+        message: 'Successfully connected to MongoDB',
+        connectionString: sanitizeConnectionString(connectionString),
+        serverInfo,
+        databases
+      });
+    } catch (error) {
+      console.error('MongoDB connection error:', error);
+      
+      // Generate helpful tips based on error
+      const tips = generateTipsFromError(error, connectionString);
+      
+      return res.status(200).json({
+        success: false,
+        message: 'Failed to connect to MongoDB',
+        connectionString: sanitizeConnectionString(connectionString),
+        error: {
+          name: error.name,
+          message: error.message,
+          code: error.code,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        },
+        tips
+      });
+    } finally {
+      if (client) {
+        try {
+          await client.close();
+        } catch (err) {
+          console.error('Error closing MongoDB client:', err);
+        }
       }
     }
+  } catch (outerError) {
+    console.error('Outer error in testDefaultConnection:', outerError);
+    return res.status(200).json({
+      success: false,
+      message: 'An error occurred while testing the default connection',
+      error: {
+        name: outerError.name || 'UnknownError',
+        message: outerError.message || 'No error message available',
+        stack: process.env.NODE_ENV === 'development' ? outerError.stack : undefined
+      },
+      tips: ['Check that your .env file is properly configured with MONGODB_URI',
+             'Ensure MongoDB is installed and running on your system',
+             'Try using the custom connection test with a specific connection string']
+    });
   }
 }
 
@@ -198,6 +228,8 @@ function generateTipsFromError(error, connectionString) {
   if (error.message && error.message.includes('authentication failed')) {
     tips.push('Authentication failed. Verify your username and password.');
     tips.push('Make sure the database user has appropriate permissions.');
+    tips.push('Check if the authentication database is correct (default is "admin").');
+    tips.push('Try adding "?authSource=admin" to your connection string.');
   }
   
   if (error.code === 'ENOTFOUND') {
@@ -208,6 +240,7 @@ function generateTipsFromError(error, connectionString) {
   if (error.code === 'ECONNREFUSED') {
     tips.push('Connection refused. Verify MongoDB is running on the specified port.');
     tips.push('Check if a firewall is blocking the connection.');
+    tips.push('Make sure MongoDB service is actually running using Task Manager or Services.');
   }
   
   // Add some general tips if none specific were added
@@ -215,6 +248,7 @@ function generateTipsFromError(error, connectionString) {
     tips.push('Make sure MongoDB is installed and running.');
     tips.push('Try adding "?directConnection=true" to your connection string.');
     tips.push('Check network connectivity between your app and MongoDB.');
+    tips.push('Verify that you have the correct permissions to access the database.');
   }
   
   return tips;
