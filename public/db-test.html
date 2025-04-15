@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MongoDB Connection Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #0066cc;
+    }
+    button {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .result {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow: auto;
+    }
+    .error {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+    .success {
+      color: #388e3c;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>MongoDB Connection Test</h1>
+  
+  <div>
+    <p>Use this page to test your MongoDB connection and diagnose any issues.</p>
+    
+    <div>
+      <button onclick="testDbConnection()">Test Database Connection</button>
+      <button onclick="testContact()">Test Contact Submission</button>
+      <button onclick="testAdmission()">Test Admission Submission</button>
+    </div>
+  </div>
+  
+  <div class="result" id="result">Results will appear here</div>
+  
+  <script>
+    async function testDbConnection() {
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = 'Testing database connection...';
+      resultEl.className = 'result';
+      
+      try {
+        const response = await fetch('/api/test-db');
+        const result = await response.json();
+        
+        if (result.success) {
+          resultEl.innerHTML = `<div class="success">✅ Database connection successful!</div>
+<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        } else {
+          resultEl.innerHTML = `<div class="error">❌ Database connection failed!</div>
+<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+      } catch (error) {
+        resultEl.innerHTML = `<div class="error">❌ Error testing connection!</div>
+<pre>${error.message}</pre>`;
+      }
+    }
+    
+    async function testContact() {
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = 'Testing contact form submission...';
+      resultEl.className = 'result';
+      
+      try {
+        const testData = {
+          name: 'Test User',
+          email: 'test@example.com',
+          phone: '1234567890',
+          subject: 'Database Test',
+          message: 'This is a test message sent from the database test page.'
+        };
+        
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(testData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          resultEl.innerHTML = `<div class="success">✅ Contact form submitted successfully!</div>
+<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        } else {
+          resultEl.innerHTML = `<div class="error">❌ Contact form submission failed!</div>
+<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+      } catch (error) {
+        resultEl.innerHTML = `<div class="error">❌ Error submitting form!</div>
+<pre>${error.message}</pre>`;
+      }
+    }
+    
+    async function testAdmission() {
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = 'Testing admission form submission...';
+      resultEl.className = 'result';
+      
+      try {
+        const testData = {
+          studentName: 'Test Student',
+          parentName: 'Test Parent',
+          email: 'test@example.com',
+          phone: '1234567890',
+          classInterested: 'Class 5',
+          message: 'This is a test message sent from the database test page.'
+        };
+        
+        const response = await fetch('/api/admission/test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(testData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          resultEl.innerHTML = `<div class="success">✅ Admission form submitted successfully!</div>
+<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        } else {
+          resultEl.innerHTML = `<div class="error">❌ Admission form submission failed!</div>
+<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+      } catch (error) {
+        resultEl.innerHTML = `<div class="error">❌ Error submitting form!</div>
+<pre>${error.message}</pre>`;
+      }
+    }
+  </script>
+</body>
+</html> 
