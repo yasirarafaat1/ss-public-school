@@ -2,16 +2,15 @@ import apiClient from './config';
 
 // Get absolute URL based on the environment
 const getAbsoluteUrl = (relativeUrl) => {
-  const baseUrl = import.meta.env.VITE_API_URL || '/api';
+  // For Vercel serverless functions, we need to use /api prefix
+  const baseUrl = '/api'; // Always use /api regardless of environment variable
   
-  // If the baseUrl is already a full URL (starts with http)
-  if (baseUrl.startsWith('http')) {
-    return `${baseUrl}${relativeUrl.startsWith('/') ? relativeUrl : '/' + relativeUrl}`;
-  }
+  // Ensure we don't have double slashes
+  const cleanRelativeUrl = relativeUrl.startsWith('/') ? relativeUrl : '/' + relativeUrl;
   
-  // If it's a relative URL, use the current window location
+  // In browser context, add origin
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  return `${origin}${baseUrl}${relativeUrl.startsWith('/') ? relativeUrl : '/' + relativeUrl}`;
+  return `${origin}${baseUrl}${cleanRelativeUrl}`;
 };
 
 // Test API connectivity using fetch instead of axios
@@ -23,7 +22,7 @@ export const testApiConnection = async () => {
     
     // First try with axios
     try {
-      const response = await apiClient.get(corsEndpoint);
+      const response = await apiClient.get('/api' + corsEndpoint);
       console.log('API Connection Test with axios:', response.data);
       return {
         success: true,

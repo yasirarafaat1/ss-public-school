@@ -65,8 +65,10 @@ const ApiTest = () => {
   const runDirectTest = async () => {
     setLoading(true);
     try {
-      // Test the CORS endpoint directly with fetch
-      const url = fullApiUrl + '/cors';
+      // Test the CORS endpoint directly with fetch using the correct path
+      const corsEndpoint = '/cors';
+      // Make sure we're calling the actual API endpoint, not trying to fetch the JS file
+      const url = `${window.location.origin}/api${corsEndpoint}`;
       console.log('Testing direct connection to:', url);
       
       const response = await fetch(url);

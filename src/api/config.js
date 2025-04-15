@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Get the base API URL from environment variables
-// If it's a relative URL (doesn't start with http), it will be relative to the current domain
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+// Use the origin URL for API calls
+const origin = typeof window !== 'undefined' ? window.location.origin : '';
+const API_URL = origin; // Base URL is just the origin, we'll add /api in each request
 
 // Create axios instance with the appropriate base URL
 const apiClient = axios.create({
