@@ -1,23 +1,24 @@
 {
   "version": 2,
-  "functions": {
-    "api/**/*.js": {
-      "memory": 1024,
-      "maxDuration": 10
+  "builds": [
+    {
+      "src": "simple-api-server.cjs",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
-  },
+  ],
   "routes": [
     {
-      "src": "/api/contact",
-      "dest": "/api/contact.js"
+      "src": "/api/(.*)",
+      "dest": "simple-api-server.cjs"
     },
     {
-      "src": "/api/admission/test",
-      "dest": "/api/admission/test.js"
-    },
-    {
-      "src": "/api/mongo-test",
-      "dest": "/api/mongo-test.js"
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }

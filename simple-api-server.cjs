@@ -8,9 +8,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://sspublicschool.vercel.app'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Debug logging for environment
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
+console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/schooldb';
@@ -18,15 +27,26 @@ const dbName = MONGODB_URI.split('/').pop()?.split('?')[0] || 'schooldb';
 
 // Get MongoDB client
 async function getMongoClient() {
-  const client = new MongoClient(MONGODB_URI, {
-    connectTimeoutMS: 5000,
-    serverSelectionTimeoutMS: 5000,
-    directConnection: true
-  });
-  
-  await client.connect();
-  return client;
+  try {
+    console.log('Connecting to MongoDB...');
+    const client = new MongoClient(MONGODB_URI, {
+      connectTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 10000
+    });
+    
+    await client.connect();
+    console.log('MongoDB connected successfully');
+    return client;
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
+  }
 }
+
+// Add a health check endpoint for Vercel
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
@@ -87,7 +107,11 @@ app.post('/api/contact', async (req, res) => {
     });
   } finally {
     if (client) {
-      await client.close();
+      try {
+        await client.close();
+      } catch (err) {
+        console.error('Error closing MongoDB connection:', err);
+      }
     }
   }
 });
@@ -153,7 +177,11 @@ app.post('/api/admission/test', async (req, res) => {
     });
   } finally {
     if (client) {
-      await client.close();
+      try {
+        await client.close();
+      } catch (err) {
+        console.error('Error closing MongoDB connection:', err);
+      }
     }
   }
 });
@@ -233,16 +261,27 @@ app.post('/api/mongo-test', async (req, res) => {
     });
   } finally {
     if (client) {
-      await client.close();
+      try {
+        await client.close();
+      } catch (err) {
+        console.error('Error closing MongoDB connection:', err);
+      }
     }
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`API server running at http://localhost:${PORT}`);
-  console.log('Available endpoints:');
-  console.log('- POST /api/contact');
-  console.log('- POST /api/admission/test');
-  console.log('- POST /api/mongo-test');
-}); 
+// For Vercel serverless environment
+if (process.env.VERCEL) {
+  // Export app for Vercel serverless function
+  module.exports = app;
+} else {
+  // Start server for local development
+  app.listen(PORT, () => {
+    console.log(`API server running at http://localhost:${PORT}`);
+    console.log('Available endpoints:');
+    console.log('- POST /api/contact');
+    console.log('- POST /api/admission/test');
+    console.log('- POST /api/mongo-test');
+    console.log('- GET /api/health');
+  });
+} 
