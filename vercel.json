@@ -28,5 +28,15 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "simple-api-server.cjs": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "api/**/*.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
 }

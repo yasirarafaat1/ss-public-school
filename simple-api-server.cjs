@@ -25,18 +25,43 @@ console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/schooldb';
 const dbName = MONGODB_URI.split('/').pop()?.split('?')[0] || 'schooldb';
 
-// Get MongoDB client
+// Connection cache for serverless environment
+let cachedClient = null;
+let cachedDb = null;
+
+// Get MongoDB client with connection pooling for serverless
 async function getMongoClient() {
   try {
-    console.log('Connecting to MongoDB...');
+    console.log('Requesting MongoDB connection...');
+    
+    // Use cached connection if available (important for Vercel serverless functions)
+    if (cachedClient && cachedDb) {
+      console.log('Using cached MongoDB connection');
+      return { client: cachedClient, db: cachedDb };
+    }
+    
+    // Create new connection with optimized options for serverless
     const client = new MongoClient(MONGODB_URI, {
-      connectTimeoutMS: 10000,
-      serverSelectionTimeoutMS: 10000
+      connectTimeoutMS: 20000,         // Increase connection timeout
+      socketTimeoutMS: 20000,          // Increase socket timeout
+      serverSelectionTimeoutMS: 20000, // Increase server selection timeout
+      maxPoolSize: 10,                 // Limit connection pool for serverless
+      minPoolSize: 1,                  // Keep at least one connection ready
+      maxIdleTimeMS: 60000,            // Close idle connections after 60 seconds
+      waitQueueTimeoutMS: 10000        // How long to wait for a connection from the pool
     });
     
+    console.log('Connecting to MongoDB...');
     await client.connect();
-    console.log('MongoDB connected successfully');
-    return client;
+    
+    const db = client.db(dbName);
+    console.log('MongoDB connected successfully to database:', dbName);
+    
+    // Cache the connection
+    cachedClient = client;
+    cachedDb = db;
+    
+    return { client, db };
   } catch (error) {
     console.error('MongoDB connection error:', error);
     throw error;
@@ -51,8 +76,6 @@ app.get('/api/health', (req, res) => {
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
   console.log('Received contact form submission:', req.body);
-  
-  let client = null;
   
   try {
     // Validate input
@@ -72,8 +95,7 @@ app.post('/api/contact', async (req, res) => {
     }
     
     // Connect to MongoDB
-    client = await getMongoClient();
-    const db = client.db(dbName);
+    const { db } = await getMongoClient();
     const collection = db.collection('contacts');
     
     // Create document
@@ -105,14 +127,6 @@ app.post('/api/contact', async (req, res) => {
       message: 'Failed to save your message',
       error: error.message
     });
-  } finally {
-    if (client) {
-      try {
-        await client.close();
-      } catch (err) {
-        console.error('Error closing MongoDB connection:', err);
-      }
-    }
   }
 });
 
@@ -120,9 +134,10 @@ app.post('/api/contact', async (req, res) => {
 app.post('/api/admission/test', async (req, res) => {
   console.log('Received admission inquiry:', req.body);
   
-  let client = null;
-  
   try {
+    // Start timer for performance monitoring
+    const startTime = Date.now();
+    
     // Validate input
     const { studentName, parentName, email, phone, classInterested, message } = req.body;
     
@@ -140,10 +155,15 @@ app.post('/api/admission/test', async (req, res) => {
       });
     }
     
+    // Log connection attempt
+    console.log('Connecting to MongoDB for admission inquiry...');
+    
     // Connect to MongoDB
-    client = await getMongoClient();
-    const db = client.db(dbName);
+    const { db } = await getMongoClient();
     const collection = db.collection('admissions');
+    
+    // Log connection success
+    console.log(`MongoDB connection successful (${Date.now() - startTime}ms)`);
     
     // Create document
     const admissionDocument = {
@@ -158,8 +178,9 @@ app.post('/api/admission/test', async (req, res) => {
     };
     
     // Save to database
+    console.log('Saving admission inquiry...');
     const result = await collection.insertOne(admissionDocument);
-    console.log('Admission inquiry saved to database:', result);
+    console.log(`Admission inquiry saved (${Date.now() - startTime}ms):`, result);
     
     // Return success
     return res.status(200).json({
@@ -175,14 +196,6 @@ app.post('/api/admission/test', async (req, res) => {
       message: 'Failed to save your admission inquiry',
       error: error.message
     });
-  } finally {
-    if (client) {
-      try {
-        await client.close();
-      } catch (err) {
-        console.error('Error closing MongoDB connection:', err);
-      }
-    }
   }
 });
 
@@ -190,17 +203,15 @@ app.post('/api/admission/test', async (req, res) => {
 app.post('/api/mongo-test', async (req, res) => {
   console.log('Received MongoDB test request:', req.body);
   
-  let client = null;
-  
   try {
     // Get connection string from request or default
     const { connectionString } = req.body;
     const uri = connectionString || MONGODB_URI;
     
     // Connect to MongoDB
-    client = new MongoClient(uri, {
-      connectTimeoutMS: 5000,
-      serverSelectionTimeoutMS: 5000
+    const client = new MongoClient(uri, {
+      connectTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 10000
     });
     
     await client.connect();
@@ -212,6 +223,9 @@ app.post('/api/mongo-test', async (req, res) => {
     // Get available databases
     const dbList = await admin.listDatabases();
     const databases = dbList.databases.map(db => db.name);
+    
+    // Close this specific connection
+    await client.close();
     
     // Return success
     return res.status(200).json({
@@ -259,14 +273,6 @@ app.post('/api/mongo-test', async (req, res) => {
       },
       tips
     });
-  } finally {
-    if (client) {
-      try {
-        await client.close();
-      } catch (err) {
-        console.error('Error closing MongoDB connection:', err);
-      }
-    }
   }
 });
 
