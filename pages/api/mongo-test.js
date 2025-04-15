@@ -1,18 +1,41 @@
 import { MongoClient } from 'mongodb';
 
 export default async function handler(req, res) {
-  // Only allow POST method for custom connection strings
-  if (req.method === 'POST') {
-    return testCustomConnection(req, res);
-  } 
-  
-  // Default GET method tests the env connection string
-  return testDefaultConnection(req, res);
+  // Set CORS headers to allow access from browser
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  try {
+    // Only allow POST method for custom connection strings
+    if (req.method === 'POST') {
+      return await testCustomConnection(req, res);
+    } 
+    
+    // Default GET method tests the env connection string
+    return await testDefaultConnection(req, res);
+  } catch (error) {
+    console.error('Unhandled error in MongoDB test API:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An unexpected error occurred in the API endpoint',
+      error: {
+        name: error.name || 'UnknownError',
+        message: error.message || 'No error message available',
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      }
+    });
+  }
 }
 
 async function testCustomConnection(req, res) {
   // Get connection string from request body
-  const { connectionString } = req.body;
+  const { connectionString } = req.body || {};
   
   if (!connectionString) {
     return res.status(400).json({
@@ -69,7 +92,11 @@ async function testCustomConnection(req, res) {
     });
   } finally {
     if (client) {
-      await client.close();
+      try {
+        await client.close();
+      } catch (err) {
+        console.error('Error closing MongoDB client:', err);
+      }
     }
   }
 }
@@ -123,7 +150,11 @@ async function testDefaultConnection(req, res) {
     });
   } finally {
     if (client) {
-      await client.close();
+      try {
+        await client.close();
+      } catch (err) {
+        console.error('Error closing MongoDB client:', err);
+      }
     }
   }
 }
@@ -134,7 +165,8 @@ function sanitizeConnectionString(str) {
   
   try {
     // If it contains username:password, hide the password
-    return str.replace(/(mongodb:\/\/[^:]+:)([^@]+)(@.+)/i, '$1*****$3');
+    return str.replace(/(mongodb:\/\/[^:]+:)([^@]+)(@.+)/i, '$1*****$3')
+              .replace(/(mongodb\+srv:\/\/[^:]+:)([^@]+)(@.+)/i, '$1*****$3');
   } catch (e) {
     return str;
   }
@@ -144,22 +176,26 @@ function sanitizeConnectionString(str) {
 function generateTipsFromError(error, connectionString) {
   const tips = [];
   
+  if (!error) {
+    return ['An unknown error occurred during connection.'];
+  }
+  
   if (error.name === 'MongoServerSelectionError') {
     tips.push('MongoDB server selection failed. Check if MongoDB is running and accessible.');
     tips.push('Verify the hostname and port in your connection string.');
     
-    if (connectionString.includes('localhost')) {
+    if (connectionString && connectionString.includes('localhost')) {
       tips.push('Try using 127.0.0.1 instead of localhost.');
       tips.push('Check if MongoDB is installed and running on your local machine.');
     }
   }
   
-  if (error.message.includes('timed out')) {
+  if (error.message && error.message.includes('timed out')) {
     tips.push('Connection timed out. Check network connectivity and firewall settings.');
     tips.push('If using MongoDB Atlas, ensure your IP is whitelisted.');
   }
   
-  if (error.message.includes('authentication failed')) {
+  if (error.message && error.message.includes('authentication failed')) {
     tips.push('Authentication failed. Verify your username and password.');
     tips.push('Make sure the database user has appropriate permissions.');
   }
@@ -182,4 +218,4 @@ function generateTipsFromError(error, connectionString) {
   }
   
   return tips;
-} 
+}
