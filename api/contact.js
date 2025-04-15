@@ -20,11 +20,41 @@ export default async function handler(req, res) {
   let dbClient = null;
 
   try {
-    // Log the request body for debugging
-    console.log('Received contact form data:', req.body);
+    // Special handling for Vercel environment
+    const isVercel = process.env.VERCEL === '1';
+    console.log(`Running in ${isVercel ? 'Vercel' : 'development'} environment`);
     
-    // Handle both raw JSON and application/x-www-form-urlencoded
-    const formData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    // Debug: Log request headers and method
+    console.log('Request method:', req.method);
+    console.log('Content-Type:', req.headers['content-type']);
+    
+    // Log the request body for debugging - but safely handle different formats
+    try {
+      console.log('Received contact form data:', 
+        typeof req.body === 'object' ? JSON.stringify(req.body) : req.body);
+    } catch (e) {
+      console.log('Could not stringify request body:', e.message);
+    }
+    
+    // Handle different content types and formats
+    let formData;
+    if (typeof req.body === 'string') {
+      try {
+        formData = JSON.parse(req.body);
+      } catch (e) {
+        console.error('Failed to parse JSON body:', e);
+        // Try URL-encoded format
+        formData = {};
+        req.body.split('&').forEach(pair => {
+          const [key, value] = pair.split('=');
+          if (key && value) {
+            formData[decodeURIComponent(key)] = decodeURIComponent(value);
+          }
+        });
+      }
+    } else {
+      formData = req.body || {};
+    }
     
     // Safely extract form data with defaults to prevent undefined errors
     const name = formData?.name || '';
@@ -36,8 +66,8 @@ export default async function handler(req, res) {
     console.log('Parsed form data:', { name, email, phone, subject, message });
     
     // Validate input
-    if (!name || !email || !phone || !subject || !message) {
-      return res.status(400).json({ 
+    if (!name || !email || !subject || !message) {
+      return res.status(200).json({ 
         success: false,
         message: 'All fields are required',
         missingFields: [
@@ -65,7 +95,14 @@ export default async function handler(req, res) {
         subject,
         message,
         createdAt: new Date(),
-        status: 'new'
+        status: 'new',
+        // Add metadata for debugging
+        metadata: {
+          source: 'website_contact_form',
+          userAgent: req.headers['user-agent'] || 'unknown',
+          ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown',
+          timestamp: new Date().toISOString()
+        }
       };
       
       // Verify collection is available
@@ -78,18 +115,19 @@ export default async function handler(req, res) {
       const result = await collections.contacts.insertOne(contactDocument);
       console.log('Contact form saved to database:', result);
       
+      // Return a successful response with minimal data
       return res.status(200).json({ 
         success: true, 
         message: 'Message sent successfully',
-        id: result.insertedId
+        id: result.insertedId ? result.insertedId.toString() : null
       });
     } catch (dbError) {
       console.error('Database operation error:', dbError);
       // More specific error message for database operation failures
       return res.status(200).json({  // Using 200 instead of 500 to ensure client gets the error message
         success: false,
-        message: 'Database error: Unable to save your message',
-        error: dbError.message
+        message: 'Unable to save your message. Please try again later.',
+        error: isVercel ? dbError.name : dbError.message
       });
     }
   } catch (error) {
@@ -97,8 +135,8 @@ export default async function handler(req, res) {
     // Return 200 with error info instead of 500 to make debugging easier
     return res.status(200).json({ 
       success: false,
-      message: 'Failed to process your request',
-      error: error.message
+      message: 'Failed to process your request. Please try again later.',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   } finally {
     // Close the database connection

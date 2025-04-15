@@ -22,11 +22,8 @@ try {
 
 // Configure client options to handle different environments
 const clientOptions = {
-  connectTimeoutMS: 10000,        // Longer timeout for cloud connections
+  connectTimeoutMS: 30000,        // Extended timeout for serverless environments
   socketTimeoutMS: 45000,         // Longer socket timeout
-  // These options are deprecated in MongoDB driver v4.0+
-  // useNewUrlParser: true,       // Removed - now default behavior
-  // useUnifiedTopology: true     // Removed - now default behavior
 };
 
 // For local development, might need specific options
@@ -41,10 +38,25 @@ if (uri.includes('localhost') || uri.includes('127.0.0.1')) {
   }
 }
 
-console.log(`MongoDB connection string: ${sanitizeConnectionString(uri)}`);
+// Check if we're running in a serverless environment
+const isServerless = process.env.VERCEL === '1';
+if (isServerless) {
+  console.log('Running in Vercel serverless environment');
+  // Optimize for serverless
+  clientOptions.maxPoolSize = 1; // Reduce connection pool for serverless
+  clientOptions.minPoolSize = 0;
+}
 
-// Create MongoDB client
-const client = new MongoClient(uri, clientOptions);
+// Safely log the connection string (hiding credentials)
+try {
+  console.log(`MongoDB connection string: ${sanitizeConnectionString(uri)}`);
+} catch (e) {
+  console.log('Could not log MongoDB connection string');
+}
+
+// Cache the client connection for serverless environments
+let cachedClient = null;
+let cachedDb = null;
 
 // Connect to MongoDB with detailed error handling
 export async function connectToDatabase() {
@@ -53,14 +65,40 @@ export async function connectToDatabase() {
     console.log('- Database name:', dbName);
     console.log('- Connection type:', uri.startsWith('mongodb+srv://') ? 'Atlas/Cloud' : 'Standard');
     console.log('- Local connection:', uri.includes('localhost') || uri.includes('127.0.0.1'));
+    console.log('- Serverless environment:', isServerless);
     
     // Check if MongoDB URI is properly set
     if (!uri || uri === 'mongodb://localhost:27017/schooldb') {
       console.warn('Using default MongoDB connection. Make sure MongoDB is running locally.');
     }
     
+    // Special handling for serverless environments to reuse connections
+    if (isServerless && cachedClient && cachedDb) {
+      console.log('Reusing cached MongoDB connection');
+      // Test the cached connection is still alive
+      try {
+        await cachedDb.command({ ping: 1 });
+        console.log('Cached connection is valid');
+        
+        return {
+          db: cachedDb,
+          client: cachedClient,
+          collections: {
+            contacts: cachedDb.collection('contacts'),
+            admissions: cachedDb.collection('admissions')
+          }
+        };
+      } catch (pingError) {
+        console.warn('Cached connection failed, creating new connection:', pingError.message);
+        // Continue to create a new connection below
+      }
+    }
+    
     // Try to connect to MongoDB
     console.log('Connecting to MongoDB...');
+    
+    // Create a fresh client for this connection
+    const client = new MongoClient(uri, clientOptions);
     await client.connect();
     console.log('Successfully connected to MongoDB');
     
@@ -73,6 +111,13 @@ export async function connectToDatabase() {
     } catch (pingError) {
       console.error('MongoDB ping failed:', pingError.message);
       throw new Error(`Connected to MongoDB but ping failed: ${pingError.message}`);
+    }
+    
+    // Cache the connection for serverless
+    if (isServerless) {
+      cachedClient = client;
+      cachedDb = db;
+      console.log('Cached new MongoDB connection for future use');
     }
     
     return {
@@ -115,10 +160,21 @@ export async function connectToDatabase() {
 
 // Helper function to close the database connection
 export async function closeDatabaseConnection() {
-  try {
-    await client.close();
-    console.log('MongoDB connection closed');
+  // In serverless environments, we want to keep connections alive
+  if (isServerless) {
+    console.log('Keeping MongoDB connection alive for serverless environment');
     return true;
+  }
+  
+  try {
+    if (cachedClient) {
+      await cachedClient.close();
+      cachedClient = null;
+      cachedDb = null;
+      console.log('MongoDB connection closed');
+      return true;
+    }
+    return false;
   } catch (err) {
     console.error('Error closing MongoDB connection:', err);
     return false;
