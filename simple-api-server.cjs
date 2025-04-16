@@ -1,7 +1,7 @@
 // Simple Express API server for testing forms
 const express = require('express');
 const cors = require('cors');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 // Create Express app
 const app = express();
@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:5174', 'https://sspublicschool.vercel.app'],
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 app.use(express.json());
@@ -71,6 +71,160 @@ async function getMongoClient() {
 // Add a health check endpoint for Vercel
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// GET all admissions endpoint for admin dashboard
+app.get('/api/admission', async (req, res) => {
+  console.log('Received request for all admissions');
+  
+  try {
+    // Connect to MongoDB
+    const { db } = await getMongoClient();
+    const collection = db.collection('admissions');
+    
+    // Get all admissions, sorted by date (newest first)
+    const admissions = await collection.find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    console.log(`Retrieved ${admissions.length} admissions`);
+    
+    // Return success
+    return res.status(200).json(admissions);
+  } catch (error) {
+    console.error('Error in GET /api/admission:', error);
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve admissions',
+      error: error.message
+    });
+  }
+});
+
+// GET all contacts endpoint for admin dashboard
+app.get('/api/contact', async (req, res) => {
+  console.log('Received request for all contacts');
+  
+  try {
+    // Connect to MongoDB
+    const { db } = await getMongoClient();
+    const collection = db.collection('contacts');
+    
+    // Get all contacts, sorted by date (newest first)
+    const contacts = await collection.find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    console.log(`Retrieved ${contacts.length} contacts`);
+    
+    // Return success
+    return res.status(200).json(contacts);
+  } catch (error) {
+    console.error('Error in GET /api/contact:', error);
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve contacts',
+      error: error.message
+    });
+  }
+});
+
+// DELETE admission endpoint for admin dashboard
+app.delete('/api/admission', async (req, res) => {
+  console.log('Received request to delete admission:', req.query.id);
+  
+  try {
+    // Validate input
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing id parameter'
+      });
+    }
+    
+    // Connect to MongoDB
+    const { db } = await getMongoClient();
+    const collection = db.collection('admissions');
+    
+    // Delete the admission
+    const result = await collection.deleteOne({ 
+      _id: new ObjectId(id) 
+    });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admission not found'
+      });
+    }
+    
+    console.log(`Deleted admission with id ${id}`);
+    
+    // Return success
+    return res.status(200).json({
+      success: true,
+      message: 'Admission deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error in DELETE /api/admission:', error);
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete admission',
+      error: error.message
+    });
+  }
+});
+
+// DELETE contact endpoint for admin dashboard
+app.delete('/api/contact', async (req, res) => {
+  console.log('Received request to delete contact:', req.query.id);
+  
+  try {
+    // Validate input
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing id parameter'
+      });
+    }
+    
+    // Connect to MongoDB
+    const { db } = await getMongoClient();
+    const collection = db.collection('contacts');
+    
+    // Delete the contact
+    const result = await collection.deleteOne({ 
+      _id: new ObjectId(id) 
+    });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact not found'
+      });
+    }
+    
+    console.log(`Deleted contact with id ${id}`);
+    
+    // Return success
+    return res.status(200).json({
+      success: true,
+      message: 'Contact deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error in DELETE /api/contact:', error);
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete contact',
+      error: error.message
+    });
+  }
 });
 
 // Contact form endpoint
@@ -289,5 +443,9 @@ if (process.env.VERCEL) {
     console.log('- POST /api/admission/test');
     console.log('- POST /api/mongo-test');
     console.log('- GET /api/health');
+    console.log('- GET /api/admission');
+    console.log('- GET /api/contact');
+    console.log('- DELETE /api/admission');
+    console.log('- DELETE /api/contact');
   });
 } 
