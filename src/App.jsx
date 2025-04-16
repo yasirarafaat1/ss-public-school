@@ -54,7 +54,7 @@ export default function App() {
   }, []);
   
   return (
-    <Router basename={process.env.PUBLIC_URL || '/'}>
+    <Router basename={import.meta.env.BASE_URL}>
       <div className="app-container">
         <AppLayout />
       </div>
