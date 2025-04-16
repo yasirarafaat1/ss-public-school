@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert, Toast } from "react-bootstrap";
-import { submitContactForm } from '../api/contactService';
 import AOS from "aos";
 import "aos/dist/aos.css";
 
