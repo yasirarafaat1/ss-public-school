@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Toast } from 'react-bootstrap';
-import axios from 'axios';
 import './Footer.css'; // Import the CSS file
 
 const Footer = () => {
