@@ -15,10 +15,7 @@ import Infrastructure from "./pages/Infrastructure";
 import PageNotFound from "./pages/PageNotFound";
 import PrincipalMessage from "./pages/PrincipalMessage";
 import Admission from "./pages/Admission";
-import AdmissionEnquiry from "./pages/AdmissionEnquiry";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
 import DeveloperInfo from "./pages/DeveloperInfo";
 
 // Layout component to conditionally render Nav and Footer
@@ -28,22 +25,21 @@ const AppLayout = () => {
   return (
     <>
       <Nav />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/infrastructure" element={<Infrastructure />} />
-        <Route path="/staff" element={<Staff />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/principal-message" element={<PrincipalMessage />} />
-        <Route path="/admission" element={<Admission />} />
-        <Route path="/admission-enquiry" element={<AdmissionEnquiry />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/developer-info" element={<DeveloperInfo />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/infrastructure" element={<Infrastructure />} />
+          <Route path="/staff" element={<Staff />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/principal-message" element={<PrincipalMessage />} />
+          <Route path="/admission" element={<Admission />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/developer-info" element={<DeveloperInfo />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </main>
       <Footer />
     </>
   );
@@ -52,13 +48,13 @@ const AppLayout = () => {
 export default function App() {
   useEffect(() => {
     AOS.init({
-      duration: 1000, // Animation duration in milliseconds
-      once: true, // Whether animation should happen only once
+      duration: 1000,
+      once: true,
     });
   }, []);
   
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL || '/'}>
       <div className="app-container">
         <AppLayout />
       </div>
