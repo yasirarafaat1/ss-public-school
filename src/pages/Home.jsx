@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Card, Form, Alert, Toast, ToastContainer } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 // import './Home.css';
