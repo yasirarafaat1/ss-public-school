@@ -11,78 +11,63 @@ console.log('API configuration:', {
   environment: process.env.NODE_ENV
 });
 
-// Create axios instance with the appropriate base URL
+// Create axios instance with base URL
 const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: window.location.origin,
+  timeout: 15000,
   headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 15000, // 15 seconds timeout
+    'Content-Type': 'application/json'
+  }
 });
 
-// Add response interceptor for error handling
+// Add response interceptor
 apiClient.interceptors.response.use(
-  (response) => {
-    // If we get a response with success: false, transform it to an error
-    if (response.data && response.data.success === false) {
-      const error = new Error(response.data.message || 'Operation failed');
-      error.response = response;
-      error.details = response.data;
-      return Promise.reject(error);
-    }
-    return response;
+  response => {
+    // For successful responses, return the data
+    return response.data;
   },
-  (error) => {
-    // Handle different types of errors
-    if (!error.response) {
-      console.error('Network Error:', error);
-      return Promise.reject(new Error('No response from server. Please check your internet connection.'));
-    }
-    
-    // Extract any useful information from the error response
-    let errorMessage = 'An unexpected error occurred';
-    let errorDetails = {};
-    
-    try {
-      if (error.response.data) {
-        if (typeof error.response.data === 'string') {
-          errorMessage = error.response.data;
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
-          errorDetails = error.response.data;
-        }
+  error => {
+    // Handle network errors, timeout errors, etc.
+    let errorMsg = 'Something went wrong. Please try again.';
+    let errorDetail = null;
+    let statusCode = null;
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      statusCode = error.response.status;
+      console.error('API Error Response:', error.response);
+
+      if (statusCode === 404) {
+        errorMsg = 'Resource not found. Please try again later.';
+      } else if (statusCode === 405) {
+        errorMsg = 'Method not allowed. Please contact support.';
+      } else if (statusCode === 500) {
+        errorMsg = 'Server error. Please try again later.';
+      } else if (error.response.data && error.response.data.message) {
+        errorMsg = error.response.data.message;
       }
-    } catch (e) {
-      console.error('Error parsing error response:', e);
+
+      errorDetail = error.response.data;
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('API Error Request:', error.request);
+      errorMsg = 'No response from server. Please check your internet connection.';
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('API Error:', error.message);
+      errorMsg = 'Request failed. ' + error.message;
     }
-    
-    // Handle specific status codes
-    switch (error.response.status) {
-      case 404:
-        errorMessage = 'API endpoint not found';
-        break;
-      case 405:
-        errorMessage = 'Method not allowed. This endpoint doesn\'t support this HTTP method.';
-        break;
-      case 500:
-        errorMessage = 'Server error. Please try again later or contact support.';
-        console.error('Server Error Details:', {
-          url: error.config.url,
-          method: error.config.method,
-          data: error.config.data,
-          response: error.response.data
-        });
-        break;
-      default:
-        console.error(`HTTP Error ${error.response.status}:`, error.response.data);
-    }
-    
-    const enhancedError = new Error(errorMessage);
-    enhancedError.originalError = error;
-    enhancedError.details = errorDetails;
-    enhancedError.status = error.response.status;
-    
-    return Promise.reject(enhancedError);
+
+    const formattedError = {
+      message: errorMsg,
+      detail: errorDetail,
+      statusCode: statusCode,
+      timestamp: new Date().toISOString()
+    };
+
+    console.error('Formatted API Error:', formattedError);
+    return Promise.reject(formattedError);
   }
 );
 
