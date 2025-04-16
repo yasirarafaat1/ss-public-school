@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  Card,
-  Alert,
-  Toast,
-  ToastContainer,
-} from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { submitAdmissionInquiry } from '../api/admissionService';
+import { Container, Row, Col, Form, Button, Card, Toast } from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
+const processSteps = [
+  {
+    step: "Step 1: Inquiry",
+    description: "Contact us or visit the school to learn about the admission process.",
+    icon: "bi bi-search",
+    delay: 100,
+  },
+  {
+    step: "Step 2: Registration",
+    description: "Fill out the registration form and submit the required documents.",
+    icon: "bi bi-pencil-square",
+    delay: 200,
+  },
+  {
+    step: "Step 3: Assessment",
+    description: "Participate in the entrance assessment and interview process.",
+    icon: "bi bi-clipboard-check",
+    delay: 300,
+  },
+  {
+    step: "Step 4: Admission",
+    description: "Complete the admission formalities and secure your seat.",
+    icon: "bi bi-check-circle",
+    delay: 400,
+  },
+];
 
 const AdmissionEnquiry = () => {
   const [formData, setFormData] = useState({
@@ -27,9 +42,7 @@ const AdmissionEnquiry = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastVariant, setToastVariant] = useState("success");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     AOS.init({
@@ -37,40 +50,19 @@ const AdmissionEnquiry = () => {
       once: true,
       offset: 100,
     });
-
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");
 
-    if (!isOnline) {
-      setToastMessage("Please check your internet connection and try again.");
-      setToastVariant("danger");
-      setShowToast(true);
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      console.log('Submitting form data:', formData);
-      const response = await submitAdmissionInquiry(formData);
-      console.log('Response from server:', response);
-      
+    // Simulate a successful submission
+    setTimeout(() => {
       setToastMessage("Admission enquiry submitted successfully!");
       setToastVariant("success");
       setShowToast(true);
+
+      // Reset form data
       setFormData({
         studentName: "",
         parentName: "",
@@ -79,57 +71,18 @@ const AdmissionEnquiry = () => {
         classInterested: "",
         message: "",
       });
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      let errorMessage = err.message || "Failed to submit form. Please try again.";
-      
-      setError(errorMessage);
-      setToastMessage(errorMessage);
-      setToastVariant("danger");
-      setShowToast(true);
-    } finally {
+
       setIsSubmitting(false);
-    }
+    }, 1000);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
-
-  const admissionSteps = [
-    {
-      step: "Step 1: Inquiry",
-      description:
-        "Visit our school or contact us to learn more about our programs and admission requirements.",
-      icon: "bi bi-search",
-      delay: "100",
-    },
-    {
-      step: "Step 2: Registration",
-      description:
-        "Complete the registration form and submit required documents for initial screening.",
-      icon: "bi bi-pencil-square",
-      delay: "200",
-    },
-    {
-      step: "Step 3: Assessment",
-      description:
-        "Participate in the entrance assessment and interview process.",
-      icon: "bi bi-clipboard-check",
-      delay: "300",
-    },
-    {
-      step: "Step 4: Admission",
-      description:
-        "Receive admission confirmation and complete the enrollment process.",
-      icon: "bi bi-check-circle",
-      delay: "400",
-    },
-  ];
 
   return (
     <div className="admission-enquiry-page mt-5">
@@ -148,52 +101,46 @@ const AdmissionEnquiry = () => {
         </Container>
       </section>
 
-      {/* Main Content Section */}
+      {/* Process Steps Section */}
+      <section className="py-5 bg-light">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Admission Process Steps
+          </h2>
+          <Row className="g-4">
+            {processSteps.map((step, index) => (
+              <Col
+                md={3}
+                key={index}
+                data-aos="fade-up"
+                data-aos-delay={step.delay}
+              >
+                <div className="text-center p-4">
+                  <div
+                    className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                    style={{ width: "80px", height: "80px" }}
+                  >
+                    <i className={`${step.icon} display-6`}></i>
+                  </div>
+                  <h4>{step.step}</h4>
+                  <p>{step.description}</p>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
+      {/* Enquiry Form Section */}
       <section className="py-5">
         <Container>
           <Row>
-            {/* Admission Process Steps */}
-            <Col md={4} className="mb-4 mb-md-0">
-              <Card
-                className="border-0 shadow-sm h-100"
-                data-aos="fade-right"
-                data-aos-delay="100"
-              >
-                <Card.Header className="bg-primary text-white">
-                  <h4 className="mb-0">Admission Process</h4>
-                </Card.Header>
-                <Card.Body>
-                  <div className="d-flex flex-column gap-4">
-                    {admissionSteps.map((step, index) => (
-                      <div
-                        key={index}
-                        data-aos="fade-up"
-                        data-aos-delay={step.delay}
-                      >
-                        <div className="d-flex align-items-center mb-2">
-                          <div
-                            className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3"
-                            style={{ width: "40px", height: "40px" }}
-                          >
-                            <i className={step.icon}></i>
-                          </div>
-                          <h5 className="mb-0">{step.step}</h5>
-                        </div>
-                        <p className="ms-4 mb-0">{step.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/* Enquiry Form */}
-            <Col md={8} data-aos="fade-left" data-aos-delay="200">
+            <Col md={8} className="mx-auto" data-aos="fade-up" data-aos-delay="200">
               <Card className="border-0 shadow-sm">
                 <Card.Body className="p-4">
                   <Form onSubmit={handleSubmit}>
                     <Row className="g-3">
-                      <Col md={6} data-aos="fade-up" data-aos-delay="300">
+                      <Col md={6}>
                         <Form.Group controlId="studentName">
                           <Form.Label>Student's Name</Form.Label>
                           <Form.Control
@@ -206,7 +153,7 @@ const AdmissionEnquiry = () => {
                           />
                         </Form.Group>
                       </Col>
-                      <Col md={6} data-aos="fade-up" data-aos-delay="400">
+                      <Col md={6}>
                         <Form.Group controlId="parentName">
                           <Form.Label>Parent's/Guardian's Name</Form.Label>
                           <Form.Control
@@ -219,7 +166,7 @@ const AdmissionEnquiry = () => {
                           />
                         </Form.Group>
                       </Col>
-                      <Col md={6} data-aos="fade-up" data-aos-delay="500">
+                      <Col md={6}>
                         <Form.Group controlId="email">
                           <Form.Label>Email</Form.Label>
                           <Form.Control
@@ -232,7 +179,7 @@ const AdmissionEnquiry = () => {
                           />
                         </Form.Group>
                       </Col>
-                      <Col md={6} data-aos="fade-up" data-aos-delay="600">
+                      <Col md={6}>
                         <Form.Group controlId="phone">
                           <Form.Label>Phone Number</Form.Label>
                           <Form.Control
@@ -245,7 +192,7 @@ const AdmissionEnquiry = () => {
                           />
                         </Form.Group>
                       </Col>
-                      <Col md={12} data-aos="fade-up" data-aos-delay="700">
+                      <Col md={12}>
                         <Form.Group controlId="classInterested">
                           <Form.Label>Class Interested In</Form.Label>
                           <Form.Select
@@ -266,14 +213,10 @@ const AdmissionEnquiry = () => {
                             <option value="Class 6">Class 6</option>
                             <option value="Class 7">Class 7</option>
                             <option value="Class 8">Class 8</option>
-                            <option value="Class 9">Class 9</option>
-                            <option value="Class 10">Class 10</option>
-                            <option value="Class 11">Class 11</option>
-                            <option value="Class 12">Class 12</option>
                           </Form.Select>
                         </Form.Group>
                       </Col>
-                      <Col md={12} data-aos="fade-up" data-aos-delay="800">
+                      <Col md={12}>
                         <Form.Group controlId="message">
                           <Form.Label>Message</Form.Label>
                           <Form.Control
@@ -287,7 +230,7 @@ const AdmissionEnquiry = () => {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <div className="text-center mt-4" data-aos="fade-up" data-aos-delay="900">
+                    <div className="text-center mt-4">
                       <Button
                         type="submit"
                         variant="primary"
@@ -305,51 +248,22 @@ const AdmissionEnquiry = () => {
         </Container>
       </section>
 
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          zIndex: 9999
-        }}
+      {/* Toast Notification */}
+      <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+        bg={toastVariant}
+        className="position-fixed bottom-0 end-0 m-3"
       >
-        <Toast 
-          onClose={() => setShowToast(false)} 
-          show={showToast} 
-          delay={3000} 
-          autohide
-          bg={toastVariant}
-          className="text-white"
-        >
-          <Toast.Header>
-            <strong className="me-auto">
-              {toastVariant === "success" ? "Success" : "Error"}
-            </strong>
-          </Toast.Header>
-          <Toast.Body>
-            {toastMessage}
-          </Toast.Body>
-        </Toast>
-      </div>
-
-      {error && (
-        <Alert variant="danger" className="mt-3">
-          {error}
-        </Alert>
-      )}
-
-      {isSubmitting && (
-        <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 2, marginBottom: '80px', marginRight: '20px' }}>
-          <div className="d-flex align-items-center bg-light p-2 rounded shadow">
-            <div className="spinner-border text-primary me-2" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <span className="text-primary">
-              {isOnline ? "Submitting..." : "Waiting for connection..."}
-            </span>
-          </div>
-        </div>
-      )}
+        <Toast.Header>
+          <strong className="me-auto">
+            {toastVariant === "success" ? "Success" : "Error"}
+          </strong>
+        </Toast.Header>
+        <Toast.Body>{toastMessage}</Toast.Body>
+      </Toast>
     </div>
   );
 };

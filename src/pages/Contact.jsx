@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Card, Alert, Toast } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Toast } from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -14,7 +14,6 @@ const Contact = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastVariant, setToastVariant] = useState("success");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -28,33 +27,34 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");
-    
+
     try {
-      console.log('Submitting contact form data:', formData);
-      const response = await submitContactForm(formData);
-      console.log('Contact form submission response:', response);
-      
-      setToastMessage("Message sent successfully! We'll get back to you soon.");
-      setToastVariant("success");
-      setShowToast(true);
-      
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      });
+      // console.log("Submitting contact form data:", formData);
+
+      // Simulate a successful submission
+      setTimeout(() => {
+        setToastMessage("Message sent successfully! We'll get back to you soon.");
+        setToastVariant("success");
+        setShowToast(true);
+
+        // Reset form data
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        });
+
+        setIsSubmitting(false);
+      }, 1000);
     } catch (err) {
-      console.error('Error submitting contact form:', err);
-      let errorMessage = err.message || "Failed to send message. Please try again.";
-      
-      setError(errorMessage);
-      setToastMessage(errorMessage);
+      console.error("Error submitting contact form:", err);
+
+      setToastMessage("Failed to send message. Please try again.");
       setToastVariant("danger");
       setShowToast(true);
-    } finally {
+
       setIsSubmitting(false);
     }
   };
@@ -89,11 +89,6 @@ const Contact = () => {
             <Col md={8} data-aos="fade-up">
               <Card className="border-0 shadow-sm">
                 <Card.Body className="p-4">
-                  {error && (
-                    <Alert variant="danger" className="mb-4">
-                      {error}
-                    </Alert>
-                  )}
                   <Form onSubmit={handleSubmit}>
                     <Row className="g-3">
                       <Col md={6} data-aos="fade-up" data-aos-delay="300">
@@ -200,16 +195,16 @@ const Contact = () => {
       {/* Toast Notification */}
       <div
         style={{
-          position: 'fixed',
+          position: "fixed",
           bottom: 20,
           right: 20,
-          zIndex: 9999
+          zIndex: 9999,
         }}
       >
-        <Toast 
-          onClose={() => setShowToast(false)} 
-          show={showToast} 
-          delay={3000} 
+        <Toast
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={3000}
           autohide
           bg={toastVariant}
           className="text-white"
@@ -219,9 +214,7 @@ const Contact = () => {
               {toastVariant === "success" ? "Success" : "Error"}
             </strong>
           </Toast.Header>
-          <Toast.Body>
-            {toastMessage}
-          </Toast.Body>
+          <Toast.Body>{toastMessage}</Toast.Body>
         </Toast>
       </div>
 
