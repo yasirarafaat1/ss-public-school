@@ -14,7 +14,7 @@ console.log('API configuration:', {
 // Create axios instance with base URL
 const apiClient = axios.create({
   baseURL: window.location.origin,
-  timeout: 15000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -49,6 +49,15 @@ apiClient.interceptors.response.use(
       }
 
       errorDetail = error.response.data;
+    } else if (error.code === 'ECONNABORTED') {
+      // Handle timeout errors specifically
+      console.error('API Timeout Error:', error);
+      errorMsg = 'Request timed out. The server is taking too long to respond. Please try again later.';
+      errorDetail = {
+        timeoutError: true,
+        timeout: error.config.timeout,
+        url: error.config.url
+      };
     } else if (error.request) {
       // The request was made but no response was received
       console.error('API Error Request:', error.request);

@@ -150,8 +150,19 @@ export async function connectToDatabase() {
       throw new Error(`Cannot connect to MongoDB server: ${error.message}. Check if your IP is whitelisted.`);
     } else if (error.name === 'MongoNetworkError') {
       throw new Error(`Network error connecting to MongoDB: ${error.message}`);
-    } else if (error.message && error.message.includes('authentication failed')) {
-      throw new Error(`MongoDB authentication failed. Check your username and password.`);
+    } else if (error.message && (
+      error.message.includes('authentication failed') || 
+      error.message.includes('bad auth') || 
+      error.code === 8000 || 
+      (error.errorResponse && error.errorResponse.code === 8000)
+    )) {
+      console.error('CRITICAL: MongoDB authentication failed. Please check your username and password in the connection string.');
+      console.error('Details:', {
+        code: error.code,
+        codeName: error.codeName,
+        errorResponse: error.errorResponse
+      });
+      throw new Error(`MongoDB authentication failed. Check your username and password. Error code: ${error.code || 'Unknown'}`);
     }
     
     throw error;

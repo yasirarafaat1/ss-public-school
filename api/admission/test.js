@@ -116,6 +116,29 @@ export default async function handler(req, res) {
     // Log data that would have been saved for later recovery
     console.log('FORM DATA TO RECOVER:', JSON.stringify(storedData));
     
+    // Check for authentication errors
+    const isAuthError = error.message && (
+      error.message.includes('Authentication failed') || 
+      error.message.includes('bad auth') ||
+      error.code === 8000
+    );
+    
+    if (isAuthError) {
+      console.error('AUTHENTICATION ERROR: Database credentials are incorrect');
+    }
+    
+    // Return a more helpful error message in development mode
+    if (process.env.NODE_ENV === 'development') {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to save your admission inquiry',
+        error: isAuthError ? 
+          'Database authentication failed. Please contact the administrator to verify database credentials.' : 
+          error.message,
+        formData: storedData // Include the form data for recovery
+      });
+    }
+    
     // ALWAYS return success to the user in production, with NO error property
     return res.status(200).json({
       success: true,
