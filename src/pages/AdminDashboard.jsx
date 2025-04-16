@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Table, Button, Nav, Alert, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import { getAdmissionInquiries, getContactSubmissions, deleteAdmissionInquiry, deleteContactSubmission } from "../api/adminService";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -60,28 +60,27 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       console.log('Fetching data from backend...');
-      const [enquiriesRes, contactsRes, newsletterRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admission').catch(err => {
-          console.error('Error fetching enquiries:', err);
-          return { data: [] };
-        }),
-        axios.get('http://localhost:5000/api/contact').catch(err => {
-          console.error('Error fetching contacts:', err);
-          return { data: [] };
-        }),
-        axios.get('http://localhost:5000/api/newsletter').catch(err => {
-          console.error('Error fetching newsletter subscribers:', err);
-          return { data: [] };
-        })
-      ]);
+      
+      // Use the adminService to fetch data
+      const enquiriesData = await getAdmissionInquiries().catch(err => {
+        console.error('Error fetching enquiries:', err);
+        return [];
+      });
+      
+      const contactsData = await getContactSubmissions().catch(err => {
+        console.error('Error fetching contacts:', err);
+        return [];
+      });
 
-      console.log('Enquiries:', enquiriesRes.data);
-      console.log('Contacts:', contactsRes.data);
-      console.log('Newsletter:', newsletterRes.data);
-
-      setEnquiries(enquiriesRes.data || []);
-      setContacts(contactsRes.data || []);
-      setNewsletterSubscribers(newsletterRes.data || []);
+      console.log('Enquiries:', enquiriesData);
+      console.log('Contacts:', contactsData);
+      
+      // Use empty array if data is null or undefined
+      setEnquiries(Array.isArray(enquiriesData) ? enquiriesData : []);
+      setContacts(Array.isArray(contactsData) ? contactsData : []);
+      
+      // Newsletter subscribers is not implemented yet, so use empty array
+      setNewsletterSubscribers([]);
     } catch (err) {
       console.error('Error in fetchData:', err);
       setError("Failed to fetch data. Please check if the backend server is running.");
@@ -90,22 +89,12 @@ const AdminDashboard = () => {
 
   const handleDelete = async (type, id) => {
     try {
-      let endpoint = '';
-      switch (type) {
-        case 'enquiry':
-          endpoint = 'admission';
-          break;
-        case 'contact':
-          endpoint = 'contact';
-          break;
-        case 'newsletter':
-          endpoint = 'newsletter';
-          break;
-        default:
-          return;
+      if (type === 'enquiry') {
+        await deleteAdmissionInquiry(id);
+      } else if (type === 'contact') {
+        await deleteContactSubmission(id);
       }
-
-      await axios.delete(`http://localhost:5000/api/${endpoint}/${id}`);
+      
       fetchData(); // Refresh data after deletion
     } catch (err) {
       console.error('Error deleting item:', err);
