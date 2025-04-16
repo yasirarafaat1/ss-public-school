@@ -1,18 +1,18 @@
-# School Demo API Server
+# School Website Frontend
 
-This repository contains a simple API server for a school website, implementing endpoints for contact forms, admission inquiries, and MongoDB connection testing.
+This is a React-based frontend application for a school website, built with modern web technologies.
 
 ## Features
 
-- Contact form submission API
-- Admission inquiry API
-- MongoDB connection testing API
-- Easy setup with minimal dependencies
+- Responsive design
+- Modern UI components
+- Smooth animations
+- SEO-friendly
+- Accessible
 
 ## Prerequisites
 
 - Node.js v14 or higher
-- MongoDB installed and running locally
 - npm package manager
 
 ## Setup
@@ -28,24 +28,7 @@ This repository contains a simple API server for a school website, implementing 
    npm install
    ```
 
-3. Configure MongoDB:
-   - Make sure MongoDB is running on your machine
-   - Edit `.env` file to configure MongoDB connection:
-   ```
-   MONGODB_URI=mongodb://localhost:27017/schooldb
-   ```
-
-## Running the Server
-
-There are multiple ways to run the server:
-
-### Simple API Server (Recommended)
-
-```
-node simple-api-server.cjs
-```
-
-This starts a simple Express server with all API endpoints properly configured.
+## Running the Application
 
 ### Development Server
 
@@ -53,109 +36,43 @@ This starts a simple Express server with all API endpoints properly configured.
 npm run dev
 ```
 
-This starts the Vite development server for the frontend.
+This starts the Vite development server.
 
-### Combined Server
-
-```
-npm start
-```
-
-This starts both the API server and the Vite development server concurrently.
-
-## API Endpoints
-
-### Contact Form
-
-**POST /api/contact**
-
-Submit a contact form.
-
-Request body:
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "1234567890",
-  "subject": "General Inquiry",
-  "message": "Hello, I have a question..."
-}
-```
-
-### Admission Inquiry
-
-**POST /api/admission/test**
-
-Submit an admission inquiry.
-
-Request body:
-```json
-{
-  "studentName": "Jane Doe",
-  "parentName": "John Doe",
-  "email": "john@example.com",
-  "phone": "1234567890",
-  "classInterested": "Class 7",
-  "message": "Interested in science programs..."
-}
-```
-
-### MongoDB Test
-
-**POST /api/mongo-test**
-
-Test a MongoDB connection string.
-
-Request body:
-```json
-{
-  "connectionString": "mongodb://localhost:27017/schooldb"
-}
-```
-
-For testing the default connection string, just send an empty POST request.
-
-## Testing
-
-### API Test Script
-
-To test the API endpoints:
+### Production Build
 
 ```
-node api-test.mjs
+npm run build
 ```
 
-### MongoDB Connection Test
+This creates a production build in the `dist` directory.
 
-To test the MongoDB connection:
-
-```
-node mongo-simple-test.cjs
-```
-
-### Verify Data
-
-To check data has been saved to MongoDB:
+### Preview Production Build
 
 ```
-node verify-data.cjs
+npm run preview
 ```
 
-## Troubleshooting
+This serves the production build locally for testing.
 
-If you encounter issues with the API server:
+## Project Structure
 
-1. Make sure MongoDB is running
-2. Check if the connection string is correct
-3. Look for error messages in the console
-4. Try using the simple-api-server.cjs instead of the more complex server
+- `/src` - Source code
+  - `/components` - Reusable React components
+  - `/pages` - Page components
+  - `/styles` - CSS styles
+- `/public` - Static assets
+  - Images
+  - Fonts
+  - Other static files
 
-For MongoDB connection issues:
+## Technologies Used
 
-1. Try using `127.0.0.1` instead of `localhost`
-2. Check if authentication is required and add credentials
-3. Verify the database name is correct
-4. Check if MongoDB is running on the correct port (default is 27017)
+- React
+- React Router
+- Vite
+- Bootstrap
+- AOS (Animate On Scroll)
+- React Helmet
 
 ## License
 

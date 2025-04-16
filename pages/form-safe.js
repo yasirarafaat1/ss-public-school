@@ -24,12 +24,16 @@ export default function SafeContactForm() {
     }));
   };
 
-  const handleResponse = (status, msg) => {
-    if (status === 200) {
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setStatus(prevStatus => ({ ...prevStatus, submitting: true }));
+    
+    // Simulate form submission
+    setTimeout(() => {
       setStatus({
         submitted: true,
         submitting: false,
-        info: { error: false, msg: msg }
+        info: { error: false, msg: 'Your message has been received.' }
       });
       setFormData({
         name: '',
@@ -38,49 +42,20 @@ export default function SafeContactForm() {
         subject: '',
         message: ''
       });
-    } else {
-      setStatus({
-        submitted: false,
-        submitting: false,
-        info: { error: true, msg: msg }
-      });
-    }
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setStatus(prevStatus => ({ ...prevStatus, submitting: true }));
-    
-    try {
-      const res = await fetch('/api/contact-safe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const text = await res.text();
-      const json = text ? JSON.parse(text) : {}
-      
-      handleResponse(res.status, json.message);
-    } catch (error) {
-      handleResponse(500, 'Error submitting form: ' + error.message);
-    }
+    }, 1000);
   };
 
   return (
     <div className={styles.contactContainer}>
-      <h1>Contact Us (Safe Mode)</h1>
+      <h1>Contact Us</h1>
       <p className={styles.safeNotice}>
-        This form uses a fallback API that works without MongoDB.
-        Use this while you're troubleshooting database issues.
+        This is a demo contact form. In a real application, this would connect to a backend service.
       </p>
       
       {status.submitted ? (
         <div className={styles.successMessage}>
           <h3>Thank you!</h3>
-          <p>Your message has been received (in safe mode). {status.info.msg}</p>
+          <p>Your message has been received. {status.info.msg}</p>
           <button 
             className={styles.button} 
             onClick={() => setStatus({ submitted: false, submitting: false, info: { error: false, msg: null }})}>
@@ -163,15 +138,6 @@ export default function SafeContactForm() {
           )}
         </form>
       )}
-      
-      <div className={styles.diagnosticLinks}>
-        <p>Troubleshooting:</p>
-        <ul>
-          <li><a href="/mongo-helper.html">MongoDB Connection Helper</a></li>
-          <li><a href="/api/diagnose-mongo">Run MongoDB Diagnostics</a></li>
-          <li><a href="/api/test-db">Test Database Connection</a></li>
-        </ul>
-      </div>
     </div>
   );
 } 
