@@ -8,34 +8,18 @@ const Footer = () => {
   const [toastMessage, setToastMessage] = useState('Thank you for subscribing to our newsletter!');
   const [toastType, setToastType] = useState('success');
 
-  const handleNewsletterSubmit = async (e) => {
+  const handleNewsletterSubmit = (e) => {
     e.preventDefault();
-    try {
-      // Send the email to your backend
-      console.log('Submitting newsletter subscription:', email);
-      const response = await axios.post('http://localhost:5000/api/newsletter', {
-        email: email
-      });
-      console.log('Newsletter subscription response:', response.data);
-      
-      // Show success message
+  
+    // Simulate a successful submission
+    setTimeout(() => {
       setToastType('success');
       setToastMessage('Thank you for subscribing to our newsletter!');
       setShowToast(true);
-      setEmail(''); // Clear the input field
-    } catch (err) {
-      console.error('Error submitting newsletter subscription:', err);
-      
-      // Handle error message
-      let errorMessage = "Failed to subscribe. Please try again.";
-      if (err.response && err.response.data && err.response.data.message) {
-        errorMessage = err.response.data.message;
-      }
-      
-      setToastType('danger');
-      setToastMessage(errorMessage);
-      setShowToast(true);
-    }
+  
+      // Clear the input field
+      setEmail('');
+    }, 1000); // Simulate a delay of 1 second
   };
 
   return (

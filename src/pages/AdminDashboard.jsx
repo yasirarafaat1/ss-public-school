@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Table, Button, Nav, Alert, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getAdmissionInquiries, getContactSubmissions, deleteAdmissionInquiry, deleteContactSubmission } from "../api/adminService";
 import AOS from "aos";
 import "aos/dist/aos.css";
 

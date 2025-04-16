@@ -48,11 +48,11 @@ const Home = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
-
+  
     if (!isOnline) {
       setToastMessage("Please check your internet connection and try again.");
       setToastVariant("danger");
@@ -60,27 +60,14 @@ const Home = () => {
       setIsSubmitting(false);
       return;
     }
-
-    try {
-      console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/api/admission/test', {
-        studentName: formData.studentName,
-        parentName: formData.parentName,
-        email: formData.email,
-        phone: formData.phone,
-        classInterested: formData.classInterested,
-        message: formData.message,
-        status: 'pending'
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('Response from server:', response.data);
+  
+    // Simulate a successful submission
+    setTimeout(() => {
       setToastMessage("Admission enquiry submitted successfully!");
       setToastVariant("success");
       setShowToast(true);
+  
+      // Reset form data
       setFormData({
         studentName: "",
         parentName: "",
@@ -89,28 +76,9 @@ const Home = () => {
         classInterested: "",
         message: "",
       });
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      let errorMessage = "Failed to submit form. Please try again.";
-      
-      if (err.response) {
-        console.error('Error response:', err.response.data);
-        errorMessage = err.response.data.message || `Server error: ${err.response.status}`;
-      } else if (err.request) {
-        console.error('Error request:', err.request);
-        errorMessage = "No response from server. Please check if the backend is running.";
-      } else {
-        console.error('Error message:', err.message);
-        errorMessage = err.message;
-      }
-      
-      setError(errorMessage);
-      setToastMessage(errorMessage);
-      setToastVariant("danger");
-      setShowToast(true);
-    } finally {
+  
       setIsSubmitting(false);
-    }
+    }, 1000); // Simulate a delay of 1 second
   };
 
   return (
@@ -348,10 +316,6 @@ const Home = () => {
                       <option value="Class 6">Class 6</option>
                       <option value="Class 7">Class 7</option>
                       <option value="Class 8">Class 8</option>
-                      <option value="Class 9">Class 9</option>
-                      <option value="Class 10">Class 10</option>
-                      <option value="Class 11">Class 11</option>
-                      <option value="Class 12">Class 12</option>
                     </Form.Select>
                   </Form.Group>
                   <Form.Group className="mb-3">
