@@ -1,24 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Card, Toast } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Toast,
+} from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { submitAdmissionEnquiry } from "../services/firebaseService";
 
 const processSteps = [
   {
     step: "Step 1: Inquiry",
-    description: "Contact us or visit the school to learn about the admission process.",
+    description:
+      "Contact us or visit the school to learn about the admission process.",
     icon: "bi bi-search",
     delay: 100,
   },
   {
     step: "Step 2: Registration",
-    description: "Fill out the registration form and submit the required documents.",
+    description:
+      "Fill out the registration form and submit the required documents.",
     icon: "bi bi-pencil-square",
     delay: 200,
   },
   {
     step: "Step 3: Assessment",
-    description: "Participate in the entrance assessment and interview process.",
+    description:
+      "Participate in the entrance assessment and interview process.",
     icon: "bi bi-clipboard-check",
     delay: 300,
   },
@@ -52,12 +64,12 @@ const AdmissionEnquiry = () => {
     });
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate a successful submission
-    setTimeout(() => {
+    try {
+      await submitAdmissionEnquiry(formData);
       setToastMessage("Admission enquiry submitted successfully!");
       setToastVariant("success");
       setShowToast(true);
@@ -71,9 +83,16 @@ const AdmissionEnquiry = () => {
         classInterested: "",
         message: "",
       });
-
+    } catch (error) {
+      console.error("Error submitting admission enquiry:", error);
+      setToastMessage(
+        "Failed to submit admission enquiry. Please try again."
+      );
+      setToastVariant("danger");
+      setShowToast(true);
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e) => {
@@ -135,7 +154,12 @@ const AdmissionEnquiry = () => {
       <section className="py-5">
         <Container>
           <Row>
-            <Col md={8} className="mx-auto" data-aos="fade-up" data-aos-delay="200">
+            <Col
+              md={8}
+              className="mx-auto"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
               <Card className="border-0 shadow-sm">
                 <Card.Body className="p-4">
                   <Form onSubmit={handleSubmit}>

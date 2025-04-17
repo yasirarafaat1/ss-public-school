@@ -15,8 +15,12 @@ import Infrastructure from "./pages/Infrastructure";
 import PageNotFound from "./pages/PageNotFound";
 import PrincipalMessage from "./pages/PrincipalMessage";
 import Admission from "./pages/Admission";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AdmissionEnquiry from "./pages/AdmissionEnquiry";
+// import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DeveloperInfo from "./pages/DeveloperInfo";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Layout component to conditionally render Nav and Footer
 const AppLayout = () => {
@@ -35,8 +39,18 @@ const AppLayout = () => {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/principal-message" element={<PrincipalMessage />} />
           <Route path="/admission" element={<Admission />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/developer-info" element={<DeveloperInfo />} />
+          <Route path="/admission/enquiry" element={<AdmissionEnquiry />} />
+          {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+          <Route path="/developer/info" element={<DeveloperInfo />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </main>

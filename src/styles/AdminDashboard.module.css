@@ -1,0 +1,29 @@
+/* Styles for Admin Dashboard */
+
+.dashboardContainer {
+    padding-top: 5rem;
+  padding-bottom: 2rem; /* Add some space at the bottom */
+}
+
+/* Optional: Style cards if needed */
+/* 
+.dashboardContainer .card {
+  margin-bottom: 1.5rem; 
+}
+*/
+
+/* Optional: Ensure tables within cards don't overflow horizontally */
+/*
+.dashboardContainer .card .table-responsive {
+  max-height: 500px; 
+  overflow-y: auto;
+}
+*/
+
+/* Optional: Style table headers */
+/*
+.dashboardContainer thead th {
+  background-color: #f8f9fa; 
+  font-weight: bold;
+}
+*/

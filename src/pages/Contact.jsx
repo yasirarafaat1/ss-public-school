@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Card, Toast } from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { submitContactForm } from "../services/firebaseService";
 
 const Contact = () => {
+  // const { showSuccess, showError } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,41 +31,33 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // console.log("Submitting contact form data:", formData);
-
-      // Simulate a successful submission
-      setTimeout(() => {
-        setToastMessage("Message sent successfully! We'll get back to you soon.");
-        setToastVariant("success");
-        setShowToast(true);
-
-        // Reset form data
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          subject: "",
-          message: "",
-        });
-
-        setIsSubmitting(false);
-      }, 1000);
-    } catch (err) {
-      console.error("Error submitting contact form:", err);
-
+      await submitContactForm(formData);
+      setToastMessage("Message sent successfully! We'll get back to you soon.");
+      setToastVariant("success");
+      setShowToast(true);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
       setToastMessage("Failed to send message. Please try again.");
       setToastVariant("danger");
       setShowToast(true);
-
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -101,6 +95,7 @@ const Contact = () => {
                             onChange={handleChange}
                             placeholder="Enter your name"
                             required
+                            disabled={isSubmitting}
                           />
                         </Form.Group>
                       </Col>
@@ -114,6 +109,7 @@ const Contact = () => {
                             onChange={handleChange}
                             placeholder="Enter your email"
                             required
+                            disabled={isSubmitting}
                           />
                         </Form.Group>
                       </Col>
@@ -127,6 +123,7 @@ const Contact = () => {
                             onChange={handleChange}
                             placeholder="Enter your phone number"
                             required
+                            disabled={isSubmitting}
                           />
                         </Form.Group>
                       </Col>
@@ -138,6 +135,7 @@ const Contact = () => {
                             value={formData.subject}
                             onChange={handleChange}
                             required
+                            disabled={isSubmitting}
                           >
                             <option value="">Select a subject</option>
                             <option value="General Inquiry">General Inquiry</option>
@@ -158,6 +156,7 @@ const Contact = () => {
                             rows={4}
                             placeholder="Enter your message"
                             required
+                            disabled={isSubmitting}
                           />
                         </Form.Group>
                       </Col>

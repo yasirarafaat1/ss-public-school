@@ -1,25 +1,36 @@
 import React, { useState } from 'react';
 import { Toast } from 'react-bootstrap';
 import './Footer.css'; // Import the CSS file
+// Import the service function
+import { submitNewsletterSubscription } from '../services/firebaseService';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('Thank you for subscribing to our newsletter!');
+  const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('success');
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
 
-  const handleNewsletterSubmit = (e) => {
+  // Make the handler async
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
+    if (!email) return; // Basic validation
+    setIsSubmitting(true);
   
-    // Simulate a successful submission
-    setTimeout(() => {
+    try {
+      await submitNewsletterSubscription(email);
       setToastType('success');
       setToastMessage('Thank you for subscribing to our newsletter!');
       setShowToast(true);
-  
-      // Clear the input field
-      setEmail('');
-    }, 1000); // Simulate a delay of 1 second
+      setEmail(''); // Clear the input field on success
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      setToastType('danger');
+      setToastMessage('Failed to subscribe. Please try again.');
+      setShowToast(true);
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   return (
@@ -152,9 +163,18 @@ const Footer = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={isSubmitting} // Disable input while submitting
                   />
-                  <button className="btn btn-primary newsletter-btn" type="submit">
-                    <i className="bi bi-arrow-right-square"></i>
+                  <button 
+                    className="btn btn-primary newsletter-btn" 
+                    type="submit"
+                    disabled={isSubmitting} // Disable button while submitting
+                    >
+                    {isSubmitting ? (
+                       <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    ) : (
+                       <i className="bi bi-arrow-right-square"></i>
+                    )}
                   </button>
                 </div>
               </form>

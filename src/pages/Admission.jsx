@@ -34,7 +34,7 @@ const Admission = () => {
               </p>
               <Button
                 as={Link}
-                to="/admission-enquiry"
+                to="/admission/enquiry"
                 variant="light"
                 size="lg"
                 className="mt-4"
@@ -208,7 +208,7 @@ const Admission = () => {
                     <Col md={4} className="text-md-end mt-3 mt-md-0">
                       <Button
                         as={Link}
-                        to="/admission-enquiry"
+                        to="/admission/enquiry"
                         variant="primary"
                         size="lg"
                         data-aos="zoom-in"

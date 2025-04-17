@@ -1,24 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Card, Form, Alert, Toast, ToastContainer } from "react-bootstrap";
+import { Container, Row, Col, Button, Card, /*Form, Alert, Toast, ToastContainer*/ } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 // import './Home.css';
 
 const Home = () => {
-  const [formData, setFormData] = useState({
-    studentName: "",
-    parentName: "",
-    email: "",
-    phone: "",
-    classInterested: "",
-    message: "",
-  });
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("success");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
@@ -39,47 +26,6 @@ const Home = () => {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError("");
-  
-    if (!isOnline) {
-      setToastMessage("Please check your internet connection and try again.");
-      setToastVariant("danger");
-      setShowToast(true);
-      setIsSubmitting(false);
-      return;
-    }
-  
-    // Simulate a successful submission
-    setTimeout(() => {
-      setToastMessage("Admission enquiry submitted successfully!");
-      setToastVariant("success");
-      setShowToast(true);
-  
-      // Reset form data
-      setFormData({
-        studentName: "",
-        parentName: "",
-        email: "",
-        phone: "",
-        classInterested: "",
-        message: "",
-      });
-  
-      setIsSubmitting(false);
-    }, 1000); // Simulate a delay of 1 second
-  };
 
   return (
     <>
@@ -251,92 +197,7 @@ const Home = () => {
             <Col lg={6} data-aos="fade-left">
               <div className="admission-form p-4">
                 <h3 className="mb-4">Start Your Admission Process</h3>
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Student's Name</Form.Label>
-                    <Form.Control 
-                      type="text" 
-                      name="studentName"
-                      value={formData.studentName}
-                      onChange={handleChange}
-                      placeholder="Enter student's name" 
-                      required 
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Parent's/Guardian's Name</Form.Label>
-                    <Form.Control 
-                      type="text" 
-                      name="parentName"
-                      value={formData.parentName}
-                      onChange={handleChange}
-                      placeholder="Enter parent's/guardian's name" 
-                      required 
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control 
-                      type="email" 
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Enter email address" 
-                      required 
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Phone</Form.Label>
-                    <Form.Control 
-                      type="tel" 
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="Enter phone number" 
-                      required 
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Class Interested In</Form.Label>
-                    <Form.Select 
-                      name="classInterested"
-                      value={formData.classInterested}
-                      onChange={handleChange}
-                      required 
-                    >
-                      <option value="">Select a class</option>
-                      <option value="Nursery">Nursery</option>
-                      <option value="LKG">LKG</option>
-                      <option value="UKG">UKG</option>
-                      <option value="Class 1">Class 1</option>
-                      <option value="Class 2">Class 2</option>
-                      <option value="Class 3">Class 3</option>
-                      <option value="Class 4">Class 4</option>
-                      <option value="Class 5">Class 5</option>
-                      <option value="Class 6">Class 6</option>
-                      <option value="Class 7">Class 7</option>
-                      <option value="Class 8">Class 8</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Message</Form.Label>
-                    <Form.Control 
-                      as="textarea" 
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Enter your message" 
-                      rows={3}
-                    />
-                  </Form.Group>
-                  <Button 
-                    variant="primary" 
-                    type="submit"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Submitting..." : "Submit Application"}
-                  </Button>
-                </Form>
+                {/* Remove the form section if it existed here, or ensure it's gone */}
               </div>
             </Col>
           </Row>
@@ -376,40 +237,6 @@ const Home = () => {
           </Row>
         </Container>
       </section>
-
-      {/* Toast Container */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          zIndex: 9999
-        }}
-      >
-        <Toast 
-          onClose={() => setShowToast(false)} 
-          show={showToast} 
-          delay={3000} 
-          autohide
-          bg={toastVariant}
-          className="text-white"
-        >
-          <Toast.Header>
-            <strong className="me-auto">
-              {toastVariant === "success" ? "Success" : "Error"}
-            </strong>
-          </Toast.Header>
-          <Toast.Body>
-            {toastMessage}
-          </Toast.Body>
-        </Toast>
-      </div>
-
-      {error && (
-        <Alert variant="danger" className="mt-3">
-          {error}
-        </Alert>
-      )}
     </>
   );
 };
