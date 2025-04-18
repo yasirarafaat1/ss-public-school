@@ -1,0 +1,81 @@
+/* Styles for Gallery Page */
+
+.galleryCard {
+  overflow: hidden; /* Ensure image doesn't overflow card boundaries */
+}
+
+.galleryImage {
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  width: 100%; 
+  height: 250px; /* Or your preferred height */
+  object-fit: cover; /* Ensure images cover the area */
+}
+
+.galleryImage:hover {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+/* Lightbox Modal Styles */
+.lightboxModal .modal-content {
+  background-color: rgba(0, 0, 0, 0.85); /* Dark semi-transparent background */
+  border: none;
+  border-radius: 0;
+}
+
+.lightboxBody {
+  padding: 0; /* Remove default padding */
+  position: relative; /* For positioning buttons */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh; /* Adjust height as needed */
+}
+
+.lightboxImage {
+  max-width: 90%;
+  max-height: 90%; 
+  object-fit: contain; /* Ensure entire image is visible */
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.2) !important; 
+  border: none;
+  color: black !important;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+   background-color: rgba(255, 255, 255, 0.4) !important; 
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: none;
+  color: black !important;
+  padding: 0.5rem 1rem;
+}
+
+.navButton:hover {
+   background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.prevButton {
+  left: 15px;
+}
+
+.nextButton {
+  right: 15px;
+} 

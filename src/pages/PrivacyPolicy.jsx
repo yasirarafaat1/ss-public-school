@@ -10,7 +10,6 @@ const PrivacyPolicy = () => {
         {/* Page Header */}
         <div className="text-center mb-5">
           <h1 className="display-4 fw-bold text-primary">Privacy Policy</h1>
-          <p className="lead text-muted">Last updated: {new Date().toLocaleDateString()}</p>
         </div>
 
         <Row className="justify-content-center">

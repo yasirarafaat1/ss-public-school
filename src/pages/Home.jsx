@@ -166,41 +166,60 @@ const Home = () => {
       </section>
 
       {/* <!-- Admission Section --> */}
-      <section className="admission-section py-5 bg-light">
+      <section className="py-5 bg-light">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">Admission Process</h2>
-          <Row className="g-4">
-            <Col lg={6} data-aos="fade-right">
-              <div className="admission-info p-4">
-                <h3 className="mb-4">How to Apply</h3>
-                <div className="mb-4">
-                  <i className="bi bi-1-circle-fill text-primary me-3"></i>
-                  <span>Fill out the admission form</span>
+          <div className="row justify-content-center">
+            <div className="col-lg-10">
+              <h2 className="text-center mb-5 display-5 fw-bold text-primary" data-aos="fade-up">
+                Message from the Principal
+              </h2>
+              <div className="card border-0 shadow-lg overflow-hidden" data-aos="zoom-in">
+                <div className="row g-0">
+                  <div className="col-md-4 d-flex align-items-center" data-aos="fade-right">
+                    <img
+                      src="https://media.istockphoto.com/id/1300434912/photo/young-business-woman-got-overjoyed-by-good-news-and-started-celebrating-while-working-on.webp?a=1&b=1&s=612x612&w=0&k=20&c=qE_KkcG9arxtuMq1rwNNGpVIUp2fd02nJIs7lkWLZhg="
+                      className="img-fluid rounded-start"
+                      alt="Principal [Name]"
+                      style={{ objectFit: "cover", height: "100%" }}
+                    />
+                  </div>
+                  <div className="col-md-8" data-aos="fade-left">
+                    <div className="card-body p-4 p-lg-5">
+                      <div className="d-flex align-items-center mb-4">
+                        <div>
+                          <h3 className="card-title mb-1">Dr. Jane Smith</h3>
+                          <p className="text-muted mb-0">Principal</p>
+                        </div>
+                      </div>
+
+                      <blockquote className="blockquote mb-4">
+                        <p className="lead fst-italic">
+                          "At [School Name], we believe in nurturing each
+                          student's unique potential through innovative teaching
+                          methods and a values-based education system."
+                        </p>
+                      </blockquote>
+
+                      <div className="card-text">
+                        <p className="lead">
+                          Detailed message text goes here... Our commitment to
+                          academic excellence combined with character development
+                          ensures our students become responsible global citizens.
+                        </p>
+
+                        <div className="mt-4">
+                          <a href="/principal-message" className="btn btn-outline-primary">
+                            Read Full Message{" "}
+                            <i className="bi bi-arrow-right ms-2"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="mb-4">
-                  <i className="bi bi-2-circle-fill text-primary me-3"></i>
-                  <span>Submit required documents</span>
-                </div>
-                <div className="mb-4">
-                  <i className="bi bi-3-circle-fill text-primary me-3"></i>
-                  <span>Attend the entrance assessment</span>
-                </div>
-                <div className="mb-4">
-                  <i className="bi bi-4-circle-fill text-primary me-3"></i>
-                  <span>Complete the admission process</span>
-                </div>
-                <Button variant="primary" as={Link} to="/admission" className="mt-3">
-                  Learn More About Admission
-                </Button>
               </div>
-            </Col>
-            <Col lg={6} data-aos="fade-left">
-              <div className="admission-form p-4">
-                <h3 className="mb-4">Start Your Admission Process</h3>
-                {/* Remove the form section if it existed here, or ensure it's gone */}
-              </div>
-            </Col>
-          </Row>
+            </div>
+          </div>
         </Container>
       </section>
 

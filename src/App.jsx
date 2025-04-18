@@ -16,7 +16,7 @@ import PageNotFound from "./pages/PageNotFound";
 import PrincipalMessage from "./pages/PrincipalMessage";
 import Admission from "./pages/Admission";
 import AdmissionEnquiry from "./pages/AdmissionEnquiry";
-// import PrivacyPolicy from "./pages/PrivacyPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DeveloperInfo from "./pages/DeveloperInfo";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
@@ -40,7 +40,7 @@ const AppLayout = () => {
           <Route path="/principal-message" element={<PrincipalMessage />} />
           <Route path="/admission" element={<Admission />} />
           <Route path="/admission/enquiry" element={<AdmissionEnquiry />} />
-          {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/developer/info" element={<DeveloperInfo />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
