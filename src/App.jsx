@@ -3,7 +3,12 @@ import { Helmet } from "react-helmet";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Nav from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -16,16 +21,17 @@ import PageNotFound from "./pages/PageNotFound";
 import PrincipalMessage from "./pages/PrincipalMessage";
 import Admission from "./pages/Admission";
 import AdmissionEnquiry from "./pages/AdmissionEnquiry";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+// import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DeveloperInfo from "./pages/DeveloperInfo";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SettingsManager from "./components/SettingsManager";
 
 // Layout component to conditionally render Nav and Footer
 const AppLayout = () => {
   const location = useLocation();
-  
+
   return (
     <>
       <Nav />
@@ -40,16 +46,16 @@ const AppLayout = () => {
           <Route path="/principal-message" element={<PrincipalMessage />} />
           <Route path="/admission" element={<Admission />} />
           <Route path="/admission/enquiry" element={<AdmissionEnquiry />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/developer/info" element={<DeveloperInfo />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route 
-            path="/admin/dashboard" 
+          <Route path="/setting" element={<SettingsManager />} />
+          <Route
+            path="/admin/dashboard"
             element={
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
-            } 
+            }
           />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
@@ -66,7 +72,7 @@ export default function App() {
       once: true,
     });
   }, []);
-  
+
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <div className="app-container">

@@ -1,21 +1,20 @@
-// Firebase Service: Handles all Firebase interactions (Auth, Realtime Database)
-
 import { initializeApp } from "firebase/app";
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
+import {
+  getAuth,
+  signInWithEmailAndPassword,
   onAuthStateChanged, // Needed for ProtectedRoute
   signOut as firebaseSignOut // Rename to avoid conflict if you have a local signOut function
 } from "firebase/auth";
-import { 
-  getDatabase, 
-  ref, 
-  get, 
-  push, 
-  set, 
-  query, 
+import {
+  getDatabase,
+  ref,
+  get,
+  push,
+  set,
+  query,
   orderByChild // Add other RTDB functions as needed
 } from "firebase/database";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Read Firebase config from environment variables
 const firebaseConfig = {
@@ -37,9 +36,10 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
 }
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
+const storage = getStorage(app);
 
 // --- Authentication Functions ---
 
@@ -65,13 +65,13 @@ export const adminLogin = async (email, password) => {
  * @returns {Promise<void>}
  */
 export const adminLogout = async () => {
-    try {
-        await firebaseSignOut(auth);
-        console.log("Admin logout successful");
-    } catch (error) {
-        console.error("Admin logout error:", error);
-        throw error;
-    }
+  try {
+    await firebaseSignOut(auth);
+    console.log("Admin logout successful");
+  } catch (error) {
+    console.error("Admin logout error:", error);
+    throw error;
+  }
 };
 
 // --- Realtime Database Functions ---
@@ -86,8 +86,8 @@ export const submitContactForm = async (formData) => {
     const contactFormsRef = ref(database, 'contactForms');
     const newFormRef = push(contactFormsRef); // Creates a unique key
     await set(newFormRef, {
-        ...formData,
-        submittedAt: new Date().toISOString() // Add a timestamp
+      ...formData,
+      submittedAt: new Date().toISOString() // Add a timestamp
     });
     console.log("Contact form submitted successfully:", newFormRef.key);
     return newFormRef.key; // Return the key
@@ -104,14 +104,29 @@ export const submitContactForm = async (formData) => {
  */
 export const submitAdmissionEnquiry = async (enquiryData) => {
   try {
-    // Assuming admissions are stored under 'admissions' node
-    const admissionsRef = ref(database, 'admissions'); 
+    console.log('Submitting admission enquiry:', enquiryData);
+    // Save to 'admissionEnquiries' node to match the reading path
+    const admissionsRef = ref(database, 'admissionEnquiries');
     const newEnquiryRef = push(admissionsRef);
-    await set(newEnquiryRef, {
-        ...enquiryData,
-        submittedAt: new Date().toISOString()
-    });
-    console.log("Admission enquiry submitted successfully:", newEnquiryRef.key);
+
+    // Create a complete data object with all required fields
+    const enquiryWithMetadata = {
+      ...enquiryData,
+      submittedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      // Ensure all required fields have values
+      studentName: enquiryData.studentName || 'Not provided',
+      parentName: enquiryData.parentName || 'Not provided',
+      email: enquiryData.email || 'No email provided',
+      phone: enquiryData.phone || 'Not provided',
+      classInterested: enquiryData.classInterested || 'Not specified',
+      message: enquiryData.message || 'No message provided',
+      status: 'new' // Add status field for tracking
+    };
+
+    await set(newEnquiryRef, enquiryWithMetadata);
+    console.log("Admission enquiry submitted successfully. ID:", newEnquiryRef.key);
     return newEnquiryRef.key;
   } catch (error) {
     console.error("Error submitting admission enquiry:", error);
@@ -130,8 +145,8 @@ export const submitNewsletterSubscription = async (email) => {
     const newsletterRef = ref(database, 'newsletterSubscriptions');
     const newSubscriptionRef = push(newsletterRef);
     await set(newSubscriptionRef, {
-        email: email,
-        subscribedAt: new Date().toISOString()
+      email: email,
+      subscribedAt: new Date().toISOString()
     });
     console.log("Newsletter subscription successful:", newSubscriptionRef.key);
     return newSubscriptionRef.key;
@@ -148,14 +163,33 @@ export const submitNewsletterSubscription = async (email) => {
  */
 export const getContactForms = async () => {
   try {
-    const contactFormsRef = ref(database, 'contactForms');
-    const snapshot = await get(contactFormsRef);
+    console.log('Fetching contact forms...');
+    const formsRef = ref(database, 'contactForms');
+    const snapshot = await get(formsRef);
+    console.log('Contact forms snapshot:', snapshot.exists() ? 'exists' : 'does not exist');
+
     if (snapshot.exists()) {
       const data = snapshot.val();
-      // Convert object of objects into an array of objects with IDs
-      return Object.keys(data).map(key => ({ id: key, ...data[key] }));
+      console.log('Raw contact forms data:', data);
+
+      const result = data ? Object.keys(data).map(key => ({
+        id: key,
+        ...data[key],
+        submittedAt: data[key].submittedAt || data[key].timestamp || new Date().toISOString(),
+        name: data[key].name || 'Anonymous',
+        email: data[key].email || 'No email provided',
+        message: data[key].message || 'No message provided',
+        timestamp: data[key].timestamp || new Date().toISOString(),
+        // Add default values for required table fields
+        phone: data[key].phone || 'N/A',
+        subject: data[key].subject || 'No subject'
+      })) : [];
+
+      console.log('Processed contact forms:', result);
+      return result;
     } else {
-      return []; // Return empty array if no data
+      console.log('No contact forms found');
+      return [];
     }
   } catch (error) {
     console.error("Error fetching contact forms:", error);
@@ -169,15 +203,47 @@ export const getContactForms = async () => {
  */
 export const getAdmissionEnquiries = async () => {
   try {
-    // Assuming admissions are stored under 'admissions' node
-    const admissionsRef = ref(database, 'admissions'); 
+    console.log('Fetching admission enquiries...');
+    const admissionsRef = ref(database, 'admissionEnquiries');
     const snapshot = await get(admissionsRef);
+    console.log('Admission enquiries snapshot:', snapshot.exists() ? 'exists' : 'does not exist');
+
     if (snapshot.exists()) {
       const data = snapshot.val();
-       // Convert object of objects into an array of objects with IDs
-      return Object.keys(data).map(key => ({ id: key, ...data[key] }));
+      console.log('Raw admission enquiries data:', data);
+
+      const result = data ? Object.entries(data).map(([key, value]) => {
+        // Ensure all required fields have values
+        const enquiry = {
+          id: key,
+          studentName: value.studentName || 'Not provided',
+          parentName: value.parentName || 'Not provided',
+          email: value.email || 'No email provided',
+          phone: value.phone || 'Not provided',
+          classInterested: value.classInterested || 'Not specified',
+          message: value.message || 'No message provided',
+          status: value.status || 'new',
+          // Handle timestamps
+          submittedAt: value.submittedAt || value.createdAt || new Date().toISOString(),
+          createdAt: value.createdAt || value.submittedAt || new Date().toISOString(),
+          updatedAt: value.updatedAt || value.createdAt || value.submittedAt || new Date().toISOString()
+        };
+
+        // Add any additional fields that might be present
+        Object.keys(value).forEach(field => {
+          if (!enquiry.hasOwnProperty(field)) {
+            enquiry[field] = value[field];
+          }
+        });
+
+        return enquiry;
+      }) : [];
+
+      console.log('Processed admission enquiries:', result);
+      return result;
     } else {
-      return []; // Return empty array if no data
+      console.log('No admission enquiries found');
+      return [];
     }
   } catch (error) {
     console.error("Error fetching admission enquiries:", error);
@@ -191,15 +257,30 @@ export const getAdmissionEnquiries = async () => {
  */
 export const getNewsletterSubscriptions = async () => {
   try {
-    // Assuming subscriptions are stored under 'newsletterSubscriptions' node
-    const newsletterRef = ref(database, 'newsletterSubscriptions'); 
+    console.log('Fetching newsletter subscriptions...');
+    const newsletterRef = ref(database, 'newsletterSubscriptions');
     const snapshot = await get(newsletterRef);
+    console.log('Newsletter subscriptions snapshot:', snapshot.exists() ? 'exists' : 'does not exist');
+
     if (snapshot.exists()) {
       const data = snapshot.val();
-       // Convert object of objects into an array of objects with IDs
-      return Object.keys(data).map(key => ({ id: key, ...data[key] }));
+      console.log('Raw newsletter subscriptions data:', data);
+
+      const result = data ? Object.keys(data).map(key => ({
+        id: key,
+        ...data[key],
+        email: data[key].email || 'No email provided',
+        subscribedAt: data[key].subscribedAt || data[key].timestamp || new Date().toISOString(),
+        timestamp: data[key].timestamp || data[key].subscribedAt || new Date().toISOString(),
+        // Add default values for display
+        name: data[key].name || 'Subscriber'
+      })) : [];
+
+      console.log('Processed newsletter subscriptions:', result);
+      return result;
     } else {
-      return []; // Return empty array if no data
+      console.log('No newsletter subscriptions found');
+      return [];
     }
   } catch (error) {
     console.error("Error fetching newsletter subscriptions:", error);
@@ -212,7 +293,7 @@ export const getNewsletterSubscriptions = async () => {
 const getStaffMembers = async () => {
   console.warn("getStaffMembers not implemented for Realtime Database yet.");
   // TODO: Implement logic to fetch staff from RTDB (e.g., ref(database, 'staff'))
-  return []; 
+  return [];
 };
 
 const getGalleryImages = async () => {
@@ -229,9 +310,69 @@ const getNewsAndEvents = async () => {
 
 const getInfrastructureDetails = async () => {
   console.warn("getInfrastructureDetails not implemented for Realtime Database yet.");
-   // TODO: Implement logic to fetch infrastructure details from RTDB (e.g., ref(database, 'infrastructure'))
+  // TODO: Implement logic to fetch infrastructure details from RTDB (e.g., ref(database, 'infrastructure'))
   return {}; // Or appropriate default
 };
 
-// Export auth, database, and onAuthStateChanged for use elsewhere (like ProtectedRoute)
-export { auth, database, onAuthStateChanged }; 
+export const getPublicFeeStructure = async () => {
+  try {
+    const snapshot = await get(ref(database, 'settings/feeStructure'));
+    return snapshot.val() || { classes: [] };
+  } catch (error) {
+    console.error("Error fetching public fee structure:", error);
+    return { classes: [] };
+  }
+};
+
+export const getPublicImportantDates = async () => {
+  try {
+    const snapshot = await get(ref(database, 'settings/importantDates'));
+    return snapshot.val() || { dates: [] };
+  } catch (error) {
+    console.error("Error fetching public important dates:", error);
+    return { dates: [] };
+  }
+};
+
+// Function to upload a file to Firebase Storage
+export const uploadFile = async (file, path = 'staff') => {
+  try {
+
+    if (!file) {
+      throw new Error('No file provided');
+    }
+
+    // Create a reference to the file in Firebase Storage
+    const fileRef = storageRef(storage, `${path}/${Date.now()}_${file.name}`);
+
+    // Set metadata to avoid CORS issues
+    const metadata = {
+      contentType: file.type,
+      customMetadata: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    };
+
+    // Upload the file
+    const snapshot = await uploadBytes(fileRef, file);
+
+    // Get the download URL
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    return {
+      success: true,
+      downloadURL,
+      fileName: file.name,
+      path: snapshot.ref.fullPath
+    };
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+// Export auth, database, storage, app, and onAuthStateChanged for use elsewhere
+export { auth, database, storage, onAuthStateChanged };

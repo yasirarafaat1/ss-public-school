@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../services/firebaseService";
 import { useNavigate } from 'react-router-dom';
 import { 
   getContactForms, 
@@ -7,6 +9,7 @@ import {
   adminLogout // Import the logout function
 } from "../services/firebaseService"; // Adjust path as needed
 import { Container, Row, Col, Card, Table, Button, Alert, Spinner } from 'react-bootstrap';
+import SettingsManager from '../components/SettingsManager';
 import styles from "../styles/AdminDashboard.module.css"; // Add the missing CSS module import
 
 const AdminDashboard = () => {
@@ -22,11 +25,15 @@ const AdminDashboard = () => {
       setLoading(true);
       setError('');
       try {
+        console.log('Fetching data...');
         const [admissionsList, contactsList, newslettersList] = await Promise.all([
           getAdmissionEnquiries(),
           getContactForms(),
           getNewsletterSubscriptions()
         ]);
+        
+        console.log('Fetched data:', { admissionsList, contactsList, newslettersList });
+        
         setAdmissions(admissionsList);
         setContacts(contactsList);
         setNewsletters(newslettersList);
@@ -53,6 +60,37 @@ const AdminDashboard = () => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in, fetch the data
+        try {
+          setLoading(true);
+          setError('');
+          const [admissionsList, contactsList, newslettersList] = await Promise.all([
+            getAdmissionEnquiries(),
+            getContactForms(),
+            getNewsletterSubscriptions()
+          ]);
+          setAdmissions(admissionsList);
+          setContacts(contactsList);
+          setNewsletters(newslettersList);
+        } catch (err) {
+          console.error("Error fetching admin data:", err);
+          setError("Failed to load data. Please check your connection or permissions.");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        // No user is signed in, redirect to login
+        navigate('/admin/login');
+      }
+    });
+  
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [navigate]);
+
   return (
     <Container fluid className={`mt-4 ${styles.dashboardContainer || ''}`}>
       <Row className="mb-3">
@@ -77,6 +115,10 @@ const AdminDashboard = () => {
         </div>
       ) : (
         <Row>
+          {/* Settings Management */}
+          <Col md={12} className="mb-4">
+            <SettingsManager />
+          </Col>
           {/* Admission Enquiries Table */}
           <Col md={12} className="mb-4">
             <Card>
