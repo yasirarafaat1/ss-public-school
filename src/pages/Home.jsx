@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Card, /*Form, Alert, Toast, ToastContainer*/ } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card /*Form, Alert, Toast, ToastContainer*/,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
 // import './Home.css';
 
 const Home = () => {
@@ -12,35 +18,35 @@ const Home = () => {
     AOS.init({
       duration: 1000,
       once: true,
-      offset: 100
+      offset: 100,
     });
 
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
   return (
     <>
       {/* <!-- Hero Section --> */}
-      <section 
+      <section
         className="hero-section d-flex align-items-center text-white"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sfGVufDB8fDB8fHww')",
+          backgroundImage: "url('/front.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "80vh",
-          position: "relative"
+          position: "relative",
         }}
       >
-        <div 
+        <div
           className="overlay"
           style={{
             position: "absolute",
@@ -48,7 +54,7 @@ const Home = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)"
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         ></div>
         <Container className="position-relative z-1 py-10">
@@ -57,14 +63,33 @@ const Home = () => {
               <h1 className="display-3 fw-bold hero-title">
                 Welcome to <span className="highlight">SS Public School</span>
               </h1>
-              <p className="lead hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+              <p
+                className="lead hero-subtitle"
+                data-aos="fade-up"
+                data-aos-delay="200"
+              >
                 Empowering Minds, Building Futures
               </p>
-              <div className="hero-buttons" data-aos="fade-up" data-aos-delay="400">
-                <Button variant="primary" size="lg" as={Link} to="/about" className="me-3">
+              <div
+                className="hero-buttons"
+                data-aos="fade-up"
+                data-aos-delay="400"
+              >
+                <Button
+                  variant="primary"
+                  size="lg"
+                  as={Link}
+                  to="/about"
+                  className="me-3"
+                >
                   Learn More
                 </Button>
-                <Button variant="outline-light" size="lg" as={Link} to="/admission">
+                <Button
+                  variant="outline-light"
+                  size="lg"
+                  as={Link}
+                  to="/admission"
+                >
                   Apply Now
                 </Button>
               </div>
@@ -75,27 +100,38 @@ const Home = () => {
       {/* <!-- Features Section --> */}
       <section className="features-section py-5">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">Why Choose Us</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Why Choose Us
+          </h2>
           <Row className="g-4">
             <Col md={4} data-aos="fade-up" data-aos-delay="100">
               <div className="feature-card text-center p-4">
                 <i className="bi bi-book text-primary display-4 mb-3"></i>
                 <h3>Quality Education</h3>
-                <p>Our experienced faculty provides top-notch education with modern teaching methods.</p>
+                <p>
+                  Our experienced faculty provides top-notch education with
+                  modern teaching methods.
+                </p>
               </div>
             </Col>
             <Col md={4} data-aos="fade-up" data-aos-delay="200">
               <div className="feature-card text-center p-4">
                 <i className="bi bi-people text-primary display-4 mb-3"></i>
                 <h3>Experienced Faculty</h3>
-                <p>Learn from the best educators who are passionate about teaching and mentoring.</p>
+                <p>
+                  Learn from the best educators who are passionate about
+                  teaching and mentoring.
+                </p>
               </div>
             </Col>
             <Col md={4} data-aos="fade-up" data-aos-delay="300">
               <div className="feature-card text-center p-4">
                 <i className="bi bi-building text-primary display-4 mb-3"></i>
                 <h3>Modern Infrastructure</h3>
-                <p>State-of-the-art facilities to support comprehensive learning and development.</p>
+                <p>
+                  State-of-the-art facilities to support comprehensive learning
+                  and development.
+                </p>
               </div>
             </Col>
           </Row>
@@ -106,20 +142,22 @@ const Home = () => {
         <Container>
           <Row className="align-items-center">
             <Col lg={6} data-aos="fade-right">
-              <img 
-                src="https://subhashacademy.vercel.app/assets/front3.jpeg" 
-                alt="School Building" 
+              <img
+                src="https://subhashacademy.vercel.app/assets/front3.jpeg"
+                alt="School Building"
                 className="img-fluid rounded shadow"
               />
             </Col>
             <Col lg={6} data-aos="fade-left">
               <h2 className="mb-4">About Our School</h2>
               <p className="lead mb-4">
-                SS Public School is committed to providing quality education and fostering a love for learning.
+                SS Public School is committed to providing quality education and
+                fostering a love for learning.
               </p>
               <p>
-                Our mission is to nurture young minds and prepare them for a bright future through innovative
-                teaching methods and a supportive learning environment.
+                Our mission is to nurture young minds and prepare them for a
+                bright future through innovative teaching methods and a
+                supportive learning environment.
               </p>
               <Button variant="primary" as={Link} to="/about" className="mt-3">
                 Learn More About Us
@@ -131,7 +169,9 @@ const Home = () => {
       {/* <!-- Programs Section --> */}
       <section className="programs-section py-5">
         <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">Our Programs</h2>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Our Programs
+          </h2>
           <Row className="g-4">
             <Col md={6} lg={3} data-aos="zoom-in" data-aos-delay="100">
               <div className="program-card text-center p-4">
@@ -158,7 +198,9 @@ const Home = () => {
               <div className="program-card text-center p-4">
                 <i className="bi bi-trophy text-primary display-4 mb-3"></i>
                 <h3>Extracurricular</h3>
-                <p>Sports, arts, and other activities for holistic development.</p>
+                <p>
+                  Sports, arts, and other activities for holistic development.
+                </p>
               </div>
             </Col>
           </Row>
@@ -170,12 +212,21 @@ const Home = () => {
         <Container>
           <div className="row justify-content-center">
             <div className="col-lg-10">
-              <h2 className="text-center mb-5 display-5 fw-bold text-primary" data-aos="fade-up">
+              <h2
+                className="text-center mb-5 display-5 fw-bold text-primary"
+                data-aos="fade-up"
+              >
                 Message from the Principal
               </h2>
-              <div className="card border-0 shadow-lg overflow-hidden" data-aos="zoom-in">
+              <div
+                className="card border-0 shadow-lg overflow-hidden"
+                data-aos="zoom-in"
+              >
                 <div className="row g-0">
-                  <div className="col-md-4 d-flex align-items-center" data-aos="fade-right">
+                  <div
+                    className="col-md-4 d-flex align-items-center"
+                    data-aos="fade-right"
+                  >
                     <img
                       src="https://media.istockphoto.com/id/1300434912/photo/young-business-woman-got-overjoyed-by-good-news-and-started-celebrating-while-working-on.webp?a=1&b=1&s=612x612&w=0&k=20&c=qE_KkcG9arxtuMq1rwNNGpVIUp2fd02nJIs7lkWLZhg="
                       className="img-fluid rounded-start"
@@ -203,12 +254,16 @@ const Home = () => {
                       <div className="card-text">
                         <p className="lead">
                           Detailed message text goes here... Our commitment to
-                          academic excellence combined with character development
-                          ensures our students become responsible global citizens.
+                          academic excellence combined with character
+                          development ensures our students become responsible
+                          global citizens.
                         </p>
 
                         <div className="mt-4">
-                          <a href="/principal-message" className="btn btn-outline-primary">
+                          <a
+                            href="/principal-message"
+                            className="btn btn-outline-primary"
+                          >
                             Read Full Message{" "}
                             <i className="bi bi-arrow-right ms-2"></i>
                           </a>
@@ -230,7 +285,8 @@ const Home = () => {
             <Col lg={8} data-aos="fade-up">
               <h2 className="mb-4">Have Questions?</h2>
               <p className="lead mb-4">
-                We're here to help! Get in touch with us for any queries or concerns.
+                We're here to help! Get in touch with us for any queries or
+                concerns.
               </p>
               <Button variant="primary" size="lg" as={Link} to="/contact">
                 Contact Us
