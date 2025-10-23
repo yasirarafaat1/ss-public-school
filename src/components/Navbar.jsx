@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 const Navbar = () => {
   const location = useLocation();
@@ -16,7 +16,10 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary animated-navbar" data-aos="zoom-in">
+      <nav
+        className="navbar navbar-expand-lg navbar-dark bg-primary animated-navbar"
+        data-aos="zoom-in"
+      >
         <div className="container-fluid">
           <a className="navbar-brand d-flex align-items-center" href="/">
             <img
@@ -24,7 +27,7 @@ const Navbar = () => {
               alt="Logo"
               // className="me-2"
               style={{ height: "40px" }}
-            /> 
+            />
             <h2>SS Public School</h2>
           </a>
           <button
@@ -51,6 +54,20 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
+
+              {/* Admin link - visible only on desktop */}
+              <li className="nav-item d-none d-lg-block">
+                <Link
+                  className={`nav-link ${
+                    location.pathname === "/admin/dashboard"
+                      ? "active animate__animated animate__pulse"
+                      : ""
+                  }`}
+                  to="/admin/dashboard"
+                >
+                  <i className="bi bi-speedometer2 me-1"></i> Admin
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

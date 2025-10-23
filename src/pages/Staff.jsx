@@ -146,7 +146,7 @@ const Staff = () => {
         <Container>
           <div className="text-center py-5">
             <h1 className="display-5 fw-bold mb-3" data-aos="fade-up">
-              Our Dedicated Faculty
+              Our Staff
             </h1>
             <p
               className="lead text-muted mb-4"
@@ -238,7 +238,7 @@ const Staff = () => {
                           <img
                             src={staff.image || "/logo.png"}
                             alt={staff.name}
-                            className="rounded-circle"
+                            className="rounded-square"
                             onError={handleImageError}
                             style={{
                               width: "80px",

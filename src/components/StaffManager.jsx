@@ -1,42 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Card, Form, Row, Col, Modal, Alert, Spinner, Image } from 'react-bootstrap';
-import { FaEdit, FaTrash, FaPlus, FaTimes, FaUserTie, FaChalkboardTeacher, FaUserGraduate } from 'react-icons/fa';
-import { 
-  getStaffMembers, 
-  addStaffMember, 
-  updateStaffMember, 
-  deleteStaffMember 
-} from '../services/adminService';
-import { uploadFile } from '../services/firebaseService';
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Card,
+  Form,
+  Row,
+  Col,
+  Modal,
+  Alert,
+  Spinner,
+  Image,
+} from "react-bootstrap";
+import {
+  FaEdit,
+  FaTrash,
+  FaPlus,
+  FaTimes,
+  FaUserTie,
+  FaChalkboardTeacher,
+  FaUserGraduate,
+} from "react-icons/fa";
+import {
+  getStaffMembers,
+  addStaffMember,
+  updateStaffMember,
+  deleteStaffMember,
+} from "../services/adminService";
 
 const StaffManager = () => {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    role: '',
-    qualification: '',
-    contact: '',
-    email: '',
-    image: ''
+    name: "",
+    role: "",
+    qualification: "",
+    contact: "",
+    email: "",
+    image: "/logo.png",
   });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch staff members
   const fetchStaff = async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const staffData = await getStaffMembers();
       setStaff(staffData);
     } catch (err) {
-      console.error('Error fetching staff:', err);
-      setError('Failed to load staff members. Please try again.');
+      console.error("Error fetching staff:", err);
+      setError("Failed to load staff members. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,34 +65,20 @@ const StaffManager = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name.includes('social.')) {
-      const socialField = name.split('.')[1];
-      setFormData(prev => ({
+
+    if (name.includes("social.")) {
+      const socialField = name.split(".")[1];
+      setFormData((prev) => ({
         ...prev,
         social: {
           ...prev.social,
-          [socialField]: value
-        }
+          [socialField]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
-      }));
-    }
-  };
-
-  // Handle file selection
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      // Create a preview URL for the selected image
-      const previewUrl = URL.createObjectURL(file);
-      setFormData(prev => ({
-        ...prev,
-        image: previewUrl
+        [name]: value,
       }));
     }
   };
@@ -84,56 +86,47 @@ const StaffManager = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    setUploading(true);
-
+    setIsSubmitting(true);
     try {
-      let imageUrl = formData.image;
-      
-      // If a new file is selected, upload it
-      if (selectedFile) {
-        const uploadResult = await uploadFile(selectedFile, 'staff-photos');
-        if (uploadResult.success) {
-          imageUrl = uploadResult.downloadURL;
-        } else {
-          throw new Error('Failed to upload image');
-        }
-      }
-
+      // Prepare staff data
       const staffData = {
-        ...formData,
-        image: imageUrl
+        name: formData.name.trim(),
+        role: formData.role,
+        qualification: formData.qualification,
+        contact: formData.contact,
+        email: formData.email,
+        // Use default image from public folder
+        image: "/logo.png",
       };
 
+      // If updating, call update function, else create new
       if (editingId) {
         await updateStaffMember(editingId, staffData);
-        setSuccess('Staff member updated successfully!');
+        setSuccess("Staff member updated successfully.");
       } else {
         await addStaffMember(staffData);
-        setSuccess('Staff member added successfully!');
+        setSuccess("Staff member added successfully.");
       }
-      
+
       setShowModal(false);
-      setSelectedFile(null);
       fetchStaff();
     } catch (err) {
-      console.error('Error saving staff member:', err);
-      setError(err.message || 'Failed to save staff member. Please try again.');
+      console.error("Error saving staff member:", err);
+      setError(err.message || "Failed to save staff member.");
     } finally {
-      setUploading(false);
+      setIsSubmitting(false);
     }
   };
 
   // Handle edit button click
   const handleEdit = (staffMember) => {
     setFormData({
-      name: staffMember.name || '',
-      role: staffMember.role || '',
-      qualification: staffMember.qualification || '',
-      contact: staffMember.contact || '',
-      email: staffMember.email || '',
-      image: staffMember.image || ''
+      name: staffMember.name || "",
+      role: staffMember.role || "",
+      qualification: staffMember.qualification || "",
+      contact: staffMember.contact || "",
+      email: staffMember.email || "",
+      image: staffMember.image || "/logo.png",
     });
     setEditingId(staffMember.id);
     setShowModal(true);
@@ -141,15 +134,15 @@ const StaffManager = () => {
 
   // Handle delete button click
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this staff member?')) {
+    if (window.confirm("Are you sure you want to delete this staff member?")) {
       try {
         await deleteStaffMember(id);
-        setSuccess('Staff member deleted successfully!');
+        setSuccess("Staff member deleted successfully!");
         fetchStaff();
-        setTimeout(() => setSuccess(''), 3000);
+        setTimeout(() => setSuccess(""), 3000);
       } catch (err) {
-        console.error('Error deleting staff member:', err);
-        setError('Failed to delete staff member. Please try again.');
+        console.error("Error deleting staff member:", err);
+        setError("Failed to delete staff member. Please try again.");
       }
     }
   };
@@ -157,12 +150,12 @@ const StaffManager = () => {
   // Reset form
   const handleReset = () => {
     setFormData({
-      name: '',
-      role: '',
-      qualification: '',
-      contact: '',
-      email: '',
-      image: ''
+      name: "",
+      role: "",
+      qualification: "",
+      contact: "",
+      email: "",
+      image: "/logo.png",
     });
     setEditingId(null);
   };
@@ -170,8 +163,12 @@ const StaffManager = () => {
   // Get role icon
   const getRoleIcon = (role) => {
     if (!role) return <FaUserGraduate className="text-muted me-2" />;
-    if (role.toLowerCase().includes('principal')) return <FaUserTie className="text-primary me-2" />;
-    if (role.toLowerCase().includes('teacher') || role.toLowerCase().includes('head')) 
+    if (role.toLowerCase().includes("principal"))
+      return <FaUserTie className="text-primary me-2" />;
+    if (
+      role.toLowerCase().includes("teacher") ||
+      role.toLowerCase().includes("head")
+    )
       return <FaChalkboardTeacher className="text-success me-2" />;
     return <FaUserGraduate className="text-muted me-2" />;
   };
@@ -180,8 +177,8 @@ const StaffManager = () => {
     <div className="staff-manager">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4>Manage Staff Members</h4>
-        <Button 
-          variant="primary" 
+        <Button
+          variant="primary"
           onClick={() => {
             handleReset();
             setShowModal(true);
@@ -191,8 +188,16 @@ const StaffManager = () => {
         </Button>
       </div>
 
-      {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
-      {success && <Alert variant="success" className="mb-4">{success}</Alert>}
+      {error && (
+        <Alert variant="danger" className="mb-4">
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert variant="success" className="mb-4">
+          {success}
+        </Alert>
+      )}
 
       {loading ? (
         <div className="text-center py-5">
@@ -206,7 +211,9 @@ const StaffManager = () => {
           <Card.Body>
             <FaUserTie className="display-4 text-muted mb-3" />
             <h5>No staff members found</h5>
-            <p className="text-muted">Click the button above to add a new staff member</p>
+            <p className="text-muted">
+              Click the button above to add a new staff member
+            </p>
           </Card.Body>
         </Card>
       ) : (
@@ -215,23 +222,23 @@ const StaffManager = () => {
             <Col key={member.id}>
               <Card className="h-100">
                 <div className="position-relative">
-                  <Image 
-                    src={member.image} 
+                  <Image
+                    src={member.image}
                     alt={member.name}
                     className="card-img-top"
-                    style={{ height: '200px', objectFit: 'cover' }}
+                    style={{ height: "200px", objectFit: "cover" }}
                   />
                   <div className="position-absolute top-0 end-0 p-2">
-                    <Button 
-                      variant="outline-primary" 
-                      size="sm" 
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
                       className="me-1"
                       onClick={() => handleEdit(member)}
                     >
                       <FaEdit />
                     </Button>
-                    <Button 
-                      variant="outline-danger" 
+                    <Button
+                      variant="outline-danger"
                       size="sm"
                       onClick={() => handleDelete(member.id)}
                     >
@@ -255,9 +262,9 @@ const StaffManager = () => {
                   </p>
                   <div className="d-flex flex-wrap gap-2 mt-3">
                     {member.contact && (
-                      <Button 
-                        variant="outline-primary" 
-                        size="sm" 
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
                         className="d-flex align-items-center"
                         href={`tel:${member.contact}`}
                       >
@@ -266,9 +273,9 @@ const StaffManager = () => {
                       </Button>
                     )}
                     {member.email && (
-                      <Button 
-                        variant="outline-secondary" 
-                        size="sm" 
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
                         className="d-flex align-items-center"
                         href={`mailto:${member.email}`}
                       >
@@ -288,97 +295,91 @@ const StaffManager = () => {
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>{editingId ? 'Edit Staff Member' : 'Add New Staff Member'}</Modal.Title>
+            <Modal.Title>
+              {editingId ? "Edit Staff Member" : "Add New Staff Member"}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Row>
               <Col md={4} className="text-center mb-3">
                 <div className="position-relative d-inline-block">
-                  <Image 
-                    src={formData.image} 
-                    alt="Staff" 
-                    rounded 
+                  <Image
+                    src={formData.image}
+                    alt="Staff"
+                    rounded
                     className="mb-3"
-                    style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      objectFit: "cover",
+                    }}
                   />
                 </div>
-                <Form.Group controlId="formImage" className="mt-2">
-                  <Form.Label>Upload Photo</Form.Label>
-                  <Form.Control 
-                    type="file" 
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="mb-2"
-                  />
-                  <Form.Text className="text-muted">
-                    {selectedFile ? selectedFile.name : 'No file chosen'}
-                  </Form.Text>
-                </Form.Group>
               </Col>
               <Col md={8}>
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formName" className="mb-3">
                       <Form.Label>Full Name</Form.Label>
-                      <Form.Control 
-                        type="text" 
+                      <Form.Control
+                        type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="Enter full name"
-                        required 
+                        required
                       />
                     </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="formRole" className="mb-3">
                       <Form.Label>Role/Position</Form.Label>
-                      <Form.Control 
-                        type="text" 
+                      <Form.Control
+                        type="text"
                         name="role"
                         value={formData.role}
                         onChange={handleInputChange}
                         placeholder="e.g., Math Teacher"
-                        required 
+                        required
                       />
                     </Form.Group>
                   </Col>
                 </Row>
                 <Form.Group controlId="formQualification" className="mb-3">
                   <Form.Label>Qualifications</Form.Label>
-                  <Form.Control 
-                    type="text" 
+                  <Form.Control
+                    type="text"
                     name="qualification"
                     value={formData.qualification}
                     onChange={handleInputChange}
                     placeholder="e.g., M.Sc, B.Ed, Ph.D"
-                    required 
+                    required
                   />
                 </Form.Group>
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formContact" className="mb-3">
                       <Form.Label>Contact Number</Form.Label>
-                      <Form.Control 
-                        type="tel" 
+                      <Form.Control
+                        type="tel"
                         name="contact"
                         value={formData.contact}
                         onChange={handleInputChange}
                         placeholder="e.g., +91 98765 43210"
-                        required 
+                        required
                       />
                     </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="formEmail" className="mb-3">
                       <Form.Label>Email Address</Form.Label>
-                      <Form.Control 
-                        type="email" 
+                      <Form.Control
+                        type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="e.g., staff@example.com"
-                        required 
+                        required
                       />
                     </Form.Group>
                   </Col>
@@ -387,20 +388,35 @@ const StaffManager = () => {
             </Row>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)} disabled={uploading}>
+            <Button
+              variant="secondary"
+              onClick={() => setShowModal(false)}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
-            <Button 
-              variant="primary" 
-              type="submit" 
-              disabled={!formData.name || !formData.role || uploading}
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={!formData.name || !formData.role || isSubmitting}
             >
-              {uploading ? (
+              {isSubmitting ? (
                 <>
-                  <Spinner as="span" size="sm" animation="border" role="status" aria-hidden="true" className="me-2" />
-                  {editingId ? 'Updating...' : 'Uploading...'}
+                  <Spinner
+                    as="span"
+                    size="sm"
+                    animation="border"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  {editingId ? "Updating..." : "Adding..."}
                 </>
-              ) : editingId ? 'Update' : 'Add Staff'}
+              ) : editingId ? (
+                "Update"
+              ) : (
+                "Add Staff"
+              )}
             </Button>
           </Modal.Footer>
         </Form>

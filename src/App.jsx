@@ -32,9 +32,11 @@ import SettingsManager from "./components/SettingsManager";
 const AppLayout = () => {
   const location = useLocation();
 
+  const hideNavFooter = location.pathname.startsWith("/admin");
+
   return (
     <>
-      <Nav />
+      {!hideNavFooter && <Nav />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -60,7 +62,7 @@ const AppLayout = () => {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </main>
-      <Footer />
+      {!hideNavFooter && <Footer />}
     </>
   );
 };
