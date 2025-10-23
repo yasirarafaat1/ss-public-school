@@ -17,7 +17,11 @@ import {
 } from "../services/firebaseService";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { admissionSteps } from "../data/data";
+import {
+  admissionSteps,
+  feeStructure as localFeeStructure,
+  importantDates as localImportantDates,
+} from "../data/data";
 import {
   FaCalendarAlt,
   FaFileAlt,
@@ -70,6 +74,17 @@ const Admission = () => {
         setImportantDates(datesData.dates || []);
       } catch (error) {
         console.error("Error fetching data:", error);
+        // Fallback to local data when Firebase read permission denied or fetch fails
+        try {
+          setFeeStructure(
+            Array.isArray(localFeeStructure)
+              ? localFeeStructure
+              : localFeeStructure.classes || []
+          );
+          setImportantDates(localImportantDates || []);
+        } catch (e) {
+          console.error("Failed to set local fallback data:", e);
+        }
       } finally {
         setLoading(false);
       }
