@@ -194,7 +194,7 @@ const Footer = () => {
                   Privacy Policy
                 </a>
                 <span className="d-none d-md-inline">|</span>
-                <a href="/developer-info" className="text-white text-decoration-none footer-link">
+                <a href="/developer/info" className="text-white text-decoration-none footer-link">
                   Developer Info
                 </a>
               </div>

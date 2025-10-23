@@ -118,7 +118,7 @@ const Staff = () => {
   // Show loading spinner while fetching data
   if (loading) {
     return (
-      <div className="text-center py-5">
+      <div className="text-center mt-6 py-5">
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
