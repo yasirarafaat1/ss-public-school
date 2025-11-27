@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useEffect } from "react";
 
-const Toast = ({ message, type, onClose }) => {
+const Toast = ({ show, message, type, onClose }) => {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000); // Auto close after 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [show, onClose]);
+
+  if (!show) return null;
+
   const getIcon = () => {
     switch (type) {
-      case 'success':
-        return '✓';
-      case 'error':
-        return '✕';
-      case 'warning':
-        return '⚠';
-      case 'info':
-        return 'ℹ';
+      case "success":
+        return "✓";
+      case "error":
+        return "✕";
+      case "warning":
+        return "⚠";
+      case "info":
+        return "ℹ";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -29,4 +41,4 @@ const Toast = ({ message, type, onClose }) => {
   );
 };
 
-export default Toast; 
+export default Toast;

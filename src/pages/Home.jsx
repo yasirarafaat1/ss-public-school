@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import NoticeBoard from "../components/NoticeBoard";
 // import './Home.css';
 
 const Home = () => {
@@ -97,58 +98,11 @@ const Home = () => {
           </Row>
         </Container>
       </section>
-      {/* <!-- Features Section --> */}
-      <section className="features-section py-5">
-        <Container>
-          <h2 className="text-center mb-5" data-aos="fade-up">
-            Why Choose Us
-          </h2>
-          <Row className="g-4">
-            <Col md={4} data-aos="fade-up" data-aos-delay="100">
-              <div className="feature-card text-center p-4">
-                <i className="bi bi-book text-primary display-4 mb-3"></i>
-                <h3>Quality Education</h3>
-                <p>
-                  Our experienced faculty provides top-notch education with
-                  modern teaching methods.
-                </p>
-              </div>
-            </Col>
-            <Col md={4} data-aos="fade-up" data-aos-delay="200">
-              <div className="feature-card text-center p-4">
-                <i className="bi bi-people text-primary display-4 mb-3"></i>
-                <h3>Experienced Faculty</h3>
-                <p>
-                  Learn from the best educators who are passionate about
-                  teaching and mentoring.
-                </p>
-              </div>
-            </Col>
-            <Col md={4} data-aos="fade-up" data-aos-delay="300">
-              <div className="feature-card text-center p-4">
-                <i className="bi bi-building text-primary display-4 mb-3"></i>
-                <h3>Modern Infrastructure</h3>
-                <p>
-                  State-of-the-art facilities to support comprehensive learning
-                  and development.
-                </p>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
       {/* <!-- About Section --> */}
       <section className="about-section py-5 bg-light">
         <Container>
           <Row className="align-items-center">
             <Col lg={6} data-aos="fade-right">
-              <img
-                src="https://subhashacademy.vercel.app/assets/front3.jpeg"
-                alt="School Building"
-                className="img-fluid rounded shadow"
-              />
-            </Col>
-            <Col lg={6} data-aos="fade-left">
               <h2 className="mb-4">About Our School</h2>
               <p className="lead mb-4">
                 SS Public School is committed to providing quality education and
@@ -163,9 +117,14 @@ const Home = () => {
                 Learn More About Us
               </Button>
             </Col>
+
+            <Col lg={6} data-aos="fade-left">
+              <NoticeBoard />
+            </Col>
           </Row>
         </Container>
       </section>
+
       {/* <!-- Programs Section --> */}
       <section className="programs-section py-5">
         <Container>
@@ -275,6 +234,47 @@ const Home = () => {
               </div>
             </div>
           </div>
+        </Container>
+      </section>
+
+            {/* <!-- Features Section --> */}
+      <section className="features-section py-5">
+        <Container>
+          <h2 className="text-center mb-5" data-aos="fade-up">
+            Why Choose Us
+          </h2>
+          <Row className="g-4">
+            <Col md={4} data-aos="fade-up" data-aos-delay="100">
+              <div className="feature-card text-center p-4">
+                <i className="bi bi-book text-primary display-4 mb-3"></i>
+                <h3>Quality Education</h3>
+                <p>
+                  Our experienced faculty provides top-notch education with
+                  modern teaching methods.
+                </p>
+              </div>
+            </Col>
+            <Col md={4} data-aos="fade-up" data-aos-delay="200">
+              <div className="feature-card text-center p-4">
+                <i className="bi bi-people text-primary display-4 mb-3"></i>
+                <h3>Experienced Faculty</h3>
+                <p>
+                  Learn from the best educators who are passionate about
+                  teaching and mentoring.
+                </p>
+              </div>
+            </Col>
+            <Col md={4} data-aos="fade-up" data-aos-delay="300">
+              <div className="feature-card text-center p-4">
+                <i className="bi bi-building text-primary display-4 mb-3"></i>
+                <h3>Modern Infrastructure</h3>
+                <p>
+                  State-of-the-art facilities to support comprehensive learning
+                  and development.
+                </p>
+              </div>
+            </Col>
+          </Row>
         </Container>
       </section>
 

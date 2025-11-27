@@ -24,6 +24,7 @@ import "aos/dist/aos.css";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ErrorBoundary from "../components/ErrorBoundary";
+import styles from "../styles/Admission.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,7 +36,7 @@ const Staff = () => {
   const [filterRole, setFilterRole] = useState("all");
   const staffRef = useRef(null);
 
-  // Fetch staff data from Firebase
+  // Fetch staff data from Supabase
   useEffect(() => {
     const fetchStaff = async () => {
       try {
@@ -115,14 +116,74 @@ const Staff = () => {
     return <FaUserGraduate className="me-2" />;
   };
 
-  // Show loading spinner while fetching data
+  // Skeleton loader components
+  const SkeletonCard = () => (
+    <div className={`${styles.skeletonCard} mb-4`}></div>
+  );
+
+  const SkeletonText = () => <div className={styles.skeletonText}></div>;
+
+  const SkeletonTextSmall = () => (
+    <div className={styles.skeletonTextSmall}></div>
+  );
+
+  // Show loading skeleton while fetching data
   if (loading) {
     return (
-      <div className="text-center mt-6 py-5">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-        <p className="mt-2">Loading staff information...</p>
+      <div className="staff-page">
+        {/* Hero Section */}
+        <section className="py-5 bg-light">
+          <Container>
+            <div className="text-center py-5">
+              <SkeletonTextSmall />
+              <div className="mt-3">
+                <SkeletonText />
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* Search and Filter */}
+        <section className="py-4 bg-white">
+          <Container>
+            <Row className="justify-content-center">
+              <Col md={8} className="mb-3">
+                <SkeletonCard />
+              </Col>
+              <Col md={4} className="mb-3">
+                <SkeletonCard />
+              </Col>
+            </Row>
+          </Container>
+        </section>
+
+        {/* Staff Grid */}
+        <section className="py-5">
+          <Container>
+            <Row className="g-4">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <Col key={index} lg={6} xl={4}>
+                  <SkeletonCard />
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        </section>
+
+        {/* Quick Contact Banner */}
+        <section className="py-4 bg-primary text-white">
+          <Container>
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center py-3">
+              <div className="mb-3 mb-md-0">
+                <SkeletonTextSmall />
+                <div className="mt-2">
+                  <SkeletonText />
+                </div>
+              </div>
+              <SkeletonCard />
+            </div>
+          </Container>
+        </section>
       </div>
     );
   }
@@ -234,18 +295,22 @@ const Staff = () => {
                     <Card.Body className="p-4">
                       <div className="d-flex align-items-start">
                         <div className="flex-shrink-0 me-4">
-                          <ErrorBoundary fallback={<img src="/logo.png" alt="Fallback" />}>
-                          <img
-                            src={staff.image || "/logo.png"}
-                            alt={staff.name}
-                            className="rounded-square"
-                            onError={handleImageError}
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              objectFit: "cover",
-                            }}
-                          />
+                          <ErrorBoundary
+                            fallback={<img src="/logo.png" alt="Fallback" />}
+                          >
+                            <img
+                              src={
+                                staff.image_url || staff.image || "/logo.png"
+                              }
+                              alt={staff.name}
+                              className="rounded-square"
+                              onError={handleImageError}
+                              style={{
+                                width: "80px",
+                                height: "80px",
+                                objectFit: "cover",
+                              }}
+                            />
                           </ErrorBoundary>
                         </div>
                         <div>

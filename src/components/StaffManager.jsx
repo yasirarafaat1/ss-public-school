@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   Card,
@@ -18,6 +18,7 @@ import {
   FaUserTie,
   FaChalkboardTeacher,
   FaUserGraduate,
+  FaUpload,
 } from "react-icons/fa";
 import {
   getStaffMembers,
@@ -25,6 +26,7 @@ import {
   updateStaffMember,
   deleteStaffMember,
 } from "../services/adminService";
+import { supabase } from "../services/supabaseService";
 
 const StaffManager = () => {
   const [staff, setStaff] = useState([]);
@@ -41,6 +43,8 @@ const StaffManager = () => {
     email: "",
     image: "/logo.png",
   });
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch staff members
@@ -52,7 +56,16 @@ const StaffManager = () => {
       setStaff(staffData);
     } catch (err) {
       console.error("Error fetching staff:", err);
-      setError("Failed to load staff members. Please try again.");
+      // Handle specific error cases
+      if (
+        err.message &&
+        (err.message.includes("row-level security") ||
+          err.message.includes("403"))
+      ) {
+        setError(err.message);
+      } else {
+        setError("Failed to load staff members. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -83,10 +96,172 @@ const StaffManager = () => {
     }
   };
 
+  // Handle image upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+    if (!validTypes.includes(file.type)) {
+      setError("Please upload a valid image file (JPEG, JPG, PNG, GIF)");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("File size exceeds 5MB limit");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      // Create unique filename
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2)}.${fileExt}`;
+      const filePath = `staff/${fileName}`;
+
+      // Check available buckets and use the first available one
+      let bucketName = "public";
+      try {
+        const { data: buckets, error: bucketError } =
+          await supabase.storage.listBuckets();
+
+        if (bucketError) {
+          console.warn("Could not list buckets:", bucketError);
+        } else if (buckets && buckets.length > 0) {
+          // Use 'images' bucket if it exists, otherwise use the first available bucket
+          const imagesBucket = buckets.find(
+            (bucket) => bucket.name === "images"
+          );
+          bucketName = imagesBucket ? imagesBucket.name : buckets[0].name;
+        } else {
+          // If no buckets exist, we'll try to upload without specifying a bucket
+          // and handle the error gracefully
+          console.warn("No storage buckets found");
+        }
+      } catch (bucketError) {
+        console.warn(
+          "Error listing buckets, will try direct upload:",
+          bucketError
+        );
+      }
+
+      // Try to upload to the selected bucket
+      let data, error;
+      try {
+        const result = await supabase.storage
+          .from(bucketName)
+          .upload(filePath, file);
+        data = result.data;
+        error = result.error;
+      } catch (uploadError) {
+        console.warn("Bucket upload failed:", uploadError);
+        // If bucket upload fails, fall back to base64 encoding
+        const base64Image = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = (e) =>
+            reject(new Error("Failed to process image file."));
+          reader.readAsDataURL(file);
+        });
+
+        // Update form data with base64 image
+        setFormData((prev) => ({
+          ...prev,
+          image: base64Image,
+        }));
+
+        setSuccess("Image processed successfully (stored locally)");
+        setTimeout(() => setSuccess(""), 3000);
+        return; // Exit early as we're using base64
+      }
+
+      if (error) {
+        // If we get a bucket error, fall back to base64
+        if (error.message && error.message.includes("Bucket")) {
+          const base64Image = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) =>
+              reject(new Error("Failed to process image file."));
+            reader.readAsDataURL(file);
+          });
+
+          // Update form data with base64 image
+          setFormData((prev) => ({
+            ...prev,
+            image: base64Image,
+          }));
+
+          setSuccess("Image processed successfully (stored locally)");
+          setTimeout(() => setSuccess(""), 3000);
+          return; // Exit early as we're using base64
+        }
+        throw error;
+      }
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from(bucketName).getPublicUrl(filePath);
+
+      // Update form data with new image URL
+      setFormData((prev) => ({
+        ...prev,
+        image: publicUrl,
+      }));
+
+      setSuccess("Image uploaded successfully");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setError("Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Trigger file input
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    // Validate required fields including image
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.role.trim()) {
+      setError("Role is required");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Check if image is the default placeholder (meaning no image was uploaded)
+    if (!formData.image || formData.image === "/logo.png") {
+      setError("Please upload a staff member image");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // Prepare staff data
       const staffData = {
@@ -95,8 +270,8 @@ const StaffManager = () => {
         qualification: formData.qualification,
         contact: formData.contact,
         email: formData.email,
-        // Use default image from public folder
-        image: "/logo.png",
+        // Use uploaded image or default
+        image_url: formData.image || "/logo.png",
       };
 
       // If updating, call update function, else create new
@@ -112,7 +287,21 @@ const StaffManager = () => {
       fetchStaff();
     } catch (err) {
       console.error("Error saving staff member:", err);
-      setError(err.message || "Failed to save staff member.");
+
+      // Handle specific error cases
+      if (err.message && err.message.includes("row-level security")) {
+        setError(
+          "You don't have permission to modify staff data. Please contact your administrator."
+        );
+      } else if (err.message && err.message.includes("403")) {
+        setError(
+          "Access denied. Please check your authentication and permissions."
+        );
+      } else {
+        setError(
+          err.message || "Failed to save staff member. Please try again."
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -126,7 +315,7 @@ const StaffManager = () => {
       qualification: staffMember.qualification || "",
       contact: staffMember.contact || "",
       email: staffMember.email || "",
-      image: staffMember.image || "/logo.png",
+      image: staffMember.image_url || staffMember.image || "/logo.png",
     });
     setEditingId(staffMember.id);
     setShowModal(true);
@@ -223,10 +412,13 @@ const StaffManager = () => {
               <Card className="h-100">
                 <div className="position-relative">
                   <Image
-                    src={member.image}
+                    src={member.image_url || member.image || "/logo.png"}
                     alt={member.name}
                     className="card-img-top"
                     style={{ height: "200px", objectFit: "cover" }}
+                    onError={(e) => {
+                      e.target.src = "/logo.png";
+                    }}
                   />
                   <div className="position-absolute top-0 end-0 p-2">
                     <Button
@@ -247,43 +439,35 @@ const StaffManager = () => {
                   </div>
                 </div>
                 <Card.Body>
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <div>
-                      <h5 className="mb-1">{member.name}</h5>
-                      <p className="text-muted mb-0 d-flex align-items-center">
-                        {getRoleIcon(member.role)}
-                        {member.role}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="small text-muted mb-2">
-                    <i className="bi bi-mortarboard me-2"></i>
-                    {member.qualification}
-                  </p>
-                  <div className="d-flex flex-wrap gap-2 mt-3">
-                    {member.contact && (
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        className="d-flex align-items-center"
-                        href={`tel:${member.contact}`}
-                      >
-                        <i className="bi bi-telephone me-1"></i>
-                        <span>Call</span>
-                      </Button>
+                  <Card.Title className="d-flex align-items-center">
+                    {getRoleIcon(member.role)}
+                    {member.name}
+                  </Card.Title>
+                  <Card.Text>
+                    <strong>{member.role}</strong>
+                    <br />
+                    {member.qualification && (
+                      <>
+                        <small className="text-muted">
+                          {member.qualification}
+                        </small>
+                        <br />
+                      </>
                     )}
                     {member.email && (
-                      <Button
-                        variant="outline-secondary"
-                        size="sm"
-                        className="d-flex align-items-center"
-                        href={`mailto:${member.email}`}
-                      >
-                        <i className="bi bi-envelope me-1"></i>
-                        <span>Email</span>
-                      </Button>
+                      <small>
+                        <a href={`mailto:${member.email}`}>{member.email}</a>
+                      </small>
                     )}
-                  </div>
+                    {member.contact && (
+                      <>
+                        <br />
+                        <small>
+                          <a href={`tel:${member.contact}`}>{member.contact}</a>
+                        </small>
+                      </>
+                    )}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -303,24 +487,52 @@ const StaffManager = () => {
             <Row>
               <Col md={4} className="text-center mb-3">
                 <div className="position-relative d-inline-block">
-                  <Image
-                    src={formData.image}
-                    alt="Staff"
-                    rounded
-                    className="mb-3"
-                    style={{
-                      width: "150px",
-                      height: "150px",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <div className="position-relative">
+                    <Image
+                      src={formData.image || "/logo.png"}
+                      alt="Staff"
+                      rounded
+                      className="mb-3"
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        objectFit: "cover",
+                      }}
+                      onError={(e) => {
+                        e.target.src = "/logo.png";
+                      }}
+                    />
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                      style={{ display: "none" }}
+                    />
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={triggerFileInput}
+                      disabled={uploading}
+                      className="position-absolute bottom-0 end-0"
+                    >
+                      {uploading ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (
+                        <FaUpload />
+                      )}
+                    </Button>
+                  </div>
+                  <Form.Text className="text-muted">
+                    Upload a clear photo of the staff member (Max 5MB)
+                  </Form.Text>
                 </div>
               </Col>
               <Col md={8}>
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formName" className="mb-3">
-                      <Form.Label>Full Name</Form.Label>
+                      <Form.Label>Full Name *</Form.Label>
                       <Form.Control
                         type="text"
                         name="name"
@@ -333,30 +545,31 @@ const StaffManager = () => {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="formRole" className="mb-3">
-                      <Form.Label>Role/Position</Form.Label>
+                      <Form.Label>Role/Position *</Form.Label>
                       <Form.Control
                         type="text"
                         name="role"
                         value={formData.role}
                         onChange={handleInputChange}
-                        placeholder="e.g., Math Teacher"
+                        placeholder="e.g., Teacher, Principal"
                         required
                       />
                     </Form.Group>
                   </Col>
                 </Row>
-                <Form.Group controlId="formQualification" className="mb-3">
-                  <Form.Label>Qualifications</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="qualification"
-                    value={formData.qualification}
-                    onChange={handleInputChange}
-                    placeholder="e.g., M.Sc, B.Ed, Ph.D"
-                    required
-                  />
-                </Form.Group>
                 <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="formQualification" className="mb-3">
+                      <Form.Label>Qualification</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="qualification"
+                        value={formData.qualification}
+                        onChange={handleInputChange}
+                        placeholder="e.g., M.Sc, B.Ed"
+                      />
+                    </Form.Group>
+                  </Col>
                   <Col md={6}>
                     <Form.Group controlId="formContact" className="mb-3">
                       <Form.Label>Contact Number</Form.Label>
@@ -365,14 +578,15 @@ const StaffManager = () => {
                         name="contact"
                         value={formData.contact}
                         onChange={handleInputChange}
-                        placeholder="e.g., +91 98765 43210"
-                        required
+                        placeholder="e.g., +1234567890"
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
+                </Row>
+                <Row>
+                  <Col md={12}>
                     <Form.Group controlId="formEmail" className="mb-3">
-                      <Form.Label>Email Address</Form.Label>
+                      <Form.Label>Email Address *</Form.Label>
                       <Form.Control
                         type="email"
                         name="email"
@@ -398,7 +612,12 @@ const StaffManager = () => {
             <Button
               variant="primary"
               type="submit"
-              disabled={!formData.name || !formData.role || isSubmitting}
+              disabled={
+                !formData.name ||
+                !formData.role ||
+                !formData.email ||
+                isSubmitting
+              }
             >
               {isSubmitting ? (
                 <>

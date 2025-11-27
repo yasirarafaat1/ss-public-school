@@ -1,41 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { auth, onAuthStateChanged } from '../services/firebaseService'; // Import auth and the listener
-import { Spinner } from 'react-bootstrap'; // For loading state
+import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap"; // For loading state
+import { supabase } from "../services/supabaseService";
 
 const ProtectedRoute = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // Start in loading state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start in loading state
 
-    useEffect(() => {
-        // Subscribe to auth state changes
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setIsAuthenticated(!!user); // Set true if user exists, false otherwise
-            setIsLoading(false); // Finished loading auth state
-        });
+  useEffect(() => {
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      setIsLoading(false);
+    };
 
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-    }, []); // Run only once on mount
+    checkAuth();
 
-    if (isLoading) {
-        // Show a loading indicator while checking auth state
-        return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </div>
-        );
-    }
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
 
-    // If not loading and not authenticated, redirect to login
-    if (!isAuthenticated) {
-        return <Navigate to="/admin/login" replace />;
-    }
+    // Cleanup subscription on unmount
+    return () => subscription.unsubscribe();
+  }, []); // Run only once on mount
 
-    // If authenticated, render the child components (the protected page)
-    return children;
+  if (isLoading) {
+    // Show a loading indicator while checking auth state
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
+
+  // If not loading and not authenticated, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  // If authenticated, render the child components (the protected page)
+  return children;
 };
 
-export default ProtectedRoute; 
+export default ProtectedRoute;

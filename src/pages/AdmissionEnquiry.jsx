@@ -10,7 +10,8 @@ import {
 } from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { submitAdmissionEnquiry } from "../services/firebaseService";
+import { submitAdmissionEnquiry } from "../services/supabaseService";
+import styles from "../styles/Admission.module.css";
 
 const processSteps = [
   {
@@ -55,6 +56,7 @@ const AdmissionEnquiry = () => {
   const [toastMessage, setToastMessage] = useState("");
   const [toastVariant, setToastVariant] = useState("success");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     AOS.init({
@@ -62,6 +64,13 @@ const AdmissionEnquiry = () => {
       once: true,
       offset: 100,
     });
+
+    // Simulate loading for demo purposes
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -85,9 +94,7 @@ const AdmissionEnquiry = () => {
       });
     } catch (error) {
       console.error("Error submitting admission enquiry:", error);
-      setToastMessage(
-        "Failed to submit admission enquiry. Please try again."
-      );
+      setToastMessage("Failed to submit admission enquiry. Please try again.");
       setToastVariant("danger");
       setShowToast(true);
     } finally {
@@ -103,6 +110,15 @@ const AdmissionEnquiry = () => {
     }));
   };
 
+  // Skeleton loader components
+  const SkeletonTextLarge = () => (
+    <div className={styles.skeletonTextLarge}></div>
+  );
+
+  const SkeletonText = () => <div className={styles.skeletonText}></div>;
+
+  const SkeletonCard = () => <div className={styles.skeletonCard}></div>;
+
   return (
     <div className="admission-enquiry-page mt-5">
       {/* Header Section */}
@@ -110,11 +126,22 @@ const AdmissionEnquiry = () => {
         <Container>
           <Row className="justify-content-center text-center">
             <Col md={8} data-aos="fade-up" data-aos-delay="100">
-              <h1 className="display-4 fw-bold mb-4">Admission Enquiry</h1>
-              <p className="lead" data-aos="fade-up" data-aos-delay="200">
-                Fill out the form below to start your admission process. Our
-                team will get back to you within 24 hours.
-              </p>
+              {loading ? (
+                <>
+                  <SkeletonTextLarge />
+                  <div className="mt-4">
+                    <SkeletonText />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h1 className="display-4 fw-bold mb-4">Admission Enquiry</h1>
+                  <p className="lead" data-aos="fade-up" data-aos-delay="200">
+                    Fill out the form below to start your admission process. Our
+                    team will get back to you within 24 hours.
+                  </p>
+                </>
+              )}
             </Col>
           </Row>
         </Container>
@@ -127,25 +154,33 @@ const AdmissionEnquiry = () => {
             Admission Process Steps
           </h2>
           <Row className="g-4">
-            {processSteps.map((step, index) => (
-              <Col
-                md={3}
-                key={index}
-                data-aos="fade-up"
-                data-aos-delay={step.delay}
-              >
-                <div className="text-center p-4">
-                  <div
-                    className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
-                    style={{ width: "80px", height: "80px" }}
+            {loading
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <Col md={3} key={index} data-aos="fade-up">
+                    <div className="text-center p-4">
+                      <SkeletonCard />
+                    </div>
+                  </Col>
+                ))
+              : processSteps.map((step, index) => (
+                  <Col
+                    md={3}
+                    key={index}
+                    data-aos="fade-up"
+                    data-aos-delay={step.delay}
                   >
-                    <i className={`${step.icon} display-6`}></i>
-                  </div>
-                  <h4>{step.step}</h4>
-                  <p>{step.description}</p>
-                </div>
-              </Col>
-            ))}
+                    <div className="text-center p-4">
+                      <div
+                        className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                        style={{ width: "80px", height: "80px" }}
+                      >
+                        <i className={`${step.icon} display-6`}></i>
+                      </div>
+                      <h4>{step.step}</h4>
+                      <p>{step.description}</p>
+                    </div>
+                  </Col>
+                ))}
           </Row>
         </Container>
       </section>
@@ -162,109 +197,115 @@ const AdmissionEnquiry = () => {
             >
               <Card className="border-0 shadow-sm">
                 <Card.Body className="p-4">
-                  <Form onSubmit={handleSubmit}>
-                    <Row className="g-3">
-                      <Col md={6}>
-                        <Form.Group controlId="studentName">
-                          <Form.Label>Student's Name</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="studentName"
-                            value={formData.studentName}
-                            onChange={handleChange}
-                            placeholder="Enter student's name"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group controlId="parentName">
-                          <Form.Label>Parent's/Guardian's Name</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="parentName"
-                            value={formData.parentName}
-                            onChange={handleChange}
-                            placeholder="Enter parent's/guardian's name"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group controlId="email">
-                          <Form.Label>Email</Form.Label>
-                          <Form.Control
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Enter email address"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group controlId="phone">
-                          <Form.Label>Phone Number</Form.Label>
-                          <Form.Control
-                            type="tel"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            placeholder="Enter phone number"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={12}>
-                        <Form.Group controlId="classInterested">
-                          <Form.Label>Class Interested In</Form.Label>
-                          <Form.Select
-                            name="classInterested"
-                            value={formData.classInterested}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="">Select a class</option>
-                            <option value="Nursery">Nursery</option>
-                            <option value="LKG">LKG</option>
-                            <option value="UKG">UKG</option>
-                            <option value="Class 1">Class 1</option>
-                            <option value="Class 2">Class 2</option>
-                            <option value="Class 3">Class 3</option>
-                            <option value="Class 4">Class 4</option>
-                            <option value="Class 5">Class 5</option>
-                            <option value="Class 6">Class 6</option>
-                            <option value="Class 7">Class 7</option>
-                            <option value="Class 8">Class 8</option>
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={12}>
-                        <Form.Group controlId="message">
-                          <Form.Label>Message</Form.Label>
-                          <Form.Control
-                            as="textarea"
-                            name="message"
-                            value={formData.message}
-                            onChange={handleChange}
-                            placeholder="Enter your message"
-                            rows={4}
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <div className="text-center mt-4">
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        size="lg"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? "Submitting..." : "Submit Enquiry"}
-                      </Button>
+                  {loading ? (
+                    <div className="p-5">
+                      <SkeletonCard />
                     </div>
-                  </Form>
+                  ) : (
+                    <Form onSubmit={handleSubmit}>
+                      <Row className="g-3">
+                        <Col md={6}>
+                          <Form.Group controlId="studentName">
+                            <Form.Label>Student's Name</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="studentName"
+                              value={formData.studentName}
+                              onChange={handleChange}
+                              placeholder="Enter student's name"
+                              required
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group controlId="parentName">
+                            <Form.Label>Parent's/Guardian's Name</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="parentName"
+                              value={formData.parentName}
+                              onChange={handleChange}
+                              placeholder="Enter parent's/guardian's name"
+                              required
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group controlId="email">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                              type="email"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              placeholder="Enter email address"
+                              required
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group controlId="phone">
+                            <Form.Label>Phone Number</Form.Label>
+                            <Form.Control
+                              type="tel"
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleChange}
+                              placeholder="Enter phone number"
+                              required
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={12}>
+                          <Form.Group controlId="classInterested">
+                            <Form.Label>Class Interested In</Form.Label>
+                            <Form.Select
+                              name="classInterested"
+                              value={formData.classInterested}
+                              onChange={handleChange}
+                              required
+                            >
+                              <option value="">Select a class</option>
+                              <option value="Nursery">Nursery</option>
+                              <option value="LKG">LKG</option>
+                              <option value="UKG">UKG</option>
+                              <option value="Class 1">Class 1</option>
+                              <option value="Class 2">Class 2</option>
+                              <option value="Class 3">Class 3</option>
+                              <option value="Class 4">Class 4</option>
+                              <option value="Class 5">Class 5</option>
+                              <option value="Class 6">Class 6</option>
+                              <option value="Class 7">Class 7</option>
+                              <option value="Class 8">Class 8</option>
+                            </Form.Select>
+                          </Form.Group>
+                        </Col>
+                        <Col md={12}>
+                          <Form.Group controlId="message">
+                            <Form.Label>Message</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              name="message"
+                              value={formData.message}
+                              onChange={handleChange}
+                              placeholder="Enter your message"
+                              rows={4}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <div className="text-center mt-4">
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          size="lg"
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Submitting..." : "Submit Enquiry"}
+                        </Button>
+                      </div>
+                    </Form>
+                  )}
                 </Card.Body>
               </Card>
             </Col>

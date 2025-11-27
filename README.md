@@ -12,11 +12,13 @@ sspublicschool.vercel.app
 - Smooth animations
 - SEO-friendly
 - Accessible
+- Gallery Management System
 
 ## Prerequisites
 
 - Node.js v14 or higher
 - npm package manager
+- Supabase account and project
 
 ## Setup
 
@@ -30,6 +32,12 @@ sspublicschool.vercel.app
    ```
    npm install
    ```
+
+3. Configure environment variables:
+   - Copy `.env.example` to `.env`
+   - Update the Supabase credentials in the `.env` file
+
+
 
 ## Running the Application
 
@@ -63,6 +71,8 @@ This serves the production build locally for testing.
   - `/components` - Reusable React components
   - `/pages` - Page components
   - `/styles` - CSS styles
+  - `/utils` - Utility functions
+  - `/__tests__` - Test files
 - `/public` - Static assets
   - Images
   - Fonts
@@ -76,6 +86,17 @@ This serves the production build locally for testing.
 - Bootstrap
 - AOS (Animate On Scroll)
 - React Helmet
+- Supabase (for backend services)
+
+## Gallery Management System
+
+This project includes a comprehensive gallery management system that allows administrators to:
+- Upload images directly from the admin panel
+- Organize images into categories
+- Delete images and categories
+- View all images in a responsive gallery
+
+The gallery management system allows administrators to upload, organize, and manage images directly from the admin panel.
 
 ## License
 

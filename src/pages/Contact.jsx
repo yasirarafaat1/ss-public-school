@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Card, Toast } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Toast,
+} from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { submitContactForm } from "../services/firebaseService";
+import { submitContactForm } from "../services/supabaseService";
 
 const Contact = () => {
   // const { showSuccess, showError } = useToast();
@@ -69,7 +77,8 @@ const Contact = () => {
             <Col md={8} data-aos="fade-up" data-aos-delay="100">
               <h1 className="display-4 fw-bold mb-4">Contact Us</h1>
               <p className="lead" data-aos="fade-up" data-aos-delay="200">
-                Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                Have questions? We'd love to hear from you. Send us a message
+                and we'll respond as soon as possible.
               </p>
             </Col>
           </Row>
@@ -138,7 +147,9 @@ const Contact = () => {
                             disabled={isSubmitting}
                           >
                             <option value="">Select a subject</option>
-                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="General Inquiry">
+                              General Inquiry
+                            </option>
                             <option value="Feedback">Feedback</option>
                             <option value="Complaint">Complaint</option>
                             <option value="Other">Other</option>
@@ -162,7 +173,11 @@ const Contact = () => {
                       </Col>
                     </Row>
 
-                    <div className="text-center mt-4" data-aos="zoom-in" data-aos-delay="800">
+                    <div
+                      className="text-center mt-4"
+                      data-aos="zoom-in"
+                      data-aos-delay="800"
+                    >
                       <Button
                         variant="primary"
                         type="submit"
@@ -172,7 +187,11 @@ const Contact = () => {
                       >
                         {isSubmitting ? (
                           <>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
                             Sending...
                           </>
                         ) : (
@@ -225,12 +244,20 @@ const Contact = () => {
               <div className="text-center">
                 <h2 className="mb-4">Other Ways to Reach Us</h2>
                 <div className="d-flex flex-column flex-md-row justify-content-center gap-4">
-                  <div data-aos="fade-up" data-aos-delay="100" className="mb-4 mb-md-0">
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="100"
+                    className="mb-4 mb-md-0"
+                  >
                     <i className="bi bi-telephone display-4 text-primary mb-3"></i>
                     <h5>Phone</h5>
                     <p className="mb-0">+91 94158 08804</p>
                   </div>
-                  <div data-aos="fade-up" data-aos-delay="200" className="mb-4 mb-md-0">
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="200"
+                    className="mb-4 mb-md-0"
+                  >
                     <i className="bi bi-envelope display-4 text-primary mb-3"></i>
                     <h5>Email</h5>
                     <p className="mb-0">sspublicschool@gmail.com</p>

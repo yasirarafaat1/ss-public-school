@@ -1,0 +1,255 @@
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+
+    /* Navbar link hover effect */
+    .navbar-nav .nav-link::after {
+        display: none;
+    }
+
+    .navbar-nav .nav-link:hover::after {
+        width: 0;
+    }
+
+    /* Social icons hover effect */
+    .social-icons a:hover {
+        color: #6c757d;
+        transform: none;
+    }
+
+    /* Service box hover effect */
+    .service-box:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: none;
+    }
+
+    /* Gallery image card hover effect */
+    .galleryPage .imageCard:hover {
+        transform: none;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .galleryPage .imageCard:hover img {
+        transform: none;
+    }
+
+    /* Gallery manager image card hover effect */
+    .galleryManager .imageCard:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Gallery manager category item hover effect */
+    .galleryManager .categoryItem:hover {
+        background-color: transparent;
+    }
+
+    /* Gallery manager upload area hover effect */
+    .galleryManager .uploadArea:hover {
+        border-color: #dee2e6;
+    }
+
+    /* Admin dashboard nav link hover effect */
+    .nav-pills .nav-link:hover {
+        background: white;
+        color: #495057;
+        transform: none;
+        border-color: #e9ecef;
+        box-shadow: none;
+    }
+
+    .nav-pills .nav-link:hover::before {
+        transform: scaleY(0);
+    }
+
+    /* Admin dashboard nav badge hover effect */
+    .nav-pills .nav-link:hover .nav-badge {
+        background-color: #e9ecef;
+        color: #495057;
+        transform: none;
+    }
+
+    /* Admin dashboard logout button hover effect */
+    .nav-pills .nav-link.text-danger:hover {
+        color: #dc3545 !important;
+        background: #fff5f5 !important;
+        border-color: #f8d7da !important;
+    }
+
+    /* Notice board item hover effect */
+    .noticeItem:hover {
+        transform: none;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Notice board title link hover effect */
+    .noticeTitle a:hover {
+        color: #2e7d32;
+        border-bottom-style: dashed;
+    }
+
+    /* Footer link hover effect */
+    .footer-link:hover {
+        transform: none;
+        color: white !important;
+    }
+
+    .social-icon:hover {
+        transform: none;
+        color: white !important;
+    }
+
+    .contact-link:hover {
+        color: white !important;
+    }
+
+    .contact-link:hover i {
+        color: white;
+    }
+
+    .newsletter-btn:hover {
+        background-color: #0d6efd;
+        transform: none;
+    }
+
+    /* Toast close button hover effect */
+    .toast-close:hover {
+        color: #666;
+    }
+
+    /* Lightbox controls hover effect */
+    .lightboxControls:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .lightboxClose:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Alternative approach for devices with coarse pointers (touch devices) */
+@media (pointer: coarse) {
+
+    /* Navbar link hover effect */
+    .navbar-nav .nav-link::after {
+        display: none;
+    }
+
+    .navbar-nav .nav-link:hover::after {
+        width: 0;
+    }
+
+    /* Social icons hover effect */
+    .social-icons a:hover {
+        color: #6c757d;
+        transform: none;
+    }
+
+    /* Service box hover effect */
+    .service-box:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: none;
+    }
+
+    /* Gallery image card hover effect */
+    .galleryPage .imageCard:hover {
+        transform: none;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .galleryPage .imageCard:hover img {
+        transform: none;
+    }
+
+    /* Gallery manager image card hover effect */
+    .galleryManager .imageCard:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Gallery manager category item hover effect */
+    .galleryManager .categoryItem:hover {
+        background-color: transparent;
+    }
+
+    /* Gallery manager upload area hover effect */
+    .galleryManager .uploadArea:hover {
+        border-color: #dee2e6;
+    }
+
+    /* Admin dashboard nav link hover effect */
+    .nav-pills .nav-link:hover {
+        background: white;
+        color: #495057;
+        transform: none;
+        border-color: #e9ecef;
+        box-shadow: none;
+    }
+
+    .nav-pills .nav-link:hover::before {
+        transform: scaleY(0);
+    }
+
+    /* Admin dashboard nav badge hover effect */
+    .nav-pills .nav-link:hover .nav-badge {
+        background-color: #e9ecef;
+        color: #495057;
+        transform: none;
+    }
+
+    /* Admin dashboard logout button hover effect */
+    .nav-pills .nav-link.text-danger:hover {
+        color: #dc3545 !important;
+        background: #fff5f5 !important;
+        border-color: #f8d7da !important;
+    }
+
+    /* Notice board item hover effect */
+    .noticeItem:hover {
+        transform: none;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Notice board title link hover effect */
+    .noticeTitle a:hover {
+        color: #2e7d32;
+        border-bottom-style: dashed;
+    }
+
+    /* Footer link hover effect */
+    .footer-link:hover {
+        transform: none;
+        color: white !important;
+    }
+
+    .social-icon:hover {
+        transform: none;
+        color: white !important;
+    }
+
+    .contact-link:hover {
+        color: white !important;
+    }
+
+    .contact-link:hover i {
+        color: white;
+    }
+
+    .newsletter-btn:hover {
+        background-color: #0d6efd;
+        transform: none;
+    }
+
+    /* Toast close button hover effect */
+    .toast-close:hover {
+        color: #666;
+    }
+
+    /* Lightbox controls hover effect */
+    .lightboxControls:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .lightboxClose:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+}

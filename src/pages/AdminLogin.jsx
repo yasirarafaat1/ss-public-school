@@ -9,7 +9,7 @@ import {
   Card,
   Alert,
 } from "react-bootstrap";
-import { adminLogin } from "../services/firebaseService"; // Adjust path as needed
+import { adminLogin } from "../services/supabaseService"; // Adjust path as needed
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -30,16 +30,10 @@ const AdminLogin = () => {
     } catch (err) {
       console.error("Login failed:", err);
       // Provide user-friendly error messages
-      if (
-        err.code === "auth/invalid-credential" ||
-        err.code === "auth/invalid-email" ||
-        err.code === "auth/wrong-password"
-      ) {
+      if (err.message.includes("Invalid login credentials")) {
         setError("Invalid email or password. Please try again.");
       } else {
-        setError(
-          "An unexpected error occurred during login. Please try again later."
-        );
+        setError(`Login failed: ${err.message}. Please try again later.`);
       }
     } finally {
       setLoading(false);
