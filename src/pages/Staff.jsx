@@ -286,8 +286,9 @@ const Staff = () => {
               {filteredStaff.map((staff, index) => (
                 <Col
                   key={index}
-                  lg={6}
-                  xl={4}
+                  xs={12} // Changed from lg={6} to xs={12} for better mobile display
+                  md={6} // Keep md={6} for medium screens
+                  xl={4} // Keep xl={4} for extra large screens
                   data-aos="fade-up"
                   data-aos-delay={(index % 3) * 100}
                 >
