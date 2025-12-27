@@ -1,0 +1,24 @@
+# Student Results CSV Template
+# ==========================================================
+# Instructions for Admins:
+# 1. Fill in student information in the rows below
+# 2. Roll Number must be exactly 6 digits
+# 3. Class Code should be unique per class
+# 4. Result Status can be either 'Pass' or 'Fail'
+# 5. After importing this file, use the admin panel to add subjects and marks
+#
+# Column Descriptions:
+# - student_name: Full name of the student
+# - father_name: Full name of the student's father/guardian
+# - roll_no: Unique 6-digit identification number
+# - class: Class/Grade of the student (e.g., 10th, 12th)
+# - class_code: Unique identifier for the class
+# - result_status: Academic result status (Pass/Fail)
+# - grade: Overall grade achieved (A+, A, B, etc.)
+
+student_name,father_name,roll_no,class,class_code,result_status,grade
+John Doe,Robert Doe,123456,10th,A101,Pass,A
+Jane Smith,Michael Smith,123457,10th,A101,Pass,B
+Ahmed Khan,Salman Khan,123458,9th,B205,Pass,A+
+Priya Sharma,Rajesh Sharma,123459,11th,C301,Fail,D
+Carlos Sanchez,Miguel Sanchez,123460,12th,D402,Pass,B+

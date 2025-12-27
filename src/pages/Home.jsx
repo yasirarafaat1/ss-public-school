@@ -62,7 +62,7 @@ const Home = () => {
           <Row className="justify-content-center text-center">
             <Col md={8} data-aos="fade-up">
               <h1 className="display-3 fw-bold hero-title">
-                Welcome to <span className="highlight">SS Public School</span>
+                Welcome to <span className="highlight">Demo Public School</span>
               </h1>
               <p
                 className="lead hero-subtitle"
@@ -105,7 +105,7 @@ const Home = () => {
             <Col lg={6} data-aos="fade-right">
               <h2 className="mb-4">About Our School</h2>
               <p className="lead mb-4">
-                SS Public School is committed to providing quality education and
+                Demo Public School is committed to providing quality education and
                 fostering a love for learning.
               </p>
               <p>

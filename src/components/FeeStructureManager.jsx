@@ -16,8 +16,10 @@ import {
   updateFeeStructure,
   deleteFeeStructure,
 } from "../services/supabaseService";
+import { getClasses } from "../services/classStudentService"; // Fixed import
+import SkeletonLoader from "./SkeletonLoader";
 
-const FeeStructureManager = () => {
+const FeeStructureManager = ({ refreshTimestamp, fetchData }) => {
   const [feeStructures, setFeeStructures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -32,7 +34,7 @@ const FeeStructureManager = () => {
 
   useEffect(() => {
     fetchFeeStructures();
-  }, []);
+  }, [refreshTimestamp]);
 
   const fetchFeeStructures = async () => {
     try {

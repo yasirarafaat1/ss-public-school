@@ -46,7 +46,7 @@ const Footer = () => {
                 style={{ maxHeight: "80px" }}
               />
               <div className="ms-3">
-                <h3>SS Public School</h3>
+                <h3>Demo Public School</h3>
                 <p className="mb-0">An Educational Institution</p>
               </div>
             </div>
@@ -77,14 +77,6 @@ const Footer = () => {
             <ul className="list-unstyled">
               <li className="mb-2">
                 <a
-                  href="/"
-                  className="text-white text-decoration-none footer-link"
-                >
-                  <i className="bi bi-house-door me-2"></i>Home
-                </a>
-              </li>
-              <li className="mb-2">
-                <a
                   href="/about"
                   className="text-white text-decoration-none footer-link"
                 >
@@ -113,6 +105,14 @@ const Footer = () => {
                   className="text-white text-decoration-none footer-link"
                 >
                   <i className="bi bi-building me-2"></i>Infrastructure
+                </a>
+              </li>
+              <li className="mb-2">
+                <a
+                  href="/result"
+                  className="text-white text-decoration-none footer-link"
+                >
+                  <i className="bi bi-file-earmark-bar-graph me-2"></i>Result
                 </a>
               </li>
               <li className="mb-2">
@@ -166,7 +166,7 @@ const Footer = () => {
                   className="d-flex align-items-center text-decoration-none text-white footer-link"
                 >
                   <i className="bi bi-telephone-fill me-3"></i>
-                  <span>+91 94158 08804</span>
+                  <span>+91 37846 34723</span>
                 </a>
               </li>
               <li className="mb-3">
@@ -175,7 +175,7 @@ const Footer = () => {
                   className="d-flex align-items-center text-decoration-none text-white footer-link"
                 >
                   <i className="bi bi-envelope-fill me-3"></i>
-                  <span>sspublicschool@gmail.com</span>
+                  <span>demopublicschool@gmail.com</span>
                 </a>
               </li>
             </ul>
@@ -218,7 +218,7 @@ const Footer = () => {
           <div className="col-12">
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center border-top pt-4">
               <p className="mb-2 mb-md-0 text-start">
-                2017 - {new Date().getFullYear()} &copy; SS Public School. All
+                2017 - {new Date().getFullYear()} &copy; Demo Public School. All
                 rights reserved.
               </p>
               <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">

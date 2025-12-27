@@ -22,7 +22,7 @@ const Infrastructure = () => {
           <Row className="g-4">
             <Col md={6} data-aos="fade-right">
               <img 
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sfGVufDB8fDB8fHww" 
+                src="/Infra/Classroom.jpg" 
                 alt="Classrooms" 
                 className="img-fluid rounded shadow"
               />
@@ -90,7 +90,7 @@ const Infrastructure = () => {
             </Col>
             <Col md={6} data-aos="fade-left">
               <img 
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sfGVufDB8fDB8fHww" 
+                src="/Infra/Library.jpg" 
                 alt="Library" 
                 className="img-fluid rounded shadow"
               />
@@ -106,7 +106,7 @@ const Infrastructure = () => {
           <Row className="g-4">
             <Col md={6} data-aos="fade-right">
               <img 
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sfGVufDB8fDB8fHww" 
+                src="/Infra/Sport.jpg" 
                 alt="Sports Facilities" 
                 className="img-fluid rounded shadow"
               />
@@ -174,7 +174,7 @@ const Infrastructure = () => {
             </Col>
             <Col md={6} data-aos="fade-left">
               <img 
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sfGVufDB8fDB8fHww" 
+                src="/Infra/ScienceSchoolLab.jpg" 
                 alt="Science Labs" 
                 className="img-fluid rounded shadow"
               />

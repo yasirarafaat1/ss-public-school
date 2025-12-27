@@ -98,6 +98,17 @@ This project includes a comprehensive gallery management system that allows admi
 
 The gallery management system allows administrators to upload, organize, and manage images directly from the admin panel.
 
+## Class and Student Management System
+
+The admin panel also includes a comprehensive class and student management system that allows administrators to:
+- Manage classes with Roman numeral class numbers (Ist, IInd, IIIrd, etc.) and alphanumeric class codes (A101, B305, etc.)
+- Manage academic sessions (e.g., "2025 to 2026")
+- Add, edit, and delete student information including personal details
+- Assign students to classes for specific sessions with roll numbers
+- Search and filter students
+
+All data is stored in Supabase tables with proper relationships and constraints.
+
 ## License
 
 ISC

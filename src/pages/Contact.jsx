@@ -251,7 +251,7 @@ const Contact = () => {
                   >
                     <i className="bi bi-telephone display-4 text-primary mb-3"></i>
                     <h5>Phone</h5>
-                    <p className="mb-0">+91 94158 08804</p>
+                    <p className="mb-0">+91 34343 04234</p>
                   </div>
                   <div
                     data-aos="fade-up"
@@ -260,7 +260,7 @@ const Contact = () => {
                   >
                     <i className="bi bi-envelope display-4 text-primary mb-3"></i>
                     <h5>Email</h5>
-                    <p className="mb-0">sspublicschool@gmail.com</p>
+                    <p className="mb-0">demopublicschool@gmail.com</p>
                   </div>
                   <div data-aos="fade-up" data-aos-delay="300">
                     <i className="bi bi-geo-alt display-4 text-primary mb-3"></i>

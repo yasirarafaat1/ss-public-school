@@ -49,30 +49,18 @@
     }
 
     /* Admin dashboard nav link hover effect */
-    .nav-pills .nav-link:hover {
-        background: white;
-        color: #495057;
+    .navLink:hover {
+        color: #4f46e5;
         transform: none;
-        border-color: #e9ecef;
+        border-left: 3px solid #4f46e5;
         box-shadow: none;
     }
 
-    .nav-pills .nav-link:hover::before {
-        transform: scaleY(0);
-    }
-
-    /* Admin dashboard nav badge hover effect */
-    .nav-pills .nav-link:hover .nav-badge {
-        background-color: #e9ecef;
-        color: #495057;
-        transform: none;
-    }
-
     /* Admin dashboard logout button hover effect */
-    .nav-pills .nav-link.text-danger:hover {
-        color: #dc3545 !important;
-        background: #fff5f5 !important;
-        border-color: #f8d7da !important;
+    .navLink.text-danger:hover {
+        color: white !important;
+        background: #e53e3e !important;
+        border-left: 3px solid #e53e3e;
     }
 
     /* Notice board item hover effect */
@@ -123,6 +111,21 @@
 
     .lightboxClose:hover {
         background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Admin panel card hover effect */
+    .card:hover {
+        transform: none;
+    }
+
+    /* Admin panel stat card hover effect */
+    .statCard:hover {
+        transform: none;
+    }
+
+    /* Admin panel button hover effect */
+    .btn:hover {
+        transform: none;
     }
 }
 
@@ -177,30 +180,18 @@
     }
 
     /* Admin dashboard nav link hover effect */
-    .nav-pills .nav-link:hover {
-        background: white;
-        color: #495057;
+    .navLink:hover {
+        color: #4f46e5;
         transform: none;
-        border-color: #e9ecef;
+        border-left: 3px solid #4f46e5;
         box-shadow: none;
     }
 
-    .nav-pills .nav-link:hover::before {
-        transform: scaleY(0);
-    }
-
-    /* Admin dashboard nav badge hover effect */
-    .nav-pills .nav-link:hover .nav-badge {
-        background-color: #e9ecef;
-        color: #495057;
-        transform: none;
-    }
-
     /* Admin dashboard logout button hover effect */
-    .nav-pills .nav-link.text-danger:hover {
-        color: #dc3545 !important;
-        background: #fff5f5 !important;
-        border-color: #f8d7da !important;
+    .navLink.text-danger:hover {
+        color: white !important;
+        background: #e53e3e !important;
+        border-left: 3px solid #e53e3e;
     }
 
     /* Notice board item hover effect */
@@ -251,5 +242,20 @@
 
     .lightboxClose:hover {
         background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Admin panel card hover effect */
+    .card:hover {
+        transform: none;
+    }
+
+    /* Admin panel stat card hover effect */
+    .statCard:hover {
+        transform: none;
+    }
+
+    /* Admin panel button hover effect */
+    .btn:hover {
+        transform: none;
     }
 }

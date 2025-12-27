@@ -1,0 +1,31 @@
+# Subjects and Marks CSV Template
+# ==========================================================
+# Instructions for Admins:
+# 1. Use this template to add subjects and marks for existing students
+# 2. First import student data using the result_template.csv
+# 3. Ensure Roll Number and Class Code match existing student records
+# 4. Each row represents one subject for one student
+# 5. Marks should be numerical values
+#
+# Column Descriptions:
+# - roll_no: 6-digit student identification number (must match existing record)
+# - class_code: Class identifier (must match existing record)
+# - subject: Name of the subject
+# - marks: Numerical marks obtained in the subject
+
+roll_no,class_code,subject,marks
+123456,A101,Mathematics,85
+123456,A101,Science,78
+123456,A101,English,82
+123456,A101,Hindi,75
+123456,A101,Social Science,80
+123457,A101,Mathematics,75
+123457,A101,Science,82
+123457,A101,English,79
+123457,A101,Hindi,85
+123457,A101,Social Science,77
+123458,B205,Mathematics,90
+123458,B205,Science,88
+123458,B205,English,85
+123458,B205,Hindi,82
+123458,B205,Social Science,87

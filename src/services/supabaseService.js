@@ -333,6 +333,7 @@ export const addStaffMember = async (staffData) => {
         if ('email' in staffData) staffToInsert.email = staffData.email;
         if ('image_url' in staffData) staffToInsert.image_url = staffData.image_url;
         else if ('image' in staffData) staffToInsert.image_url = staffData.image;
+        if ('status' in staffData) staffToInsert.status = staffData.status;
 
         const { data, error } = await supabase
             .from('staff')
@@ -379,6 +380,7 @@ export const updateStaffMember = async (id, staffData) => {
         if ('email' in staffData) staffToUpdate.email = staffData.email;
         if ('image_url' in staffData) staffToUpdate.image_url = staffData.image_url || '/logo.png';
         else if ('image' in staffData) staffToUpdate.image_url = staffData.image || '/logo.png';
+        if ('status' in staffData) staffToUpdate.status = staffData.status;
 
         const { data, error } = await supabase
             .from('staff')
@@ -863,6 +865,37 @@ export const uploadFile = async (file, bucket = 'gallery', path = '') => {
             success: false,
             error: error.message
         };
+    }
+};
+
+/**
+ * Fetches update history records.
+ * @param {string} tableName - Name of the table to filter by.
+ * @param {number} recordId - ID of the record to filter by.
+ * @returns {Promise<Array<object>>} Array of update history objects.
+ */
+export const getUpdateHistory = async (tableName = null, recordId = null) => {
+    try {
+        let query = supabase
+            .from('update_history')
+            .select('*')
+            .order('updated_at', { ascending: false });
+
+        if (tableName) {
+            query = query.eq('table_name', tableName);
+        }
+
+        if (recordId) {
+            query = query.eq('record_id', recordId);
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error("Error fetching update history:", error.message);
+        throw error;
     }
 };
 

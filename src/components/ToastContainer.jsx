@@ -1,9 +1,10 @@
 import React from "react";
 import Toast from "./Toast";
+import styles from "./Toast.module.css";
 
 const ToastContainer = ({ toasts, removeToast }) => {
   return (
-    <div className="toast-container">
+    <div className={styles.toastContainer}>
       {toasts.map((toast) => (
         <Toast
           key={toast.id}

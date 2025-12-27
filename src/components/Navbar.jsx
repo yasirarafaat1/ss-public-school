@@ -9,6 +9,7 @@ const Navbar = () => {
     { path: "/", label: "Home", icon: "bi bi-house-door" },
     { path: "/about", label: "About Us", icon: "bi bi-info-circle" },
     { path: "/admission", label: "Admission", icon: "bi bi-pencil-square" },
+    { path: "/result", label: "Result", icon: "bi bi-file-earmark-bar-graph" },
     { path: "/gallery", label: "Gallery", icon: "bi bi-card-image" },
     { path: "/staff", label: "Staff", icon: "bi bi-people" },
     { path: "/contact", label: "Contact", icon: "bi bi-envelope" },
@@ -28,7 +29,7 @@ const Navbar = () => {
               // className="me-2"
               style={{ height: "40px" }}
             />
-            <h2>SS Public School</h2>
+            <h2>Demo Public School</h2>
           </a>
           <button
             className="navbar-toggler"

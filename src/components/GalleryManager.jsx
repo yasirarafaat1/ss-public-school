@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Form, Alert, Spinner, Row, Col } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Form,
+  Alert,
+  Spinner,
+  Row,
+  Col,
+  Collapse,
+  Image,
+} from "react-bootstrap";
 import {
   getGalleryImages,
   addGalleryImage,
   removeGalleryImage,
   uploadFile,
 } from "../services/supabaseService";
+import { FaChevronDown, FaChevronRight, FaTrash, FaPlus } from "react-icons/fa";
 import Toast from "./Toast";
 import styles from "../styles/Gallery.module.css";
 
-const GalleryManager = () => {
+const GalleryManager = ({ refreshTimestamp }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [newCategory, setNewCategory] = useState("");
@@ -19,6 +30,11 @@ const GalleryManager = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  const [openPanels, setOpenPanels] = useState({
+    addCategory: true,
+    manageCategories: true,
+    manageImages: true,
+  });
 
   // Database handled by supabaseService
 
@@ -38,7 +54,7 @@ const GalleryManager = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [refreshTimestamp]); // This ensures the data is refreshed when the refresh button is clicked in the admin panel
 
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
@@ -46,6 +62,14 @@ const GalleryManager = () => {
 
   const hideToast = () => {
     setToast({ ...toast, show: false });
+  };
+
+  // Toggle panel visibility
+  const togglePanel = (panelKey) => {
+    setOpenPanels((prev) => ({
+      ...prev,
+      [panelKey]: !prev[panelKey],
+    }));
   };
 
   const handleAddCategory = async () => {
@@ -197,190 +221,282 @@ const GalleryManager = () => {
   };
 
   return (
-    <Card className={styles.galleryManager}>
-      <Card.Header as="h5">Gallery Management</Card.Header>
-      <Card.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
-        {success && <Alert variant="success">{success}</Alert>}
+    <div className={styles.galleryManager}>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
 
-        <Toast
-          show={toast.show}
-          message={toast.message}
-          type={toast.type}
-          onClose={hideToast}
-        />
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={hideToast}
+      />
 
-        <Row>
-          <Col md={6}>
-            <h6>Add New Category</h6>
-            <div className="d-flex mb-3">
-              <Form.Control
-                type="text"
-                placeholder="Enter category name"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-              />
-              <Button
-                variant="primary"
-                className="ms-2"
-                onClick={handleAddCategory}
-                disabled={!newCategory.trim()}
-              >
-                Add Category
-              </Button>
-            </div>
-
-            <h6>Upload Image</h6>
-            <Form.Group className="mb-3">
-              <Form.Label>Select Category</Form.Label>
-              <Form.Select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Choose a category</option>
-                {getCategoryNames().map((categoryName) => (
-                  <option key={categoryName} value={categoryName}>
-                    {categoryName}
-                  </option>
-                ))}
-              </Form.Select>
-              <Form.Text className="text-muted">
-                Or create a new category above and it will appear here
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Choose Image (Max 5MB)</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImageFile(e.target.files[0])}
-              />
-              <Form.Text className="text-muted">
-                Supported formats: JPEG, JPG, PNG, GIF. Max file size: 5MB.
-              </Form.Text>
-            </Form.Group>
-
-            <Button
-              variant="success"
-              onClick={handleImageUpload}
-              disabled={
-                uploading || (!selectedCategory && !newCategory) || !imageFile
-              }
-            >
-              {uploading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />{" "}
-                  Uploading...
-                </>
-              ) : (
-                "Upload Image"
-              )}
-            </Button>
-          </Col>
-
-          <Col md={6}>
-            <h6>Manage Categories</h6>
-            {loading ? (
-              <div className="text-center">
-                <Spinner animation="border" />
-                <p>Loading categories...</p>
+      {/* Add Category Panel */}
+      <Card className="mb-3">
+        <Card.Header
+          onClick={() => togglePanel("addCategory")}
+          style={{ cursor: "pointer" }}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <h5 className="mb-0">Add New Category</h5>
+          <div>
+            {openPanels.addCategory ? <FaChevronDown /> : <FaChevronRight />}
+          </div>
+        </Card.Header>
+        <Collapse in={openPanels.addCategory}>
+          <div>
+            <Card.Body>
+              <div className="d-flex">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter category name"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                />
+                <Button
+                  variant="primary"
+                  className="ms-2"
+                  onClick={handleAddCategory}
+                  disabled={!newCategory.trim()}
+                >
+                  <FaPlus className="me-2" /> Add Category
+                </Button>
               </div>
-            ) : categories.length === 0 ? (
-              <p>No categories found. Add a new category to get started.</p>
+            </Card.Body>
+          </div>
+        </Collapse>
+      </Card>
+
+      {/* Upload Image Panel */}
+      <Card className="mb-3">
+        <Card.Header
+          onClick={() => togglePanel("uploadImage")}
+          style={{ cursor: "pointer" }}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <h5 className="mb-0">Upload Image</h5>
+          <div>
+            {openPanels.uploadImage ? <FaChevronDown /> : <FaChevronRight />}
+          </div>
+        </Card.Header>
+        <Collapse in={openPanels.uploadImage}>
+          <div>
+            <Card.Body>
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Select Category</Form.Label>
+                    <Form.Select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                      <option value="">Choose a category</option>
+                      {getCategoryNames().map((categoryName) => (
+                        <option key={categoryName} value={categoryName}>
+                          {categoryName}
+                        </option>
+                      ))}
+                    </Form.Select>
+                    <Form.Text className="text-muted">
+                      Or create a new category above and it will appear here
+                    </Form.Text>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Choose Image (Max 5MB)</Form.Label>
+                    <Form.Control
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files[0])}
+                    />
+                    <Form.Text className="text-muted">
+                      Supported formats: JPEG, JPG, PNG, GIF. Max file size:
+                      5MB.
+                    </Form.Text>
+                  </Form.Group>
+
+                  <Button
+                    variant="success"
+                    onClick={handleImageUpload}
+                    disabled={
+                      uploading ||
+                      (!selectedCategory && !newCategory) ||
+                      !imageFile
+                    }
+                  >
+                    {uploading ? (
+                      <>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />{" "}
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <FaPlus className="me-2" /> Upload Image
+                      </>
+                    )}
+                  </Button>
+                </Col>
+              </Row>
+            </Card.Body>
+          </div>
+        </Collapse>
+      </Card>
+
+      {/* Manage Categories Panel */}
+      <Card className="mb-3">
+        <Card.Header
+          onClick={() => togglePanel("manageCategories")}
+          style={{ cursor: "pointer" }}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <h5 className="mb-0">
+            Manage Categories ({getCategoryNames().length})
+          </h5>
+          <div>
+            {openPanels.manageCategories ? (
+              <FaChevronDown />
             ) : (
-              <div>
+              <FaChevronRight />
+            )}
+          </div>
+        </Card.Header>
+        <Collapse in={openPanels.manageCategories}>
+          <div>
+            <Card.Body>
+              {loading ? (
+                <div className="text-center">
+                  <Spinner animation="border" />
+                  <p>Loading categories...</p>
+                </div>
+              ) : categories.length === 0 ? (
+                <p>No categories found. Add a new category to get started.</p>
+              ) : (
+                <div>
+                  {getCategoryNames().map((categoryName) => {
+                    const category = categories.find(
+                      (cat) => cat.category === categoryName
+                    );
+                    return (
+                      <div
+                        key={categoryName}
+                        className={`d-flex justify-content-between align-items-center mb-2 p-3 border rounded ${styles.categoryItem}`}
+                      >
+                        <div>
+                          <strong>{categoryName}</strong>
+                          <div className="small text-muted">
+                            {category && category.images
+                              ? `${category.images.length} images`
+                              : "0 images"}
+                          </div>
+                        </div>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDeleteCategory(categoryName)}
+                        >
+                          <FaTrash className="me-1" /> Delete
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </Card.Body>
+          </div>
+        </Collapse>
+      </Card>
+
+      {/* Manage Images Panel */}
+      {categories.length > 0 && (
+        <Card className="mb-3">
+          <Card.Header
+            onClick={() => togglePanel("manageImages")}
+            style={{ cursor: "pointer" }}
+            className="d-flex justify-content-between align-items-center"
+          >
+            <h5 className="mb-0">Manage Images</h5>
+            <div>
+              {openPanels.manageImages ? <FaChevronDown /> : <FaChevronRight />}
+            </div>
+          </Card.Header>
+          <Collapse in={openPanels.manageImages}>
+            <div>
+              <Card.Body>
                 {getCategoryNames().map((categoryName) => {
                   const category = categories.find(
                     (cat) => cat.category === categoryName
                   );
                   return (
-                    <div
-                      key={categoryName}
-                      className={`d-flex justify-content-between align-items-center mb-2 p-2 border rounded ${styles.categoryItem}`}
-                    >
-                      <div>
-                        <strong>{categoryName}</strong>
-                        <div className="small text-muted">
-                          {category && category.images
-                            ? `${category.images.length} images`
-                            : "0 images"}
-                        </div>
-                      </div>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDeleteCategory(categoryName)}
-                      >
-                        Delete
-                      </Button>
+                    <div key={categoryName} className="mb-4">
+                      <h6 className="mt-3">{categoryName}</h6>
+                      {category &&
+                      category.images &&
+                      category.images.length > 0 ? (
+                        <Row>
+                          {category.images.map((image, index) => (
+                            <Col
+                              key={image.id || index}
+                              md={3}
+                              className="mb-3"
+                            >
+                              <Card className={styles.imageCard}>
+                                <div
+                                  style={{
+                                    height: "150px",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  <Image
+                                    variant="top"
+                                    src={image.url}
+                                    alt="Gallery image"
+                                    style={{
+                                      height: "100%",
+                                      objectFit: "cover",
+                                      width: "100%",
+                                    }}
+                                    onError={(e) => {
+                                      e.target.src = "/assets/placeholder.png";
+                                    }}
+                                    thumbnail
+                                  />
+                                </div>
+                                <Card.Body className="p-2">
+                                  <div className="d-grid">
+                                    <Button
+                                      variant="danger"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleDeleteImage(image.id)
+                                      }
+                                    >
+                                      <FaTrash className="me-1" /> Delete
+                                    </Button>
+                                  </div>
+                                </Card.Body>
+                              </Card>
+                            </Col>
+                          ))}
+                        </Row>
+                      ) : (
+                        <p className="text-muted">No images in this category</p>
+                      )}
                     </div>
                   );
                 })}
-              </div>
-            )}
-          </Col>
-        </Row>
-
-        {categories.length > 0 && (
-          <div className="mt-4">
-            <h6>Manage Images</h6>
-            {getCategoryNames().map((categoryName) => {
-              const category = categories.find(
-                (cat) => cat.category === categoryName
-              );
-              return (
-                <div key={categoryName} className="mb-4">
-                  <h6 className="mt-3">{categoryName}</h6>
-                  {category && category.images && category.images.length > 0 ? (
-                    <Row>
-                      {category.images.map((image, index) => (
-                        <Col key={image.id || index} md={3} className="mb-3">
-                          <Card className={styles.imageCard}>
-                            <div
-                              style={{ height: "150px", overflow: "hidden" }}
-                            >
-                              <Card.Img
-                                variant="top"
-                                src={image.url}
-                                alt="Gallery image"
-                                style={{ height: "100%", objectFit: "cover" }}
-                                onError={(e) => {
-                                  e.target.src = "/assets/placeholder.png";
-                                }}
-                              />
-                            </div>
-                            <Card.Body className="p-2">
-                              <div className="d-grid">
-                                <Button
-                                  variant="danger"
-                                  size="sm"
-                                  onClick={() => handleDeleteImage(image.id)}
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      ))}
-                    </Row>
-                  ) : (
-                    <p className="text-muted">No images in this category</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </Card.Body>
-    </Card>
+              </Card.Body>
+            </div>
+          </Collapse>
+        </Card>
+      )}
+    </div>
   );
 };
 

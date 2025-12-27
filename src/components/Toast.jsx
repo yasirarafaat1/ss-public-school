@@ -1,42 +1,34 @@
 import React, { useEffect } from "react";
+import styles from "./Toast.module.css";
 
 const Toast = ({ show, message, type, onClose }) => {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 3000); // Auto close after 3 seconds
-
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [show, onClose]);
 
   if (!show) return null;
 
-  const getIcon = () => {
-    switch (type) {
-      case "success":
-        return "✓";
-      case "error":
-        return "✕";
-      case "warning":
-        return "⚠";
-      case "info":
-        return "ℹ";
-      default:
-        return "";
-    }
-  };
-
   return (
-    <div className={`toast toast-${type}`}>
-      <span className="toast-icon">{getIcon()}</span>
-      <div className="toast-content">
-        <div className="toast-message">{message}</div>
+    <div className={styles.toastContainer}>
+      <div className={`${styles.toast} ${styles.show} ${styles[type]}`}>
+        <div className={styles.toastBody}>
+          <div className="d-flex justify-content-between align-items-center">
+            <span>{message}</span>
+            <button
+              className={styles.closeButton}
+              onClick={onClose}
+              aria-label="Close toast"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
       </div>
-      <button className="toast-close" onClick={onClose}>
-        ×
-      </button>
     </div>
   );
 };

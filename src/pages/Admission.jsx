@@ -647,11 +647,11 @@ const Admission = () => {
                         className="mb-3 mb-md-0"
                       >
                         <i className="bi bi-telephone me-2"></i>
-                        +91 94158 08804
+                        +91 32434 03243
                       </Button>
                       <Button variant="outline-primary" size="lg">
                         <i className="bi bi-envelope me-2"></i>
-                        sspublicschool@gmail.com
+                        demopublicschool@gmail.com
                       </Button>
                     </div>
                   </>

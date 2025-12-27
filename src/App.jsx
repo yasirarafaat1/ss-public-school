@@ -28,6 +28,13 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SettingsManager from "./components/SettingsManager";
+import Result from "./pages/Result";
+import AdminDetailedResult from "./pages/AdminDetailedResult";
+import EditResult from "./pages/EditResult";
+import AddResult from "./pages/AddResult";
+import ClassSessionManager from "./components/ClassSessionManager";
+import ClassStudentsView from "./pages/ClassStudentsView";
+import StudentFeesPage from "./pages/StudentFeesPage";
 
 // Layout component to conditionally render Nav and Footer
 const AppLayout = () => {
@@ -53,11 +60,60 @@ const AppLayout = () => {
           <Route path="/developer/info" element={<DeveloperInfo />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/setting" element={<SettingsManager />} />
+          <Route path="/result" element={<Result />} />
           <Route
             path="/admin/dashboard"
             element={
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/class-session"
+            element={
+              <ProtectedRoute>
+                <ClassSessionManager />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/class/:classId/students"
+            element={
+              <ProtectedRoute>
+                <ClassStudentsView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/result/:rollNo/:classCode"
+            element={
+              <ProtectedRoute>
+                <AdminDetailedResult />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/result/:rollNo/:classCode/edit"
+            element={
+              <ProtectedRoute>
+                <EditResult />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/result/add"
+            element={
+              <ProtectedRoute>
+                <AddResult />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/student-fees/:studentId"
+            element={
+              <ProtectedRoute>
+                <StudentFeesPage />
               </ProtectedRoute>
             }
           />
